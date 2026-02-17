@@ -142,6 +142,13 @@ const recruiterSchema = new mongoose.Schema(
       type: companyDetailsSchema,
       required: true,
     },
+resetOtp: {
+  type: Number,
+},
+
+resetOtpExpires: {
+  type: Number,
+},
 
     // email verification status
     // isEmailVerified: {
