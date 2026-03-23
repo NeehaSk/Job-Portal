@@ -238,6 +238,10 @@ const jobSeekerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    
+    altMobile: {
+      type: String,
+    },
 
     // ===== PROFILE SECTION =====
     profile: {
@@ -273,12 +277,37 @@ const jobSeekerSchema = new mongoose.Schema(
         university: {
           type: String,
         },
+        course: {
+          type: String,
+        },
+        stream: {
+          type: String,
+        },
+        startingYear: {
+          type: Number,
+        },
         graduationYear: {
           type: Number,
+        },
+        courseType: {
+          type: String,
+          enum: ["Full time", "Part time", "Correspondence/Distance learning"],
+        },
+        gradingSystem: {
+          type: String,
+          enum: ["Percentage", "CGPA"],
+        },
+        grade: {
+          type: String,
         },
       },
 
       // ===== Professional Info =====
+      employmentStatus: {
+        type: String,
+        enum: ["Student", "Fresher", "Experienced"],
+        default: "Fresher"
+      },
       experience: {
         type: Number, // total years
         default: 0,
@@ -315,6 +344,33 @@ const jobSeekerSchema = new mongoose.Schema(
           type: String,
         },
       },
+
+      // ===== Personal Details Extras =====
+      gender: {
+        type: String,
+        enum: ["Male", "Female", "Other", "Prefer not to say"],
+      },
+      dob: {
+        type: Date,
+      },
+      address: {
+        type: String,
+      },
+      hometown: {
+        type: String,
+      },
+      pincode: {
+        type: String,
+      },
+      state: {
+        type: String,
+      },
+      languagesKnown: [
+        {
+          type: String,
+          trim: true,
+        },
+      ],
     },
 
     // ===== PROFILE COMPLETION TRACKING =====

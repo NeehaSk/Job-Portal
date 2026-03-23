@@ -1,1881 +1,7 @@
-// // // import { useState } from "react";
-  
-
-
-// // // function Signup() {
-// // //   // role
-// // //   const [role, setRole] = useState("recruiter");
-
-// // //   // common fields
-// // //   const [fullName, setFullName] = useState("");
-// // //   const [email, setEmail] = useState("");
-// // //   const [password, setPassword] = useState("");
-// // //   const [mobile, setMobile] = useState("");
-
-// // //   // recruiter-specific
-// // //   const [designation, setDesignation] = useState("");
-// // //   const [companyName, setCompanyName] = useState("");
-// // //   const [companyWebsite, setCompanyWebsite] = useState("");
-// // //   const [industry, setIndustry] = useState("");
-// // //   const [location, setLocation] = useState("");
-
-// // //   // ui states
-// // //   const [loading, setLoading] = useState(false);
-// // //   const [error, setError] = useState("");
-// // //   const [success, setSuccess] = useState("");
-
-// // //   const handleSubmit = async (e) => {
-// // //     e.preventDefault();
-// // //     setError("");
-// // //     setSuccess("");
-
-// // //     // basic validation
-// // //     if (!fullName || !email || !password || !mobile) {
-// // //       setError("Full name, email and password are required");
-// // //       return;
-// // //     }
-
-// // //     if (role === "recruiter") {
-// // //       if (!designation || !companyName) {
-// // //         setError("Recruiter details are incomplete");
-// // //         return;
-// // //       }
-// // //     }
-
-// // //     // payload construction (IMPORTANT)
-// // //     let payload = {
-// // //       fullName,
-// // //       email,
-// // //       mobile,
-// // //       password,
-// // //       role,
-// // //     };
-                                   
-// // //     if (role === "recruiter") {
-// // //       payload = {
-// // //         ...payload,
-// // //         designation,
-// // //         companyDetails: {
-// // //           name: companyName,
-// // //           website: companyWebsite,
-// // //           industry,
-// // //           location,
-// // //         },
-// // //       };
-// // //     }
-
-// // //     try {
-// // //       setLoading(true);
-
-// // //       //   const res = await fetch(
-// // //       //     "http://localhost:5000/api/auth/register-recruiter",
-// // //       //     {
-// // //       //       method: "POST",
-// // //       //       headers: {
-// // //       //         "Content-Type": "application/json",
-// // //       //       },
-// // //       //       body: JSON.stringify(payload),
-// // //       //     }
-// // //       //   );
-// // //       const res = await fetch(
-// // //         "http://localhost:5000/api/auth/signup-recruiter",
-// // //         {
-// // //           method: "POST",
-// // //           headers: { "Content-Type": "application/json" },
-// // //           body: JSON.stringify(payload),
-// // //         }
-// // //       );
-// // //       const data = await res.json();
-
-// // //       if (!res.ok) {
-// // //         setError(data.message || "Signup failed");
-// // //       } else {
-// // //         setSuccess("Signup successful!");
-
-// // //         // reset form
-// // //         setFullName("");
-// // //         setEmail("");
-// // //         setPassword("");
-// // //         setDesignation("");
-// // //         setCompanyName("");
-// // //         setCompanyWebsite("");
-// // //         setIndustry("");
-// // //         setLocation("");
-// // //       }
-// // //     } catch (err) {
-// // //       setError("Server not reachable");
-// // //     } finally {
-// // //       setLoading(false);
-// // //     }
-// // //   };
-
-// // //   return (
-// // //     <div style={styles.container}>
-// // //       <form style={styles.form} onSubmit={handleSubmit}>
-// // //         <h2 style={styles.title}>Signup</h2>
-
-// // //         {/* Role selection */}
-// // //         <div style={styles.roleBox}>
-// // //           <button
-// // //             type="button"
-// // //             style={role === "recruiter" ? styles.active : styles.inactive}
-// // //             onClick={() => setRole("recruiter")}
-// // //           >
-// // //             Recruiter
-// // //           </button>
-
-// // //           <button
-// // //             type="button"
-// // //             style={styles.disabled}
-// // //             disabled
-// // //           >
-// // //             Job Seeker (soon)
-// // //           </button>
-// // //         </div>
-
-// // //         {error && <p style={styles.error}>{error}</p>}
-// // //         {success && <p style={styles.success}>{success}</p>}
-
-// // //         {/* Common fields */}
-// // //         <input
-// // //           placeholder="Full Name"
-// // //           value={fullName}
-// // //           onChange={(e) => setFullName(e.target.value)}
-// // //           style={styles.input}
-// // //         />
-
-// // //         <input
-// // //           type="email"
-// // //           placeholder="Email"
-// // //           value={email}
-// // //           onChange={(e) => setEmail(e.target.value)}
-// // //           style={styles.input}
-// // //         />
-
-// // //         <input
-// // //           type="password"
-// // //           placeholder="Password"
-// // //           value={password}
-// // //           onChange={(e) => setPassword(e.target.value)}
-// // //           style={styles.input}
-// // //         />
-// // //         <input
-// // //           className="w-full p-2 border mb-2 rounded"
-// // //           placeholder="Mobile Number"
-// // //           value={mobile}
-// // //           onChange={(e) => setMobile(e.target.value)}
-// // //         />
-
-// // //         {/* Recruiter fields */}
-// // //         {role === "recruiter" && (
-// // //           <>
-// // //             <input
-// // //               placeholder="Designation"
-// // //               value={designation}
-// // //               onChange={(e) => setDesignation(e.target.value)}
-// // //               style={styles.input}
-// // //             />
-
-// // //             <input
-// // //               placeholder="Company Name"
-// // //               value={companyName}
-// // //               onChange={(e) => setCompanyName(e.target.value)}
-// // //               style={styles.input}
-// // //             />
-
-// // //             <input
-// // //               placeholder="Company Website"
-// // //               value={companyWebsite}
-// // //               onChange={(e) => setCompanyWebsite(e.target.value)}
-// // //               style={styles.input}
-// // //             />
-
-// // //             <input
-// // //               placeholder="Industry"
-// // //               value={industry}
-// // //               onChange={(e) => setIndustry(e.target.value)}
-// // //               style={styles.input}
-// // //             />
-
-// // //             <input
-// // //               placeholder="Location"
-// // //               value={location}
-// // //               onChange={(e) => setLocation(e.target.value)}
-// // //               style={styles.input}
-// // //             />
-// // //           </>
-// // //         )}
-
-// // //         <button style={styles.button} disabled={loading}>
-// // //           {loading ? "Signing up..." : "Signup"}
-// // //         </button>
-// // //       </form>
-// // //     </div>
-// // //   );
-// // // }
-
-// // // const styles = {
-// // //   container: {
-// // //     minHeight: "100vh",
-// // //     display: "flex",
-// // //     justifyContent: "center",
-// // //     alignItems: "center",
-// // //     background: "#f3f4f6",
-// // //   },
-// // //   form: {
-// // //     width: 380,
-// // //     background: "#fff",
-// // //     padding: 25,
-// // //     borderRadius: 8,
-// // //     boxShadow: "0 0 12px rgba(0,0,0,0.1)",
-// // //   },
-// // //   title: {
-// // //     textAlign: "center",
-// // //     marginBottom: 15,
-// // //   },
-// // //   roleBox: {
-// // //     display: "flex",
-// // //     gap: 10,
-// // //     marginBottom: 15,
-// // //   },
-// // //   active: {
-// // //     flex: 1,
-// // //     padding: 8,
-// // //     background: "#2563eb",
-// // //     color: "#fff",
-// // //     border: "none",
-// // //     cursor: "pointer",
-// // //   },
-// // //   inactive: {
-// // //     flex: 1,
-// // //     padding: 8,
-// // //     background: "#e5e7eb",
-// // //     border: "none",
-// // //     cursor: "pointer",
-// // //   },
-// // //   disabled: {
-// // //     flex: 1,
-// // //     padding: 8,
-// // //     background: "#e5e7eb",
-// // //     border: "none",
-// // //     cursor: "not-allowed",
-// // //   },
-// // //   input: {
-// // //     width: "100%",
-// // //     padding: 10,
-// // //     marginBottom: 10,
-// // //     border: "1px solid #ccc",
-// // //     borderRadius: 4,
-// // //   },
-// // //   button: {
-// // //     width: "100%",
-// // //     padding: 10,
-// // //     background: "#111827",
-// // //     color: "#fff",
-// // //     border: "none",
-// // //     cursor: "pointer",
-// // //   },
-// // //   error: {
-// // //     color: "red",
-// // //     textAlign: "center",
-// // //     marginBottom: 10,
-// // //   },
-// // //   success: {
-// // //     color: "green",
-// // //     textAlign: "center",
-// // //     marginBottom: 10,
-// // //   },
-// // // };
-
-// // // export default Signup;
-
-// // // import { useState } from "react";
-// // // import axios from "axios";
-
-// // // function Signup() {
-// // //   // role (fixed recruiter)
-// // //   const role = "recruiter";
-
-// // //   // common fields
-// // //   const [fullName, setFullName] = useState("");
-// // //   const [email, setEmail] = useState("");
-// // //   const [otp, setOtp] = useState("");
-// // //   const [password, setPassword] = useState("");
-// // //   const [mobile, setMobile] = useState("");
-
-// // //   // recruiter-specific
-// // //   const [designation, setDesignation] = useState("");
-// // //   const [companyName, setCompanyName] = useState("");
-// // //   const [location, setLocation] = useState("");
-
-// // //   // otp states
-// // //   const [otpSent, setOtpSent] = useState(false);
-// // //   const [otpVerified, setOtpVerified] = useState(false);
-
-// // //   // ui states
-// // //   const [loading, setLoading] = useState(false);
-// // //   const [error, setError] = useState("");
-// // //   const [success, setSuccess] = useState("");
-
-// // //   /* =========================
-// // //      SEND OTP
-// // //   ========================= */
-// // //   const handleSendOtp = async () => {
-// // //     setError("");
-// // //     if (!fullName || !email) {
-// // //       setError("Full name and email are required");
-// // //       return;
-// // //     }
-
-// // //     try {
-// // //       setLoading(true);
-// // //       await axios.post(
-// // //         "http://localhost:5000/api/auth/recruiter/send-otp",
-// // //         { fullName, email }
-// // //       );
-// // //       setOtpSent(true);
-// // //       setSuccess("OTP sent to email");
-// // //     } catch (err) {
-// // //       setError("Failed to send OTP");
-// // //     } finally {
-// // //       setLoading(false);
-// // //     }
-// // //   };
-
-// // //   /* =========================
-// // //      VERIFY OTP
-// // //   ========================= */
-// // //   const handleVerifyOtp = async () => {
-// // //     setError("");
-// // //     if (!otp) {
-// // //       setError("Enter OTP");
-// // //       return;
-// // //     }
-
-// // //     try {
-// // //       setLoading(true);
-// // //       await axios.post(
-// // //         "http://localhost:5000/api/auth/recruiter/verify-otp",
-// // //         { email, otp }
-// // //       );
-// // //       setOtpVerified(true);
-// // //       setSuccess("Email verified successfully");
-// // //     } catch (err) {
-// // //       setError("Invalid or expired OTP");
-// // //     } finally {
-// // //       setLoading(false);
-// // //     }
-// // //   };
-
-// // //   /* =========================
-// // //      SIGNUP
-// // //   ========================= */
-// // //   const handleSubmit = async (e) => {
-// // //     e.preventDefault();
-// // //     setError("");
-// // //     setSuccess("");
-
-// // //     if (
-// // //       !password ||
-// // //       !mobile ||
-// // //       !designation ||
-// // //       !companyName ||
-// // //       !location
-// // //     ) {
-// // //       setError("All fields are required");
-// // //       return;
-// // //     }
-
-// // //     try {
-// // //       setLoading(true);
-
-// // //       const payload = {
-// // //         fullName,
-// // //         email,
-// // //         password,
-// // //         mobile,
-// // //         role,
-// // //         designation,
-// // //         companyDetails: {
-// // //           name: companyName,
-// // //           location,
-// // //         },
-// // //       };
-
-// // //       await axios.post(
-// // //         "http://localhost:5000/api/auth/signup-recruiter",
-// // //         payload
-// // //       );
-
-// // //       setSuccess("Signup successful");
-
-// // //       // reset
-// // //       setFullName("");
-// // //       setEmail("");
-// // //       setOtp("");
-// // //       setPassword("");
-// // //       setMobile("");
-// // //       setDesignation("");
-// // //       setCompanyName("");
-// // //       setLocation("");
-// // //       setOtpSent(false);
-// // //       setOtpVerified(false);
-// // //     } catch (err) {
-// // //       setError("Signup failed");
-// // //     } finally {
-// // //       setLoading(false);
-// // //     }
-// // //   };
-
-// // //   return (
-// // //     <div style={styles.container}>
-// // //       <form style={styles.form} onSubmit={handleSubmit}>
-// // //         <h2 style={styles.title}>Recruiter Signup</h2>
-
-// // //         {error && <p style={styles.error}>{error}</p>}
-// // //         {success && <p style={styles.success}>{success}</p>}
-
-// // //         {/* Name */}
-// // //         <input
-// // //           placeholder="Full Name"
-// // //           value={fullName}
-// // //           onChange={(e) => setFullName(e.target.value)}
-// // //           style={styles.input}
-// // //           disabled={otpVerified}
-// // //         />
-
-// // //         {/* Email + OTP */}
-// // //         <div style={{ display: "flex", gap: 8 }}>
-// // //           <input
-// // //             type="email"
-// // //             placeholder="Email"
-// // //             value={email}
-// // //             onChange={(e) => setEmail(e.target.value)}
-// // //             style={{ ...styles.input, flex: 1 }}
-// // //             disabled={otpVerified}
-// // //           />
-// // //           <button
-// // //             type="button"
-// // //             onClick={handleSendOtp}
-// // //             disabled={loading || otpVerified}
-// // //             style={styles.otpBtn}
-// // //           >
-// // //             {otpSent ? "Resend OTP" : "Send OTP"}
-// // //           </button>
-// // //         </div>
-
-// // //         {/* OTP input */}
-// // //         {otpSent && !otpVerified && (
-// // //           <div style={{ display: "flex", gap: 8 }}>
-// // //             <input
-// // //               placeholder="Enter OTP"
-// // //               value={otp}
-// // //               onChange={(e) => setOtp(e.target.value)}
-// // //               style={{ ...styles.input, flex: 1 }}
-// // //             />
-// // //             <button
-// // //               type="button"
-// // //               onClick={handleVerifyOtp}
-// // //               style={styles.otpBtn}
-// // //             >
-// // //               Verify
-// // //             </button>
-// // //           </div>
-// // //         )}
-
-// // //         {/* Remaining fields (locked until OTP verified) */}
-// // //         <input
-// // //           type="password"
-// // //           placeholder="Password"
-// // //           value={password}
-// // //           disabled={!otpVerified}
-// // //           onChange={(e) => setPassword(e.target.value)}
-// // //           style={styles.input}
-// // //         />
-
-// // //         <input
-// // //           placeholder="Mobile"
-// // //           value={mobile}
-// // //           disabled={!otpVerified}
-// // //           onChange={(e) => setMobile(e.target.value)}
-// // //           style={styles.input}
-// // //         />
-
-// // //         <input
-// // //           placeholder="Designation"
-// // //           value={designation}
-// // //           disabled={!otpVerified}
-// // //           onChange={(e) => setDesignation(e.target.value)}
-// // //           style={styles.input}
-// // //         />
-
-// // //         <input
-// // //           placeholder="Company Name"
-// // //           value={companyName}
-// // //           disabled={!otpVerified}
-// // //           onChange={(e) => setCompanyName(e.target.value)}
-// // //           style={styles.input}
-// // //         />
-
-// // //         <input
-// // //           placeholder="Location"
-// // //           value={location}
-// // //           disabled={!otpVerified}
-// // //           onChange={(e) => setLocation(e.target.value)}
-// // //           style={styles.input}
-// // //         />
-
-// // //         <button
-// // //           style={styles.button}
-// // //           disabled={!otpVerified || loading}
-// // //         >
-// // //           Signup
-// // //         </button>
-// // //       </form>
-// // //     </div>
-// // //   );
-// // // }
-
-// // // /* =========================
-// // //    STYLES (UNCHANGED FEEL)
-// // // ========================= */
-// // // const styles = {
-// // //   container: {
-// // //     minHeight: "100vh",
-// // //     display: "flex",
-// // //     justifyContent: "center",
-// // //     alignItems: "center",
-// // //     background: "#f3f4f6",
-// // //   },
-// // //   form: {
-// // //     width: 380,
-// // //     background: "#fff",
-// // //     padding: 25,
-// // //     borderRadius: 8,
-// // //     boxShadow: "0 0 12px rgba(0,0,0,0.1)",
-// // //   },
-// // //   title: {
-// // //     textAlign: "center",
-// // //     marginBottom: 15,
-// // //   },
-// // //   input: {
-// // //     width: "100%",
-// // //     padding: 10,
-// // //     marginBottom: 10,
-// // //     border: "1px solid #ccc",
-// // //     borderRadius: 4,
-// // //   },
-// // //   otpBtn: {
-// // //     padding: "10px 12px",
-// // //     background: "#2563eb",
-// // //     color: "#fff",
-// // //     border: "none",
-// // //     cursor: "pointer",
-// // //   },
-// // //   button: {
-// // //     width: "100%",
-// // //     padding: 10,
-// // //     background: "#111827",
-// // //     color: "#fff",
-// // //     border: "none",
-// // //     cursor: "pointer",
-// // //   },
-// // //   error: {
-// // //     color: "red",
-// // //     textAlign: "center",
-// // //     marginBottom: 10,
-// // //   },
-// // //   success: {
-// // //     color: "green",
-// // //     textAlign: "center",
-// // //     marginBottom: 10,
-// // //   },
-// // // };
-
-// // // export default Signup;
-
-
-// // import { useState } from "react";
-// // import axios from "axios";
-
-// // function Signup() {
-// //   // role (fixed recruiter)
-// //   const role = "recruiter";
-
-// //   // common fields
-// //   const [fullName, setFullName] = useState("");
-// //   const [email, setEmail] = useState("");
-// //   const [otp, setOtp] = useState("");
-// //   const [password, setPassword] = useState("");
-// //   const [mobile, setMobile] = useState("");
-
-// //   // recruiter-specific
-// //   const [designation, setDesignation] = useState("");
-// //   const [companyName, setCompanyName] = useState("");
-// //   const [location, setLocation] = useState("");
-
-// //   // otp states
-// //   const [otpSent, setOtpSent] = useState(false);
-// //   const [otpVerified, setOtpVerified] = useState(false);
-
-// //   // ui states
-// //   const [loading, setLoading] = useState(false);
-// //   const [error, setError] = useState("");
-// //   const [success, setSuccess] = useState("");
-
-// //   /* =========================
-// //      SEND OTP
-// //   ========================= */
-// //   const handleSendOtp = async () => {
-// //     setError("");
-// //     if (!fullName || !email) {
-// //       setError("Full name and email are required");
-// //       return;
-// //     }
-
-// //     try {
-// //       setLoading(true);
-// //       await axios.post(
-// //         "http://localhost:5000/api/auth/recruiter/send-otp",
-// //         { fullName, email }
-// //       );
-// //       setOtpSent(true);
-// //       setSuccess("OTP sent to email");
-// //     } catch (err) {
-// //       setError("Failed to send OTP");
-// //     } finally {
-// //       setLoading(false);
-// //     }
-// //   };
-
-// //   /* =========================
-// //      VERIFY OTP
-// //   ========================= */
-// //   const handleVerifyOtp = async () => {
-// //     setError("");
-// //     if (!otp) {
-// //       setError("Enter OTP");
-// //       return;
-// //     }
-
-// //     try {
-// //       setLoading(true);
-// //       await axios.post(
-// //         "http://localhost:5000/api/auth/recruiter/verify-otp",
-// //         { email, otp }
-// //       );
-// //       setOtpVerified(true);
-// //       setSuccess("Email verified successfully");
-// //     } catch (err) {
-// //       setError("Invalid or expired OTP");
-// //     } finally {
-// //       setLoading(false);
-// //     }
-// //   };
-
-// //   /* =========================
-// //      SIGNUP
-// //   ========================= */
-// //   const handleSubmit = async (e) => {
-// //     e.preventDefault();
-// //     setError("");
-// //     setSuccess("");
-
-// //     if (
-// //       !password ||
-// //       !mobile ||
-// //       !designation ||
-// //       !companyName ||
-// //       !location
-// //     ) {
-// //       setError("All fields are required");
-// //       return;
-// //     }
-
-// //     try {
-// //       setLoading(true);
-
-// //       const payload = {
-// //         fullName,
-// //         email,
-// //         password,
-// //         mobile,
-// //         role,
-// //         designation,
-// //         companyDetails: {
-// //           name: companyName,
-// //           location,
-// //         },
-// //       };
-
-// //       await axios.post(
-// //         "http://localhost:5000/api/auth/signup-recruiter",
-// //         payload
-// //       );
-
-// //       setSuccess("Signup successful");
-
-// //       // reset
-// //       setFullName("");
-// //       setEmail("");
-// //       setOtp("");
-// //       setPassword("");
-// //       setMobile("");
-// //       setDesignation("");
-// //       setCompanyName("");
-// //       setLocation("");
-// //       setOtpSent(false);
-// //       setOtpVerified(false);
-// //     } catch (err) {
-// //       setError("Signup failed");
-// //     } finally {
-// //       setLoading(false);
-// //     }
-// //   };
-
-// //   return (
-// //     <div style={styles.container}>
-// //       <form style={styles.form} onSubmit={handleSubmit}>
-// //         <h2 style={styles.title}>Recruiter Signup</h2>
-
-// //         {error && <p style={styles.error}>{error}</p>}
-// //         {success && <p style={styles.success}>{success}</p>}
-
-// //         {/* Name */}
-// //         <input
-// //           placeholder="Full Name"
-// //           value={fullName}
-// //           onChange={(e) => setFullName(e.target.value)}
-// //           style={styles.input}
-// //           disabled={otpVerified}
-// //         />
-
-// //         {/* Email + OTP */}
-// //         <div style={{ display: "flex", gap: 8 }}>
-// //           <input
-// //             type="email"
-// //             placeholder="Email"
-// //             value={email}
-// //             onChange={(e) => setEmail(e.target.value)}
-// //             style={{ ...styles.input, flex: 1 }}
-// //             disabled={otpVerified}
-// //           />
-// //           <button
-// //             type="button"
-// //             onClick={handleSendOtp}
-// //             disabled={loading || otpVerified}
-// //             style={styles.otpBtn}
-// //           >
-// //             {otpSent ? "Resend OTP" : "Send OTP"}
-// //           </button>
-// //         </div>
-
-// //         {/* OTP input */}
-// //         {otpSent && !otpVerified && (
-// //           <div style={{ display: "flex", gap: 8 }}>
-// //             <input
-// //               placeholder="Enter OTP"
-// //               value={otp}
-// //               onChange={(e) => setOtp(e.target.value)}
-// //               style={{ ...styles.input, flex: 1 }}
-// //             />
-// //             <button
-// //               type="button"
-// //               onClick={handleVerifyOtp}
-// //               style={styles.otpBtn}
-// //             >
-// //               Verify
-// //             </button>
-// //           </div>
-// //         )}
-
-// //         {/* Remaining fields (locked until OTP verified) */}
-// //         <input
-// //           type="password"
-// //           placeholder="Password"
-// //           value={password}
-// //           disabled={!otpVerified}
-// //           onChange={(e) => setPassword(e.target.value)}
-// //           style={styles.input}
-// //         />
-
-// //         <input
-// //           placeholder="Mobile"
-// //           value={mobile}
-// //           disabled={!otpVerified}
-// //           onChange={(e) => setMobile(e.target.value)}
-// //           style={styles.input}
-// //         />
-
-// //         <input
-// //           placeholder="Designation"
-// //           value={designation}
-// //           disabled={!otpVerified}
-// //           onChange={(e) => setDesignation(e.target.value)}
-// //           style={styles.input}
-// //         />
-
-// //         <input
-// //           placeholder="Company Name"
-// //           value={companyName}
-// //           disabled={!otpVerified}
-// //           onChange={(e) => setCompanyName(e.target.value)}
-// //           style={styles.input}
-// //         />
-
-// //         <input
-// //           placeholder="Location"
-// //           value={location}
-// //           disabled={!otpVerified}
-// //           onChange={(e) => setLocation(e.target.value)}
-// //           style={styles.input}
-// //         />
-
-// //         <button
-// //           style={styles.button}
-// //           disabled={!otpVerified || loading}
-// //         >
-// //           Signup
-// //         </button>
-// //       </form>
-// //     </div>
-// //   );
-// // }
-
-// // /* =========================
-// //    STYLES (UNCHANGED FEEL)
-// // ========================= */
-// // const styles = {
-// //   container: {
-// //     minHeight: "100vh",
-// //     display: "flex",
-// //     justifyContent: "center",
-// //     alignItems: "center",
-// //     background: "#f3f4f6",
-// //   },
-// //   form: {
-// //     width: 380,
-// //     background: "#fff",
-// //     padding: 25,
-// //     borderRadius: 8,
-// //     boxShadow: "0 0 12px rgba(0,0,0,0.1)",
-// //   },
-// //   title: {
-// //     textAlign: "center",
-// //     marginBottom: 15,
-// //   },
-// //   input: {
-// //     width: "100%",
-// //     padding: 10,
-// //     marginBottom: 10,
-// //     border: "1px solid #ccc",
-// //     borderRadius: 4,
-// //   },
-// //   otpBtn: {
-// //     padding: "10px 12px",
-// //     background: "#2563eb",
-// //     color: "#fff",
-// //     border: "none",
-// //     cursor: "pointer",
-// //   },
-// //   button: {
-// //     width: "100%",
-// //     padding: 10,
-// //     background: "#111827",
-// //     color: "#fff",
-// //     border: "none",
-// //     cursor: "pointer",
-// //   },
-// //   error: {
-// //     color: "red",
-// //     textAlign: "center",
-// //     marginBottom: 10,
-// //   },
-// //   success: {
-// //     color: "green",
-// //     textAlign: "center",
-// //     marginBottom: 10,
-// //   },
-// // };
-
-// // export default Signup;
-
-
-// // import { useState } from "react";
-// // import axios from "axios";
-
-// // function Signup() {
-// //   /* =========================
-// //      ROLE
-// //   ========================= */
-// //   const [role, setRole] = useState("jobseeker");
-
-// //   /* =========================
-// //      COMMON FIELDS
-// //   ========================= */
-// //   const [fullName, setFullName] = useState("");
-// //   const [email, setEmail] = useState("");
-// //   const [otp, setOtp] = useState("");
-// //   const [password, setPassword] = useState("");
-// //   const [mobile, setMobile] = useState("");
-
-// //   /* =========================
-// //      JOB SEEKER FIELDS
-// //   ========================= */
-// //   const [gender, setGender] = useState("");
-// //   const [qualification, setQualification] = useState("");
-// //   const [status, setStatus] = useState("");
-// //   const [location, setLocation] = useState("");
-
-// //   /* =========================
-// //      RECRUITER FIELDS
-// //   ========================= */
-// //   const [designation, setDesignation] = useState("");
-// //   const [companyName, setCompanyName] = useState("");
-
-// //   /* =========================
-// //      OTP STATES
-// //   ========================= */
-// //   const [otpSent, setOtpSent] = useState(false);
-// //   const [otpVerified, setOtpVerified] = useState(false);
-
-// //   /* =========================
-// //      UI STATES
-// //   ========================= */
-// //   const [loading, setLoading] = useState(false);
-// //   const [error, setError] = useState("");
-// //   const [success, setSuccess] = useState("");
-
-// //   /* =========================
-// //      SEND OTP
-// //   ========================= */
-// //   const handleSendOtp = async () => {
-// //     setError("");
-// //     if (!fullName || !email) {
-// //       setError("Full name and email required");
-// //       return;
-// //     }
-
-// //     try {
-// //       setLoading(true);
-// //       await axios.post(
-// //         role === "recruiter"
-// //           ? "http://localhost:5000/api/auth/recruiter/send-otp"
-// //           : "http://localhost:5000/api/auth/jobseeker/send-otp",
-// //         { fullName, email }
-// //       );
-// //       setOtpSent(true);
-// //       setSuccess("OTP sent to email");
-// //     } catch {
-// //       setError("Failed to send OTP");
-// //     } finally {
-// //       setLoading(false);
-// //     }
-// //   };
-
-// //   /* =========================
-// //      VERIFY OTP
-// //   ========================= */
-// //   const handleVerifyOtp = async () => {
-// //     setError("");
-// //     if (!otp) {
-// //       setError("Enter OTP");
-// //       return;
-// //     }
-
-// //     try {
-// //       setLoading(true);
-// //       await axios.post(
-// //         role === "recruiter"
-// //           ? "http://localhost:5000/api/auth/recruiter/verify-otp"
-// //           : "http://localhost:5000/api/auth/jobseeker/verify-otp",
-// //         { email, otp }
-// //       );
-// //       setOtpVerified(true);
-// //       setSuccess("Email verified");
-// //     } catch {
-// //       setError("Invalid or expired OTP");
-// //     } finally {
-// //       setLoading(false);
-// //     }
-// //   };
-
-// //   /* =========================
-// //      SUBMIT
-// //   ========================= */
-// //   const handleSubmit = async (e) => {
-// //     e.preventDefault();
-// //     setError("");
-// //     setSuccess("");
-
-// //     if (!password || !mobile) {
-// //       setError("Required fields missing");
-// //       return;
-// //     }
-
-// //     try {
-// //       setLoading(true);
-
-// //       let payload = {
-// //         fullName,
-// //         email,
-// //         password,
-// //         mobile,
-// //         role,
-// //       };
-
-// //       if (role === "recruiter") {
-// //         payload.designation = designation;
-// //         payload.companyDetails = {
-// //           name: companyName,
-// //           location,
-// //         };
-// //       } else {
-// //         payload.gender = gender;
-// //         payload.qualification = qualification;
-// //         payload.status = status;
-// //         payload.location = location;
-// //       }
-
-// //       await axios.post(
-// //         role === "recruiter"
-// //           ? "http://localhost:5000/api/auth/signup-recruiter"
-// //           : "http://localhost:5000/api/auth/signup-jobseeker",
-// //         payload
-// //       );
-
-// //       setSuccess("Signup successful");
-
-// //       // reset
-// //       setFullName("");
-// //       setEmail("");
-// //       setOtp("");
-// //       setPassword("");
-// //       setMobile("");
-// //       setGender("");
-// //       setQualification("");
-// //       setStatus("");
-// //       setLocation("");
-// //       setDesignation("");
-// //       setCompanyName("");
-// //       setOtpSent(false);
-// //       setOtpVerified(false);
-// //     } catch {
-// //       setError("Signup failed");
-// //     } finally {
-// //       setLoading(false);
-// //     }
-// //   };
-
-// //   return (
-// //     <div style={styles.container}>
-// //       <form style={styles.form} onSubmit={handleSubmit}>
-// //         <h3 style={styles.title}>Signup</h3>
-
-// //         {/* ROLE SWITCH */}
-// //         <div style={{ display: "flex", gap: 10, marginBottom: 15 }}>
-// //           <button type="button" onClick={() => setRole("jobseeker")} style={role === "jobseeker" ? styles.active : styles.inactive}>
-// //             Job Seeker
-// //           </button>
-// //           <button type="button" onClick={() => setRole("recruiter")} style={role === "recruiter" ? styles.active : styles.inactive}>
-// //             Recruiter
-// //           </button>
-// //         </div>
-
-// //         {error && <p style={styles.error}>{error}</p>}
-// //         {success && <p style={styles.success}>{success}</p>}
-
-// //         <input placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} disabled={otpVerified} style={styles.input} />
-
-// //         <div style={{ display: "flex", gap: 8 }}>
-// //           <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={otpVerified} style={{ ...styles.input, flex: 1 }} />
-// //           <button type="button" onClick={handleSendOtp} disabled={otpVerified} style={styles.otpBtn}>
-// //             {otpSent ? "Resend OTP" : "Send OTP"}
-// //           </button>
-// //         </div>
-
-// //         {otpSent && !otpVerified && (
-// //           <div style={{ display: "flex", gap: 8 }}>
-// //             <input placeholder="Enter OTP" value={otp} onChange={(e) => setOtp(e.target.value)} style={{ ...styles.input, flex: 1 }} />
-// //             <button type="button" onClick={handleVerifyOtp} style={styles.otpBtn}>
-// //               Verify
-// //             </button>
-// //           </div>
-// //         )}
-
-// //         <input type="password" placeholder="Password" disabled={!otpVerified} value={password} onChange={(e) => setPassword(e.target.value)} style={styles.input} />
-// //         <input placeholder="Mobile" disabled={!otpVerified} value={mobile} onChange={(e) => setMobile(e.target.value)} style={styles.input} />
-
-// //         {/* JOB SEEKER */}
-// //         {role === "jobseeker" && (
-// //           <>
-// //             <select disabled={!otpVerified} value={gender} onChange={(e) => setGender(e.target.value)} style={styles.input}>
-// //               <option value="">Select Gender</option>
-// //               <option>Male</option>
-// //               <option>Female</option>
-// //               <option>Other</option>
-// //             </select>
-
-// //             <input placeholder="Highest Qualification" disabled={!otpVerified} value={qualification} onChange={(e) => setQualification(e.target.value)} style={styles.input} />
-
-// //             <select disabled={!otpVerified} value={status} onChange={(e) => setStatus(e.target.value)} style={styles.input}>
-// //               <option value="">Current Status</option>
-// //               <option>Student</option>
-// //               <option>Fresher</option>
-// //               <option>Experienced</option>
-// //             </select>
-
-// //             <input placeholder="Current Location" disabled={!otpVerified} value={location} onChange={(e) => setLocation(e.target.value)} style={styles.input} />
-// //           </>
-// //         )}
-
-// //         {/* RECRUITER */}
-// //         {role === "recruiter" && (
-// //           <>
-// //             <input placeholder="Designation" disabled={!otpVerified} value={designation} onChange={(e) => setDesignation(e.target.value)} style={styles.input} />
-// //             <input placeholder="Company Name" disabled={!otpVerified} value={companyName} onChange={(e) => setCompanyName(e.target.value)} style={styles.input} />
-// //             <input placeholder="Location" disabled={!otpVerified} value={location} onChange={(e) => setLocation(e.target.value)} style={styles.input} />
-// //           </>
-// //         )}
-
-// //         <button style={styles.button} disabled={!otpVerified || loading}>
-// //           Signup
-// //         </button>
-// //       </form>
-// //     </div>
-// //   );
-// // }
-
-// // /* =========================
-// //    STYLES
-// // ========================= */
-// // const styles = {
-// //   container: { minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", background: "#f3f4f6" },
-// //   form: { width: 380, background: "#fff", padding: 25, borderRadius: 8 },
-// //   title: { textAlign: "center", marginBottom: 10 },
-// //   input: { width: "100%", padding: 10, marginBottom: 10 },
-// //   otpBtn: { padding: "10px 12px", background: "#2563eb", color: "#fff", border: "none" },
-// //   button: { width: "100%", padding: 10, background: "#111827", color: "#fff", border: "none" },
-// //   active: { flex: 1, padding: 8, background: "#2563eb", color: "#fff", border: "none" },
-// //   inactive: { flex: 1, padding: 8, background: "#e5e7eb", border: "none" },
-// //   error: { color: "red", textAlign: "center" },
-// //   success: { color: "green", textAlign: "center" },
-// // };
-
-// // export default Signup;
-
-// import { useState } from "react";
-// import axios from "axios";
-
-// function Signup() {
-//   /* =========================
-//      ROLE
-//   ========================= */
-//   const [role, setRole] = useState("jobseeker");
-
-//   /* =========================
-//      COMMON FIELDS
-//   ========================= */
-//   const [fullName, setFullName] = useState("");
-//   const [email, setEmail] = useState("");
-//   const [otp, setOtp] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [mobile, setMobile] = useState("");
-
-//   /* =========================
-//      JOB SEEKER FIELDS
-//   ========================= */
-//   const [gender, setGender] = useState("");
-//   const [qualification, setQualification] = useState("");
-//   const [status, setStatus] = useState("");
-//   const [location, setLocation] = useState("");
-
-//   /* =========================
-//      RECRUITER FIELDS
-//   ========================= */
-//   const [designation, setDesignation] = useState("");
-//   const [companyName, setCompanyName] = useState("");
-
-//   /* =========================
-//      OTP STATES
-//   ========================= */
-//   const [otpSent, setOtpSent] = useState(false);
-//   const [otpVerified, setOtpVerified] = useState(false);
-
-//   /* =========================
-//      UI STATES
-//   ========================= */
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState("");
-//   const [success, setSuccess] = useState("");
-
-//   /* =========================
-//      SEND OTP (COMMON)
-//   ========================= */
-//   const handleSendOtp = async () => {
-//     setError("");
-//     setSuccess("");
-
-//     if (!fullName || !email) {
-//       setError("Full name and email are required");
-//       return;
-//     }
-
-//     try {
-//       setLoading(true);
-//       await axios.post("http://localhost:5000/api/auth/send-otp", {
-//         fullName,
-//         email,
-//         role,
-//       });
-//       setOtpSent(true);
-//       setSuccess("OTP sent to your email");
-//     } catch (err) {
-//       setError(err.response?.data?.message || "Failed to send OTP");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   /* =========================
-//      VERIFY OTP (COMMON)
-//   ========================= */
-//   const handleVerifyOtp = async () => {
-//     setError("");
-//     setSuccess("");
-
-//     if (!otp) {
-//       setError("Enter OTP");
-//       return;
-//     }
-
-//     try {
-//       setLoading(true);
-//       await axios.post("http://localhost:5000/api/auth/verify-otp", {
-//         email,
-//         otp,
-//         role,
-//       });
-//       setOtpVerified(true);
-//       setSuccess("Email verified successfully");
-//     } catch (err) {
-//       setError(err.response?.data?.message || "Invalid OTP");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   /* =========================
-//      SIGNUP
-//   ========================= */
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setError("");
-//     setSuccess("");
-
-//     if (!otpVerified) {
-//       setError("Please verify email first");
-//       return;
-//     }
-
-//     try {
-//       setLoading(true);
-
-//       let payload = {
-//         fullName,
-//         email,
-//         password,
-//         mobile,
-//       };
-
-//       if (role === "recruiter") {
-//         payload.designation = designation;
-//         payload.companyDetails = {
-//           name: companyName,
-//           location,
-//         };
-//       } else {
-//         payload.gender = gender;
-//         payload.qualification = qualification;
-//         payload.status = status;
-//         payload.location = location;
-//       }
-
-//       await axios.post(
-//         role === "recruiter"
-//           ? "http://localhost:5000/api/auth/signup-recruiter"
-//           : "http://localhost:5000/api/auth/signup-jobseeker",
-//         payload
-//       );
-
-//       setSuccess("Signup successful 🎉");
-
-//       // reset
-//       setFullName("");
-//       setEmail("");
-//       setOtp("");
-//       setPassword("");
-//       setMobile("");
-//       setGender("");
-//       setQualification("");
-//       setStatus("");
-//       setLocation("");
-//       setDesignation("");
-//       setCompanyName("");
-//       setOtpSent(false);
-//       setOtpVerified(false);
-//     } catch (err) {
-//       setError(err.response?.data?.message || "Signup failed");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div style={styles.container}>
-//       <form style={styles.form} onSubmit={handleSubmit}>
-//         <h3 style={styles.title}>Signup</h3>
-
-//         {/* ROLE SWITCH */}
-//         <div style={{ display: "flex", gap: 10, marginBottom: 15 }}>
-//           <button
-//             type="button"
-//             onClick={() => setRole("jobseeker")}
-//             style={role === "jobseeker" ? styles.active : styles.inactive}
-//           >
-//             Job Seeker
-//           </button>
-//           <button
-//             type="button"
-//             onClick={() => setRole("recruiter")}
-//             style={role === "recruiter" ? styles.active : styles.inactive}
-//           >
-//             Recruiter
-//           </button>
-//         </div>
-
-//         {error && <p style={styles.error}>{error}</p>}
-//         {success && <p style={styles.success}>{success}</p>}
-
-//         <input
-//           placeholder="Full Name"
-//           value={fullName}
-//           onChange={(e) => setFullName(e.target.value)}
-//           disabled={otpVerified}
-//           style={styles.input}
-//         />
-
-//         <div style={{ display: "flex", gap: 8 }}>
-//           <input
-//             placeholder="Email"
-//             value={email}
-//             onChange={(e) => setEmail(e.target.value)}
-//             disabled={otpVerified}
-//             style={{ ...styles.input, flex: 1 }}
-//           />
-//           <button
-//             type="button"
-//             onClick={handleSendOtp}
-//             disabled={loading || otpVerified}
-//             style={styles.otpBtn}
-//           >
-//             {otpSent ? "Resend OTP" : "Send OTP"}
-//           </button>
-//         </div>
-
-//         {otpSent && !otpVerified && (
-//           <div style={{ display: "flex", gap: 8 }}>
-//             <input
-//               placeholder="Enter OTP"
-//               value={otp}
-//               onChange={(e) => setOtp(e.target.value)}
-//               style={{ ...styles.input, flex: 1 }}
-//             />
-//             <button type="button" onClick={handleVerifyOtp} style={styles.otpBtn}>
-//               Verify
-//             </button>
-//           </div>
-//         )}
-
-//         <input
-//           type="password"
-//           placeholder="Password"
-//           disabled={!otpVerified}
-//           value={password}
-//           onChange={(e) => setPassword(e.target.value)}
-//           style={styles.input}
-//         />
-
-//         <input
-//           placeholder="Mobile"
-//           disabled={!otpVerified}
-//           value={mobile}
-//           onChange={(e) => setMobile(e.target.value)}
-//           style={styles.input}
-//         />
-
-//         {/* JOB SEEKER */}
-//         {role === "jobseeker" && (
-//           <>
-//             <select
-//               disabled={!otpVerified}
-//               value={gender}
-//               onChange={(e) => setGender(e.target.value)}
-//               style={styles.input}
-//             >
-//               <option value="">Select Gender</option>
-//               <option>Male</option>
-//               <option>Female</option>
-//               <option>Other</option>
-//             </select>
-
-//             <input
-//               placeholder="Highest Qualification"
-//               disabled={!otpVerified}
-//               value={qualification}
-//               onChange={(e) => setQualification(e.target.value)}
-//               style={styles.input}
-//             />
-
-//             <select
-//               disabled={!otpVerified}
-//               value={status}
-//               onChange={(e) => setStatus(e.target.value)}
-//               style={styles.input}
-//             >
-//               <option value="">Current Status</option>
-//               <option>Student</option>
-//               <option>Fresher</option>
-//               <option>Experienced</option>
-//             </select>
-
-//             <input
-//               placeholder="Current Location"
-//               disabled={!otpVerified}
-//               value={location}
-//               onChange={(e) => setLocation(e.target.value)}
-//               style={styles.input}
-//             />
-//           </>
-//         )}
-
-//         {/* RECRUITER */}
-//         {role === "recruiter" && (
-//           <>
-//             <input
-//               placeholder="Designation"
-//               disabled={!otpVerified}
-//               value={designation}
-//               onChange={(e) => setDesignation(e.target.value)}
-//               style={styles.input}
-//             />
-//             <input
-//               placeholder="Company Name"
-//               disabled={!otpVerified}
-//               value={companyName}
-//               onChange={(e) => setCompanyName(e.target.value)}
-//               style={styles.input}
-//             />
-//             <input
-//               placeholder="Company Location"
-//               disabled={!otpVerified}
-//               value={location}
-//               onChange={(e) => setLocation(e.target.value)}
-//               style={styles.input}
-//             />
-//           </>
-//         )}
-
-//         <button style={styles.button} disabled={loading || !otpVerified}>
-//           Signup
-//         </button>
-//       </form>
-//     </div>
-//   );
-// }
-
-// /* =========================
-//    STYLES
-// ========================= */
-// const styles = {
-//   container: {
-//     minHeight: "100vh",
-//     display: "flex",
-//     justifyContent: "center",
-//     alignItems: "center",
-//     background: "#f3f4f6",
-//   },
-//   form: {
-//     width: 380,
-//     background: "#fff",
-//     padding: 25,
-//     borderRadius: 8,
-//   },
-//   title: { textAlign: "center", marginBottom: 10 },
-//   input: { width: "100%", padding: 10, marginBottom: 10 },
-//   otpBtn: { padding: "10px 12px", background: "#2563eb", color: "#fff", border: "none" },
-//   button: { width: "100%", padding: 10, background: "#111827", color: "#fff", border: "none" },
-//   active: { flex: 1, padding: 8, background: "#2563eb", color: "#fff", border: "none" },
-//   inactive: { flex: 1, padding: 8, background: "#e5e7eb", border: "none" },
-//   error: { color: "red", textAlign: "center" },
-//   success: { color: "green", textAlign: "center" },
-// };
-
-// export default Signup;
-
-// import { useState } from "react";
-// import axios from "axios";
-
-// function Signup() {
-//   /* =========================
-//      ROLE
-//   ========================= */
-//   const [role, setRole] = useState("jobseeker");
-
-//   /* =========================
-//      COMMON FIELDS
-//   ========================= */
-//   const [fullName, setFullName] = useState("");
-//   const [email, setEmail] = useState("");
-//   const [otp, setOtp] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [mobile, setMobile] = useState("");
-
-//   /* =========================
-//      JOB SEEKER FIELDS
-//   ========================= */
-//   const [gender, setGender] = useState("");
-//   const [qualification, setQualification] = useState("");
-//   const [status, setStatus] = useState("");
-//   const [location, setLocation] = useState("");
-
-//   /* =========================
-//      RECRUITER FIELDS
-//   ========================= */
-//   const [designation, setDesignation] = useState("");
-//   const [companyName, setCompanyName] = useState("");
-
-//   /* =========================
-//      OTP STATES
-//   ========================= */
-//   const [otpSent, setOtpSent] = useState(false);
-//   const [otpVerified, setOtpVerified] = useState(false);
-
-//   /* =========================
-//      UI STATES
-//   ========================= */
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState("");
-//   const [success, setSuccess] = useState("");
-
-//   /* =========================
-//      SEND OTP
-//   ========================= */
-//   const handleSendOtp = async () => {
-//     setError("");
-//     setSuccess("");
-
-//     if (!fullName || !email) {
-//       setError("Full name and email are required");
-//       return;
-//     }
-
-//     try {
-//       setLoading(true);
-//       await axios.post("http://localhost:5000/api/auth/send-otp", {
-//         fullName,
-//         email,
-//         role,
-//       });
-//       setOtpSent(true);
-//       setSuccess("OTP sent to your email");
-//     } catch (err) {
-//       setError(err.response?.data?.message || "Failed to send OTP");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   /* =========================
-//      VERIFY OTP
-//   ========================= */
-//   const handleVerifyOtp = async () => {
-//     setError("");
-//     setSuccess("");
-
-//     if (!otp) {
-//       setError("Enter OTP");
-//       return;
-//     }
-
-//     try {
-//       setLoading(true);
-//       await axios.post("http://localhost:5000/api/auth/verify-otp", {
-//         email,
-//         otp,
-//         role,
-//       });
-//       setOtpVerified(true);
-//       setSuccess("Email verified successfully");
-//     } catch (err) {
-//       setError(err.response?.data?.message || "Invalid OTP");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   /* =========================
-//      SIGNUP
-//   ========================= */
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setError("");
-//     setSuccess("");
-
-//     if (!otpVerified) {
-//       setError("Please verify email first");
-//       return;
-//     }
-
-//     try {
-//       setLoading(true);
-
-//       let payload = {
-//         fullName,
-//         email,
-//         password,
-//         mobile,
-//       };
-
-//       if (role === "recruiter") {
-//         payload.designation = designation;
-//         payload.companyDetails = {
-//           name: companyName,
-//           location,
-//         };
-//       } else {
-//         payload.gender = gender;
-//         payload.qualification = qualification;
-//         payload.status = status;
-//         payload.location = location;
-//       }
-
-//       await axios.post(
-//         role === "recruiter"
-//           ? "http://localhost:5000/api/auth/signup-recruiter"
-//           : "http://localhost:5000/api/auth/signup-jobseeker",
-//         payload
-//       );
-
-//       setSuccess("Signup successful 🎉");
-
-//       // reset
-//       setFullName("");
-//       setEmail("");
-//       setOtp("");
-//       setPassword("");
-//       setMobile("");
-//       setGender("");
-//       setQualification("");
-//       setStatus("");
-//       setLocation("");
-//       setDesignation("");
-//       setCompanyName("");
-//       setOtpSent(false);
-//       setOtpVerified(false);
-//     } catch (err) {
-//       setError(err.response?.data?.message || "Signup failed");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-//       <form
-//         onSubmit={handleSubmit}
-//         className="w-[380px] bg-white p-6 rounded-lg shadow"
-//       >
-//         <h3 className="text-center text-xl font-semibold mb-4">Signup</h3>
-
-//         {/* ROLE SWITCH */}
-//         <div className="flex gap-2 mb-4">
-//           <button
-//             type="button"
-//             onClick={() => setRole("jobseeker")}
-//             className={`flex-1 py-2 rounded ${
-//               role === "jobseeker"
-//                 ? "bg-blue-600 text-white"
-//                 : "bg-gray-200"
-//             }`}
-//           >
-//             Job Seeker
-//           </button>
-//           <button
-//             type="button"
-//             onClick={() => setRole("recruiter")}
-//             className={`flex-1 py-2 rounded ${
-//               role === "recruiter"
-//                 ? "bg-blue-600 text-white"
-//                 : "bg-gray-200"
-//             }`}
-//           >
-//             Recruiter
-//           </button>
-//         </div>
-
-//         {error && <p className="text-red-500 text-center mb-2">{error}</p>}
-//         {success && <p className="text-green-600 text-center mb-2">{success}</p>}
-
-//         <input
-//           className="w-full border p-2 rounded mb-2"
-//           placeholder="Full Name"
-//           value={fullName}
-//           disabled={otpVerified}
-//           onChange={(e) => setFullName(e.target.value)}
-//         />
-
-//         <div className="flex gap-2 mb-2">
-//           <input
-//             className="flex-1 border p-2 rounded"
-//             placeholder="Email"
-//             value={email}
-//             disabled={otpVerified}
-//             onChange={(e) => setEmail(e.target.value)}
-//           />
-//           <button
-//             type="button"
-//             onClick={handleSendOtp}
-//             disabled={otpVerified || loading}
-//             className="bg-blue-600 text-white px-3 rounded"
-//           >
-//             {otpSent ? "Resend OTP" : "Send OTP"}
-//           </button>
-//         </div>
-
-//         {otpSent && !otpVerified && (
-//           <div className="flex gap-2 mb-2">
-//             <input
-//               className="flex-1 border p-2 rounded"
-//               placeholder="Enter OTP"
-//               value={otp}
-//               onChange={(e) => setOtp(e.target.value)}
-//             />
-//             <button
-//               type="button"
-//               onClick={handleVerifyOtp}
-//               className="bg-blue-600 text-white px-3 rounded"
-//             >
-//               Verify
-//             </button>
-//           </div>
-//         )}
-
-//         <input
-//           className="w-full border p-2 rounded mb-2"
-//           type="password"
-//           placeholder="Password"
-//           disabled={!otpVerified}
-//           value={password}
-//           onChange={(e) => setPassword(e.target.value)}
-//         />
-
-//         <input
-//           className="w-full border p-2 rounded mb-2"
-//           placeholder="Mobile"
-//           disabled={!otpVerified}
-//           value={mobile}
-//           onChange={(e) => setMobile(e.target.value)}
-//         />
-
-//         {/* JOB SEEKER */}
-//         {role === "jobseeker" && (
-//           <>
-//             <select
-//               className="w-full border p-2 rounded mb-2"
-//               disabled={!otpVerified}
-//               value={gender}
-//               onChange={(e) => setGender(e.target.value)}
-//             >
-//               <option value="">Select Gender</option>
-//               <option>Male</option>
-//               <option>Female</option>
-//               <option>Other</option>
-//             </select>
-
-//             <input
-//               className="w-full border p-2 rounded mb-2"
-//               placeholder="Highest Qualification"
-//               disabled={!otpVerified}
-//               value={qualification}
-//               onChange={(e) => setQualification(e.target.value)}
-//             />
-
-//             <select
-//               className="w-full border p-2 rounded mb-2"
-//               disabled={!otpVerified}
-//               value={status}
-//               onChange={(e) => setStatus(e.target.value)}
-//             >
-//               <option value="">Current Status</option>
-//               <option>Student</option>
-//               <option>Fresher</option>
-//               <option>Experienced</option>
-//             </select>
-
-//             <input
-//               className="w-full border p-2 rounded mb-2"
-//               placeholder="Current Location"
-//               disabled={!otpVerified}
-//               value={location}
-//               onChange={(e) => setLocation(e.target.value)}
-//             />
-//           </>
-//         )}
-
-//         {/* RECRUITER */}
-//         {role === "recruiter" && (
-//           <>
-//             <input
-//               className="w-full border p-2 rounded mb-2"
-//               placeholder="Designation"
-//               disabled={!otpVerified}
-//               value={designation}
-//               onChange={(e) => setDesignation(e.target.value)}
-//             />
-//             <input
-//               className="w-full border p-2 rounded mb-2"
-//               placeholder="Company Name"
-//               disabled={!otpVerified}
-//               value={companyName}
-//               onChange={(e) => setCompanyName(e.target.value)}
-//             />
-//             <input
-//               className="w-full border p-2 rounded mb-2"
-//               placeholder="Company Location"
-//               disabled={!otpVerified}
-//               value={location}
-//               onChange={(e) => setLocation(e.target.value)}
-//             />
-//           </>
-//         )}
-
-//         <button
-//           disabled={!otpVerified || loading}
-//           className="w-full bg-gray-900 text-white py-2 rounded mt-2 disabled:opacity-50"
-//         >
-//           Signup
-//         </button>
-//       </form>
-//     </div>
-//   );
-// }
-
-// export default Signup;
-
 import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 function Signup() {
   /* =========================
@@ -2054,182 +180,313 @@ function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="w-[380px] bg-white p-6 rounded-lg shadow"
-      >
-        <h3 className="text-center text-xl font-semibold mb-4">Signup</h3>
+    <div className="min-h-screen relative bg-[#0a0f1c] flex items-center justify-center p-6 overflow-hidden">
+      
+      {/* DYNAMIC BACKGROUND ANIMATIONS (NAUKRI INSPIRED) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[5%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-blob"></div>
+        <div className="absolute top-[20%] -right-[10%] w-[35%] h-[35%] bg-indigo-600/20 rounded-full blur-[100px] animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-[10%] left-[20%] w-[30%] h-[30%] bg-blue-500/10 rounded-full blur-[80px] animate-blob animation-delay-4000"></div>
+        
+        {/* Animated Grid Overlay */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-150 contrast-150"></div>
+        <div className="absolute inset-0 bg-gradient-to-tr from-[#0a0f1c] via-[#0a0f1c]/90 to-blue-900/20"></div>
+      </div>
 
-        {/* ROLE SWITCH */}
-        <div className="flex gap-2 mb-4">
-          <button
-            type="button"
-            onClick={() => setRole("jobseeker")}
-            className={`flex-1 py-2 rounded ${
-              role === "jobseeker"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            Job Seeker
-          </button>
-          <button
-            type="button"
-            onClick={() => setRole("recruiter")}
-            className={`flex-1 py-2 rounded ${
-              role === "recruiter"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            Recruiter
-          </button>
-        </div>
-
-        {error && <p className="text-red-500 text-center mb-2">{error}</p>}
-        {success && <p className="text-green-600 text-center mb-2">{success}</p>}
-
-        <input
-          className="w-full border p-2 rounded mb-2"
-          placeholder="Full Name"
-          value={fullName}
-          disabled={otpVerified}
-          onChange={(e) => setFullName(e.target.value)}
-        />
-
-        <div className="flex gap-2 mb-2">
-          <input
-            className="flex-1 border p-2 rounded"
-            placeholder="Email"
-            value={email}
-            disabled={otpVerified}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button
-            type="button"
-            onClick={handleSendOtp}
-            disabled={otpVerified || loading}
-            className="bg-blue-600 text-white px-3 rounded"
-          >
-            {otpSent ? "Resend OTP" : "Send OTP"}
-          </button>
-        </div>
-
-        {otpSent && !otpVerified && (
-          <div className="flex gap-2 mb-2">
-            <input
-              className="flex-1 border p-2 rounded"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-            />
-            <button
-              type="button"
-              onClick={handleVerifyOtp}
-              className="bg-blue-600 text-white px-3 rounded"
-            >
-              Verify
-            </button>
+      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+        
+        {/* LEFT SIDE: NEXUS BRANDING */}
+        <div className="hidden lg:flex flex-col text-white space-y-8 animate-fadeIn">
+          <div>
+            <div className="flex items-center gap-3 mb-6 animate-float">
+                <div className="w-14 h-14 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20 border border-white/10">
+                    <span className="text-3xl font-black italic tracking-tighter">N</span>
+                </div>
+                <span className="text-4xl font-black tracking-tighter uppercase">Nexus</span>
+            </div>
+            <h1 className="text-5xl xl:text-7xl font-black leading-[1.1] tracking-tight mb-6">
+              Empowering <br />
+              <span className="bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">Careers.</span>
+            </h1>
+            <p className="text-slate-400 text-xl font-medium max-w-md leading-relaxed">
+              Join the ecosystem where talent meets vision. Let's build the future together.
+            </p>
           </div>
-        )}
 
-        <input
-          className="w-full border p-2 rounded mb-2"
-          type="password"
-          placeholder="Password"
-          disabled={!otpVerified}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <div className="grid grid-cols-2 gap-8 pt-4">
+            <div className="p-6 bg-white/5 rounded-[2rem] border border-white/5 backdrop-blur-md hover:bg-white/10 transition-all duration-300">
+                <div className="text-blue-400 text-3xl font-black mb-1">10k+</div>
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500">Active Jobs</div>
+            </div>
+            <div className="p-6 bg-white/5 rounded-[2rem] border border-white/5 backdrop-blur-md hover:bg-white/10 transition-all duration-300">
+                <div className="text-indigo-400 text-3xl font-black mb-1">2k+</div>
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500">Top Recruiters</div>
+            </div>
+          </div>
+        </div>
 
-        <input
-          className="w-full border p-2 rounded mb-2"
-          placeholder="Mobile"
-          disabled={!otpVerified}
-          value={mobile}
-          onChange={(e) => setMobile(e.target.value)}
-        />
+        {/* RIGHT SIDE: PREMIUM FORM CARD */}
+        <div className="flex justify-center lg:justify-end animate-fadeIn">
+          <div className="w-full max-w-lg bg-white rounded-[3rem] shadow-[0_32px_120px_-15px_rgba(0,0,0,0.5)] p-10 relative overflow-hidden group">
+            
+            <div className="mb-10">
+                <div className="flex items-center justify-between mb-2">
+                    <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Join Nexus</h2>
+                    <span className="text-[10px] font-black uppercase border border-slate-100 px-3 py-1 rounded-full text-slate-400 tracking-widest bg-slate-50">Secure Portal</span>
+                </div>
+                <p className="text-slate-400 font-bold text-sm uppercase tracking-tight">Create your official {role} profile</p>
+            </div>
 
-        {/* JOB SEEKER */}
-        {role === "jobseeker" && (
-          <>
-            <select
-              className="w-full border p-2 rounded mb-2"
-              disabled={!otpVerified}
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
-            >
-              <option value="">Select Gender</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
-            </select>
+            {/* ROLE SWITCH */}
+            <div className="bg-slate-50 p-1.5 rounded-3xl flex gap-1.5 mb-8 border border-slate-100">
+              <button
+                type="button"
+                onClick={() => setRole("jobseeker")}
+                className={`flex-1 py-3.5 px-4 rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${role === "jobseeker"
+                    ? "bg-white text-blue-600 shadow-xl shadow-blue-900/5 border border-slate-100"
+                    : "text-slate-400 hover:text-slate-600"
+                  }`}
+              >
+                Job Seeker
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole("recruiter")}
+                className={`flex-1 py-3.5 px-4 rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${role === "recruiter"
+                    ? "bg-white text-indigo-600 shadow-xl shadow-indigo-900/5 border border-slate-100"
+                    : "text-slate-400 hover:text-slate-600"
+                  }`}
+              >
+                Recruiter
+              </button>
+            </div>
 
-            <input
-              className="w-full border p-2 rounded mb-2"
-              placeholder="Highest Qualification"
-              disabled={!otpVerified}
-              value={qualification}
-              onChange={(e) => setQualification(e.target.value)}
-            />
+            <form onSubmit={handleSubmit} className="space-y-6 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+              
+              {/* SECTION: PERSONAL INFO */}
+              <div className="space-y-5">
+                <div className="relative group/field">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-2 block transition-colors group-focus-within/field:text-blue-500">Full Name</label>
+                  <input
+                    className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all text-slate-800 font-bold placeholder:text-slate-300 disabled:bg-slate-50/50 disabled:text-slate-400"
+                    placeholder="Enter your full name"
+                    value={fullName}
+                    disabled={otpVerified || loading}
+                    onChange={(e) => setFullName(e.target.value)}
+                    required
+                  />
+                </div>
 
-            <select
-              className="w-full border p-2 rounded mb-2"
-              disabled={!otpVerified}
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <option value="">Current Status</option>
-              <option>Student</option>
-              <option>Fresher</option>
-              <option>Experienced</option>
-            </select>
+                <div className="relative group/field">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-2 block transition-colors group-focus-within/field:text-blue-500">Email Address</label>
+                  <div className="flex gap-3">
+                    <input
+                      className="flex-1 bg-slate-50 border border-slate-100 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all text-slate-800 font-bold placeholder:text-slate-300 disabled:bg-slate-50/50"
+                      placeholder="name@nexus.com"
+                      type="email"
+                      value={email}
+                      disabled={otpVerified || loading}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSendOtp}
+                      disabled={otpVerified || loading}
+                      className="bg-slate-900 hover:bg-black text-white px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-slate-200 disabled:opacity-50 active:scale-95 whitespace-nowrap"
+                    >
+                      {loading ? "..." : otpSent ? "Resend" : "Send OTP"}
+                    </button>
+                  </div>
+                </div>
 
-            <input
-              className="w-full border p-2 rounded mb-2"
-              placeholder="Current Location"
-              disabled={!otpVerified}
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-          </>
-        )}
+                {otpSent && !otpVerified && (
+                  <div className="bg-blue-50/50 p-6 rounded-[2rem] border border-blue-100/50 space-y-4 animate-fadeIn">
+                    <label className="block text-[10px] font-black text-blue-600 uppercase tracking-widest text-center">Verify Email</label>
+                    <div className="flex gap-3">
+                      <input
+                        className="flex-1 bg-white border border-blue-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/20 transition-all text-center tracking-[0.5em] font-black text-lg text-blue-700"
+                        placeholder="······"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleVerifyOtp}
+                        disabled={loading}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-200 transition-all active:scale-95"
+                      >
+                        {loading ? "..." : "Verify"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-        {/* RECRUITER */}
-        {role === "recruiter" && (
-          <>
-            <input
-              className="w-full border p-2 rounded mb-2"
-              placeholder="Designation"
-              disabled={!otpVerified}
-              value={designation}
-              onChange={(e) => setDesignation(e.target.value)}
-            />
-            <input
-              className="w-full border p-2 rounded mb-2"
-              placeholder="Company Name"
-              disabled={!otpVerified}
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-            />
-            <input
-              className="w-full border p-2 rounded mb-2"
-              placeholder="Company Location"
-              disabled={!otpVerified}
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-          </>
-        )}
+              {/* SECTION: ACCOUNT SECURITY */}
+              {otpVerified && (
+                <div className="space-y-6 pt-4 animate-fadeIn">
+                  <div className="h-px bg-slate-100 w-full mb-8"></div>
 
-        <button
-          disabled={!otpVerified || loading}
-          className="w-full bg-gray-900 text-white py-2 rounded mt-2 disabled:opacity-50"
-        >
-          Signup
-        </button>
-      </form>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div className="group/field">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-2 block group-focus-within/field:text-blue-500">Password</label>
+                      <input
+                        className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all text-slate-800 font-bold placeholder:text-slate-300"
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="group/field">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-2 block group-focus-within/field:text-blue-500">Phone</label>
+                      <input
+                        className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all text-slate-800 font-bold placeholder:text-slate-300"
+                        placeholder="+91"
+                        value={mobile}
+                        onChange={(e) => setMobile(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* ROLE SPECIFIC FIELDS */}
+                  {role === "jobseeker" ? (
+                    <div className="space-y-5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div className="group/field">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-2 block group-focus-within/field:text-blue-500">Gender</label>
+                          <select
+                            className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 cursor-pointer text-slate-800 font-bold appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2394A3B8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:20px] bg-[right_1.25rem_center] bg-no-repeat"
+                            value={gender}
+                            onChange={(e) => setGender(e.target.value)}
+                            required
+                          >
+                            <option value="">Select</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                          </select>
+                        </div>
+                        <div className="group/field">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-2 block group-focus-within/field:text-blue-500">Status</label>
+                          <select
+                            className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 cursor-pointer text-slate-800 font-bold appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207.5L10%2012.5L15%207.5%22%20stroke%3D%22%2394A3B8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:20px] bg-[right_1.25rem_center] bg-no-repeat"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                            required
+                          >
+                            <option value="">Select</option>
+                            <option>Student</option>
+                            <option>Fresher</option>
+                            <option>Experienced</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="group/field">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-2 block group-focus-within/field:text-blue-500">Highest Qualification</label>
+                        <input
+                          className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all text-slate-800 font-bold placeholder:text-slate-300"
+                          placeholder="e.g. Master of Business Administration"
+                          value={qualification}
+                          onChange={(e) => setQualification(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="group/field">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-2 block group-focus-within/field:text-blue-500">Location</label>
+                        <input
+                          className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all text-slate-800 font-bold placeholder:text-slate-300"
+                          placeholder="Current City"
+                          value={location}
+                          onChange={(e) => setLocation(e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-5">
+                      <div className="group/field">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-2 block group-focus-within/field:text-indigo-500">Designation</label>
+                        <input
+                          className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white transition-all text-slate-800 font-bold placeholder:text-slate-300"
+                          placeholder="e.g. Talent Acquisition Lead"
+                          value={designation}
+                          onChange={(e) => setDesignation(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div className="group/field">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-2 block group-focus-within/field:text-indigo-500">Company</label>
+                          <input
+                            className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white transition-all text-slate-800 font-bold placeholder:text-slate-300"
+                            placeholder="Company Name"
+                            value={companyName}
+                            onChange={(e) => setCompanyName(e.target.value)}
+                            required
+                          />
+                        </div>
+                        <div className="group/field">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 mb-2 block group-focus-within/field:text-indigo-500">HQ Location</label>
+                          <input
+                            className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:bg-white transition-all text-slate-800 font-bold placeholder:text-slate-300"
+                            placeholder="City, Country"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <button
+                    disabled={!otpVerified || loading}
+                    className={`w-full py-5 rounded-[1.5rem] font-black text-[12px] uppercase tracking-[0.2em] shadow-2xl transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mt-6 flex items-center justify-center gap-3 ${role === 'jobseeker' ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-900/10' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-900/10'}`}
+                  >
+                    {loading ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Wait...
+                      </>
+                    ) : (
+                      "Establish Profile"
+                    )}
+                  </button>
+                </div>
+              )}
+            </form>
+
+            <div className="mt-10 pt-8 border-t border-slate-50 text-center">
+              <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest">
+                Already have an account?{" "}
+                <Link to="/login" className="text-blue-600 hover:text-blue-700 ml-2 border-b-2 border-blue-500/20 hover:border-blue-500 transition-all pb-0.5">
+                  Sign In
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <style dangerouslySetInnerHTML={{ __html: `
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #cbd5e1;
+        }
+    `}} />
     </div>
   );
 }

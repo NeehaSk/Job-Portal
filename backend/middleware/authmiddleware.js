@@ -1,38 +1,98 @@
+
 import jwt from "jsonwebtoken";
 
+/* =====================================================
+   AUTH MIDDLEWARE (VERIFY TOKEN)
+===================================================== */
 const authMiddleware = (req, res, next) => {
   try {
-    // 1️ Get token from Authorization header
     const authHeader = req.headers.authorization;
 
-    if (!authHeader) {
+    // Check if header exists
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
-        message: "No token provided",
+        message: "Authorization token missing or invalid format",
       });
     }
 
-    // 2️ Format: "Bearer token"
+    // Extract token
     const token = authHeader.split(" ")[1];
 
     if (!token) {
       return res.status(401).json({
-        message: "Invalid token format",
+        message: "Token not provided",
       });
     }
 
-    // 3️ Verify token
+    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // 4️ Attach user data to request
+    // Attach user data
     req.user = decoded;
 
-    // 5️ Continue
     next();
+
   } catch (error) {
+    console.error("Auth Middleware Error:", error.message);
+
     return res.status(401).json({
       message: "Invalid or expired token",
     });
   }
 };
+
+/* =====================================================
+   RECRUITER ONLY MIDDLEWARE
+===================================================== */
+export const recruiterOnly = (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        message: "Not authenticated",
+      });
+    }
+
+    if (req.user.role !== "recruiter") {
+      return res.status(403).json({
+        message: "Access denied. Recruiters only.",
+      });
+    }
+
+    next();
+
+  } catch (error) {
+    console.error("Recruiter Role Check Error:", error.message);
+    return res.status(500).json({
+      message: "Role validation failed",
+    });
+  }
+};
+
+/* =====================================================
+   JOB SEEKER ONLY MIDDLEWARE
+===================================================== */
+export const jobSeekerOnly = (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        message: "Not authenticated",
+      });
+    }
+
+    if (req.user.role !== "jobseeker") {
+      return res.status(403).json({
+        message: "Access denied. Job seekers only.",
+      });
+    }
+
+    next();
+
+  } catch (error) {
+    console.error("JobSeeker Role Check Error:", error.message);
+    return res.status(500).json({
+      message: "Role validation failed",
+    });
+  }
+};
+
 export default authMiddleware;
- 

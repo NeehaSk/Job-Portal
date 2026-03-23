@@ -1,443 +1,873 @@
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-
-// const JobSeekerProfile = () => {
-//   const token = localStorage.getItem("token");
-
-//   const [loading, setLoading] = useState(false);
-//   const [profile, setProfile] = useState({
-//     headline: "",
-//     skills: "",
-//     highestQualification: "",
-//     collegeName: "",
-//     university: "",
-//     graduationYear: "",
-//     experience: 0,
-//     currentCompany: "",
-//     designation: "",
-//     industry: "",
-//     expectedSalary: "",
-//     certifications: "",
-//     github: "",
-//     linkedin: "",
-//   });
-
-//   const fetchProfile = async () => {
-//     try {
-//       const res = await axios.get(
-//         "http://localhost:5000/api/jobseeker/profile",
-//         {
-//           headers: { Authorization: `Bearer ${token}` },
-//         }
-//       );
-
-//       const user = res.data;
-
-//       setProfile({
-//         headline: user?.profile?.headline || "",
-//         skills: user?.profile?.skills?.join(", ") || "",
-//         highestQualification:
-//           user?.profile?.education?.highestQualification || "",
-//         collegeName: user?.profile?.education?.collegeName || "",
-//         university: user?.profile?.education?.university || "",
-//         graduationYear:
-//           user?.profile?.education?.graduationYear || "",
-//         experience: user?.profile?.experience || 0,
-//         currentCompany: user?.profile?.currentCompany || "",
-//         designation: user?.profile?.designation || "",
-//         industry: user?.profile?.industry || "",
-//         expectedSalary: user?.profile?.expectedSalary || "",
-//         certifications:
-//           user?.profile?.certifications?.join(", ") || "",
-//         github: user?.profile?.socialLinks?.github || "",
-//         linkedin: user?.profile?.socialLinks?.linkedin || "",
-//       });
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (token) fetchProfile();
-//   }, []);
-
-//   const handleChange = (e) => {
-//     setProfile({ ...profile, [e.target.name]: e.target.value });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setLoading(true);
-
-//     try {
-//       await axios.put(
-//         "http://localhost:5000/api/jobseeker/update-profile",
-//         {
-//           ...profile,
-//           skills: profile.skills.split(",").map((s) => s.trim()),
-//           certifications: profile.certifications
-//             .split(",")
-//             .map((c) => c.trim()),
-//         },
-//         {
-//           headers: { Authorization: `Bearer ${token}` },
-//         }
-//       );
-
-//       alert("Profile updated successfully");
-//     } catch (error) {
-//       alert("Update failed");
-//     }
-
-//     setLoading(false);
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-10 px-6">
-//       <div className="max-w-5xl mx-auto bg-white shadow-2xl rounded-2xl p-10">
-
-//         <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-//           Job Seeker Profile
-//         </h2>
-
-//         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-//           <Input label="Headline" name="headline" value={profile.headline} onChange={handleChange} />
-//           <Input label="Skills (comma separated)" name="skills" value={profile.skills} onChange={handleChange} />
-//           <Input label="Highest Qualification" name="highestQualification" value={profile.highestQualification} onChange={handleChange} />
-//           <Input label="College Name" name="collegeName" value={profile.collegeName} onChange={handleChange} />
-//           <Input label="University" name="university" value={profile.university} onChange={handleChange} />
-//           <Input type="number" label="Graduation Year" name="graduationYear" value={profile.graduationYear} onChange={handleChange} />
-//           <Input type="number" label="Experience (Years)" name="experience" value={profile.experience} onChange={handleChange} />
-//           <Input label="Current Company" name="currentCompany" value={profile.currentCompany} onChange={handleChange} />
-//           <Input label="Designation" name="designation" value={profile.designation} onChange={handleChange} />
-//           <Input label="Industry" name="industry" value={profile.industry} onChange={handleChange} />
-//           <Input type="number" label="Expected Salary" name="expectedSalary" value={profile.expectedSalary} onChange={handleChange} />
-//           <Input label="Certifications (comma separated)" name="certifications" value={profile.certifications} onChange={handleChange} />
-//           <Input label="GitHub URL" name="github" value={profile.github} onChange={handleChange} />
-//           <Input label="LinkedIn URL" name="linkedin" value={profile.linkedin} onChange={handleChange} />
-
-//           <div className="md:col-span-2">
-//             <button
-//               type="submit"
-//               disabled={loading}
-//               className="w-full py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300"
-//             >
-//               {loading ? "Updating..." : "Update Profile"}
-//             </button>
-//           </div>
-
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// const Input = ({ label, ...props }) => (
-//   <div>
-//     <label className="block text-sm font-medium text-gray-600 mb-1">
-//       {label}
-//     </label>
-//     <input
-//       {...props}
-//       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none transition"
-//     />
-//   </div>
-// );
-
-// export default JobSeekerProfile;
-
-
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useCallback, useRef, useContext } from "react";
+import api from "../api/apiCheck";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { ProfileCard, QuickLinksSidebar, SkillTag, InfoRow } from "../components/ProfileComponents";
+import ImageCropModal from "../components/ImageCropModal";
+import { getCroppedImg } from "../utils/imageCrop";
+import SearchableSelect from "../components/SearchableSelect";
+import { AuthContext } from "../context/AuthContext";
 
 const JobSeekerProfile = () => {
-  // ✅ FIXED TOKEN KEY
-  const token = localStorage.getItem("accessToken");
-
+  const navigate = useNavigate();
+  const { refreshUser } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
+  const [activeSection, setActiveSection] = useState("resume-headline");
+  const [isEditing, setIsEditing] = useState(null); // ID of section being edited
   const [saving, setSaving] = useState(false);
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  const [uploadingResume, setUploadingResume] = useState(false);
-
-  const [profilePhoto, setProfilePhoto] = useState(null);
-  const [resumeFile, setResumeFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState(null);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const fileInputRef = useRef(null);
+  const [imgError, setImgError] = useState(false);
 
   const [profile, setProfile] = useState({
+    fullName: "",
+    email: "",
+    mobile: "",
+    altMobile: "",
+    gender: "",
+    dob: "",
+    address: "",
+    hometown: "",
+    pincode: "",
+    state: "",
+    languagesKnown: "",
     headline: "",
     skills: "",
     highestQualification: "",
     collegeName: "",
     university: "",
+    course: "",
+    stream: "",
+    startingYear: "",
     graduationYear: "",
-    experience: "",
+    courseType: "",
+    gradingSystem: "",
+    grade: "",
+    experience: "0",
     currentCompany: "",
     designation: "",
     industry: "",
+    location: "India",
     expectedSalary: "",
     certifications: "",
     github: "",
     linkedin: "",
+    profilePhotoId: "",
+    resumeId: "",
+    employmentStatus: "Fresher",
   });
 
-  /* ================= FETCH PROFILE ================= */
+  // Reset imgError when photoId changes
   useEffect(() => {
-    if (!token) {
-      toast.error("Please login first");
+    setImgError(false);
+  }, [profile.profilePhotoId]);
+
+  const fetchProfile = useCallback(async () => {
+    try {
+      const { data } = await api.get("/jobseeker/profile");
+      setProfile({
+        fullName: data?.fullName || "",
+        email: data?.email || "",
+        mobile: data?.mobile || "",
+        altMobile: data?.altMobile || "",
+        gender: data?.profile?.gender || "",
+        dob: data?.profile?.dob ? new Date(data?.profile?.dob).toISOString().split('T')[0] : "",
+        address: data?.profile?.address || "",
+        hometown: data?.profile?.hometown || "",
+        pincode: data?.profile?.pincode || "",
+        state: data?.profile?.state || "",
+        languagesKnown: data?.profile?.languagesKnown?.join(", ") || "",
+        headline: data?.profile?.headline || "",
+        skills: data?.profile?.skills?.join(", ") || "",
+        highestQualification: data?.profile?.education?.highestQualification || "",
+        collegeName: data?.profile?.education?.collegeName || "",
+        university: data?.profile?.education?.university || "",
+        course: data?.profile?.education?.course || "",
+        stream: data?.profile?.education?.stream || "",
+        startingYear: data?.profile?.education?.startingYear || "",
+        graduationYear: data?.profile?.education?.graduationYear || "",
+        courseType: data?.profile?.education?.courseType || "",
+        gradingSystem: data?.profile?.education?.gradingSystem || "",
+        grade: data?.profile?.education?.grade || "",
+        experience: data?.profile?.experience || "0",
+        currentCompany: data?.profile?.currentCompany || "",
+        designation: data?.profile?.designation || "",
+        industry: data?.profile?.industry || "",
+        location: data?.location || "India",
+        expectedSalary: data?.profile?.expectedSalary || "",
+        certifications: data?.profile?.certifications?.join(", ") || "",
+        github: data?.profile?.socialLinks?.github || "",
+        linkedin: data?.profile?.socialLinks?.linkedin || "",
+        profilePhotoId: data?.profile?.profilePhotoId || "",
+        resumeId: data?.profile?.resumeId || "",
+        employmentStatus: data?.profile?.employmentStatus || "Fresher",
+      });
+    } catch (err) {
+      toast.error("Error loading profile");
+    } finally {
       setLoading(false);
-      return;
     }
+  }, []);
 
-    const fetchProfile = async () => {
-      try {
-        const res = await axios.get(
-          "http://localhost:5000/api/jobseeker/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+  useEffect(() => { fetchProfile(); }, [fetchProfile]);
+
+  // Scroll Sync for Sidebar
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ["resume-headline", "key-skills", "employment", "education", "personal-details"];
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top >= 0 && rect.top <= 200) {
+            setActiveSection(section);
+            break;
           }
-        );
-
-        const user = res.data;
-
-        setProfile({
-          headline: user?.profile?.headline || "",
-          skills: user?.profile?.skills?.join(", ") || "",
-          highestQualification:
-            user?.profile?.education?.highestQualification || "",
-          collegeName: user?.profile?.education?.collegeName || "",
-          university: user?.profile?.education?.university || "",
-          graduationYear:
-            user?.profile?.education?.graduationYear || "",
-          experience: user?.profile?.experience || "",
-          currentCompany: user?.profile?.currentCompany || "",
-          designation: user?.profile?.designation || "",
-          industry: user?.profile?.industry || "",
-          expectedSalary: user?.profile?.expectedSalary || "",
-          certifications:
-            user?.profile?.certifications?.join(", ") || "",
-          github: user?.profile?.socialLinks?.github || "",
-          linkedin: user?.profile?.socialLinks?.linkedin || "",
-        });
-
-      } catch (error) {
-        toast.error("Session expired. Please login again.");
-      } finally {
-        setLoading(false);
+        }
       }
     };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-    fetchProfile();
-  }, [token]);
-
-  const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
-  };
-
-  /* ================= UPDATE PROFILE ================= */
-  const handleSubmit = async (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     setSaving(true);
-
     try {
-      await axios.put(
-        "http://localhost:5000/api/jobseeker/update-profile",
-        {
-          ...profile,
-          skills: profile.skills
-            ? profile.skills.split(",").map((s) => s.trim())
-            : [],
-          certifications: profile.certifications
-            ? profile.certifications.split(",").map((c) => c.trim())
-            : [],
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      toast.success("Profile updated successfully ✅");
-    } catch (error) {
-      toast.error("Update failed ❌");
+      const payload = {
+        ...profile,
+        experience: profile.employmentStatus === "Experienced" ? Number(profile.experience || 0) : 0,
+        currentCompany: profile.employmentStatus === "Experienced" ? profile.currentCompany : "",
+        designation: profile.employmentStatus === "Experienced" ? profile.designation : "",
+        skills: profile.skills ? profile.skills.split(",").map((s) => s.trim()).filter(Boolean) : [],
+        certifications: profile.certifications ? profile.certifications.split(",").map((c) => c.trim()).filter(Boolean) : [],
+        languagesKnown: profile.languagesKnown ? profile.languagesKnown.split(",").map((l) => l.trim()).filter(Boolean) : [],
+      };
+      await api.put("/jobseeker/update-profile", payload);
+      toast.success("Profile updated successfully!");
+      setIsEditing(null);
+      fetchProfile();
+      refreshUser(); // Sync navbar data
+    } catch (err) {
+      toast.error("Failed to update profile");
+    } finally {
+      setSaving(false);
     }
-
-    setSaving(false);
   };
 
-  /* ================= UPLOAD PROFILE PHOTO ================= */
-  const handlePhotoUpload = async () => {
-    if (!profilePhoto) {
-      toast.error("Select a photo first");
-      return;
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      return toast.error("Please upload an image file");
     }
 
-    const formData = new FormData();
-    formData.append("file", profilePhoto);
-
-    setUploadingPhoto(true);
-
-    try {
-      await axios.put(
-        "http://localhost:5000/api/jobseeker/upload-profile-pic",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      toast.success("Profile photo uploaded ✅");
-      setProfilePhoto(null);
-    } catch (error) {
-      toast.error("Photo upload failed ❌");
-    }
-
-    setUploadingPhoto(false);
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      setImageToCrop(reader.result);
+      setShowCropModal(true);
+    });
+    reader.readAsDataURL(file);
   };
 
-  /* ================= UPLOAD RESUME ================= */
-  const handleResumeUpload = async () => {
-    if (!resumeFile) {
-      toast.error("Select a resume first");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", resumeFile);
-
-    setUploadingResume(true);
-
+  const onCropComplete = async (croppedAreaPixels) => {
+    setShowCropModal(false);
+    setUploading(true);
     try {
-      await axios.put(
-        "http://localhost:5000/api/jobseeker/upload-resume",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const croppedImage = await getCroppedImg(imageToCrop, croppedAreaPixels);
+      const formData = new FormData();
+      formData.append("file", croppedImage, "profile.jpg");
 
-      toast.success("Resume uploaded ✅");
-      setResumeFile(null);
-    } catch (error) {
-      toast.error("Resume upload failed ❌");
+      await api.put("/jobseeker/upload-profile-pic", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success("Profile photo updated!");
+      fetchProfile();
+      refreshUser(); // Update navbar avatar immediately
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Upload failed");
+    } finally {
+      setUploading(false);
     }
-
-    setUploadingResume(false);
   };
 
-  if (loading)
-    return (
-      <div className="h-screen flex items-center justify-center text-gray-600">
-        Loading profile...
-      </div>
-    );
+  const educationMappings = {
+    "Graduation/Diploma": {
+      degrees: ["B.Tech / B.E", "B.Sc", "B.Com", "BBA", "BA", "BCA", "B.Arch", "B.Pharm", "MBBS", "LLB", "B.Ed", "B.Des", "BHM", "BPT", "BDS", "Other"],
+      streams: {
+        "B.Tech / B.E": ["Computer Science Engineering (CSE)", "Information Technology (IT)", "Electronics and Communication (ECE)", "Electrical Engineering (EEE)", "Mechanical", "Civil", "Chemical", "Aerospace", "Automobile", "Biomedical", "Mechatronics", "Robotics", "AI", "Data Science", "Cyber Security"],
+        "B.Sc": ["Mathematics", "Physics", "Chemistry", "Statistics", "Computer Science", "Biotechnology", "Microbiology", "Agriculture", "Nursing", "Environmental Science"],
+        "B.Com": ["General", "Accounting & Finance", "Banking & Insurance", "Taxation", "Computer Applications"],
+        "BBA": ["General", "Finance", "Marketing", "Human Resources", "International Business", "Business Analytics"],
+        "BA": ["English", "History", "Political Science", "Economics", "Sociology", "Psychology", "Philosophy", "Geography"],
+        "BCA": ["General", "Cloud Computing", "AI", "Data Science", "Cyber Security"],
+        "B.Arch": ["Architecture"],
+        "B.Pharm": ["Pharmacy"],
+        "MBBS": ["Medicine"],
+        "LLB": ["Law"],
+        "B.Ed": ["Education"],
+        "B.Des": ["Fashion Design", "Interior Design", "Graphic Design"],
+        "BHM": ["Hotel Management", "Culinary Arts"],
+        "BPT": ["Physiotherapy"],
+        "BDS": ["Dentistry"]
+      }
+    },
+    "Masters/Post-Graduation": {
+      degrees: ["M.Tech / M.E", "M.Sc", "MBA", "M.Com", "MA", "MCA", "LLM", "M.Pharm", "M.Ed", "M.Des", "MS", "Other"],
+      streams: {
+        "M.Tech / M.E": ["Computer Science", "Data Science", "AI", "Cyber Security", "Software Engineering", "Electronics", "Electrical", "Mechanical", "Civil", "Robotics", "VLSI Design", "Embedded Systems"],
+        "M.Sc": ["Mathematics", "Physics", "Chemistry", "Computer Science", "Data Science", "Biotechnology"],
+        "MBA": ["Marketing", "Finance", "Human Resources", "Operations", "Information Technology", "International Business"],
+        "M.Com": ["Accounting", "Finance", "Business Administration"],
+        "MA": ["English", "Economics", "History", "Political Science", "Psychology"],
+        "MCA": ["General", "Software Engineering", "AI", "Cloud Computing"],
+        "LLM": ["Corporate Law", "Criminal Law", "International Law"],
+        "M.Pharm": ["Pharmaceutics", "Pharmacology", "Pharmaceutical Chemistry"],
+        "MS": ["Computer Science", "Data Science", "Information Systems"]
+      }
+    },
+    "12th (Intermediate)": {
+      degrees: ["Intermediate", "Diploma"],
+      streams: {
+        "Intermediate": ["MPC (Maths, Physics, Chemistry)", "BiPC (Biology, Physics, Chemistry)", "CEC (Civics, Economics, Commerce)", "MEC", "HEC", "Other"],
+        "Diploma": ["Civil Engineering", "Mechanical Engineering", "Electrical Engineering", "Computer Science", "Electronics"]
+      }
+    },
+    "10th": {
+      degrees: ["10th"],
+      streams: {
+        "10th": ["General", "SSC", "CBSE", "ICSE", "State Board", "Other"],
+      }
+    },
+    "Doctorate/PhD": {
+      degrees: ["Ph.D", "M.Phil", "Other"],
+      streams: {} // Free text for niche specializations
+    }
+  };
+
+  const getAvailableDegrees = () => {
+    return educationMappings[profile.highestQualification]?.degrees || [];
+  };
+
+  const getAvailableStreams = () => {
+    const defaultMapping = educationMappings[profile.highestQualification];
+    if (!defaultMapping) return [];
+    
+    // Check if the specific degree has predefined streams
+    if (defaultMapping.streams && defaultMapping.streams[profile.course]) {
+       return defaultMapping.streams[profile.course];
+    }
+    
+    // Fallback logic for Intermediate and 10th which have generic streams based on qualification not degree sometimes
+    if (profile.highestQualification === "12th (Intermediate)" || profile.highestQualification === "10th") {
+       return defaultMapping.streams[profile.highestQualification === "10th" ? "10th" : "Intermediate"] || [];
+    }
+
+    return [];
+  };
+
+  const availableDegrees = getAvailableDegrees();
+  const availableStreams = getAvailableStreams();
+
+  const handleResumeUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Suggest restricting by type, e.g., PDF
+    if (file.type !== "application/pdf") {
+      return toast.error("Please upload a PDF file");
+    }
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      await api.put("/jobseeker/upload-resume", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success("Resume uploaded successfully!");
+      fetchProfile();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Resume upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const menuLinks = [
+    { id: "resume-headline", label: "Resume & Headline", secondaryAction: "Upload/Edit" },
+    { id: "key-skills", label: "Key skills", secondaryAction: "Add" },
+    { id: "employment", label: "Employment", secondaryAction: "Add" },
+    { id: "education", label: "Education", secondaryAction: "Add" },
+    { id: "personal-details", label: "Personal details", secondaryAction: "Add" },
+  ];
+
+  if (loading) return <div className="h-screen flex items-center justify-center font-black text-blue-600 animate-pulse uppercase tracking-[0.3em]">Syncing Profile...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-6">
-      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-10">
+    <div className="min-h-screen bg-[#fafbfc] pb-24 font-sans selection:bg-blue-100 selection:text-blue-900">
 
-        <h2 className="text-3xl font-bold text-gray-800 mb-10 text-center">
-          Job Seeker Profile
-        </h2>
+      {showCropModal && (
+        <ImageCropModal
+          image={imageToCrop}
+          onCropComplete={onCropComplete}
+          onCancel={() => setShowCropModal(false)}
+        />
+      )}
 
-        {/* PHOTO + RESUME SECTION */}
-        <div className="grid md:grid-cols-2 gap-8 mb-10">
+      {/* CLEAN PROFESSIONAL HEADER */}
+      <div className="bg-white border-b border-slate-100 pt-16 pb-20 mt-1">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center gap-12">
 
-          <div>
-            <h3 className="font-semibold mb-2">Profile Photo</h3>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setProfilePhoto(e.target.files[0])}
-              className="mb-2"
-            />
-            <button
-              type="button"
-              onClick={handlePhotoUpload}
-              disabled={uploadingPhoto}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
-            >
-              {uploadingPhoto ? "Uploading..." : "Upload Photo"}
-            </button>
+            {/* Circular Profile Pic Design */}
+            <div className="relative group">
+              <div className="w-40 h-40 bg-white rounded-full p-1.5 shadow-xl border border-slate-100">
+                <div
+                  onClick={() => fileInputRef.current.click()}
+                  className="w-full h-full rounded-full overflow-hidden bg-slate-50 cursor-pointer relative group/img"
+                >
+                  {(profile.profilePhotoId && !imgError) ? (
+                    <img
+                      src={`http://localhost:5000/api/files/${profile.profilePhotoId}?t=${Date.now()}`}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110"
+                      alt="Profile"
+                      onError={() => setImgError(true)}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-6xl opacity-10">👤</div>
+                  )}
+
+                  <div className="absolute inset-0 bg-blue-600/60 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-all duration-300 backdrop-blur-sm">
+                    <div className="flex flex-col items-center transform translate-y-4 group-hover/img:translate-y-0 transition-transform duration-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span className="text-white text-[9px] font-black uppercase tracking-[0.2em]">Update Photo</span>
+                    </div>
+                  </div>
+
+                  {uploading && (
+                    <div className="absolute inset-0 bg-white/90 flex items-center justify-center backdrop-blur-sm">
+                      <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="absolute -bottom-1 -right-1 bg-orange-400 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-lg ring-4 ring-white">
+                60%
+              </div>
+            </div>
+
+            <div className="flex-1 text-center md:text-left space-y-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                  Open to Work
+                </div>
+                <h1 className="text-4xl font-black text-slate-800 tracking-tight leading-none">
+                  {profile.fullName}
+                </h1>
+                <p className="text-lg font-bold text-slate-400 max-w-2xl leading-relaxed">
+                  Looking for opportunities in <span className="text-blue-600">{profile.location || "High-growth tech"}</span>
+                </p>
+              </div>
+
+              <div className="flex flex-wrap justify-center md:justify-start gap-8 pt-2">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-slate-200 uppercase tracking-widest mb-1">Email</span>
+                  <span className="text-sm font-bold text-slate-600 flex items-center gap-1.5 text-blue-600 underline decoration-blue-100 underline-offset-4">
+                    {profile.email}
+                  </span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-slate-200 uppercase tracking-widest mb-1">Contact</span>
+                  <span className="text-sm font-bold text-slate-600 flex items-center gap-1.5">
+                    {profile.mobile || "Add mobile"}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <div>
-            <h3 className="font-semibold mb-2">Resume</h3>
-            <input
-              type="file"
-              accept=".pdf,.doc,.docx"
-              onChange={(e) => setResumeFile(e.target.files[0])}
-              className="mb-2"
-            />
-            <button
-              type="button"
-              onClick={handleResumeUpload}
-              disabled={uploadingResume}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
-            >
-              {uploadingResume ? "Uploading..." : "Upload Resume"}
-            </button>
-          </div>
-
         </div>
+      </div>
 
-        {/* PROFILE FORM */}
-        <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
+      <div className="max-w-7xl mx-auto px-6 mt-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
-          <Input label="Headline" name="headline" value={profile.headline} onChange={handleChange} />
-          <Input label="Skills (comma separated)" name="skills" value={profile.skills} onChange={handleChange} />
+          <input type="file" ref={fileInputRef} onChange={handlePhotoUpload} className="hidden" accept="image/*" />
 
-          <Input label="Highest Qualification" name="highestQualification" value={profile.highestQualification} onChange={handleChange} />
-          <Input label="College Name" name="collegeName" value={profile.collegeName} onChange={handleChange} />
-
-          <Input label="University" name="university" value={profile.university} onChange={handleChange} />
-          <Input type="number" label="Graduation Year" name="graduationYear" value={profile.graduationYear} onChange={handleChange} />
-
-          <Input type="number" label="Experience (Years)" name="experience" value={profile.experience} onChange={handleChange} />
-          <Input label="Current Company" name="currentCompany" value={profile.currentCompany} onChange={handleChange} />
-
-          <Input label="Designation" name="designation" value={profile.designation} onChange={handleChange} />
-          <Input label="Industry" name="industry" value={profile.industry} onChange={handleChange} />
-
-          <Input type="number" label="Expected Salary" name="expectedSalary" value={profile.expectedSalary} onChange={handleChange} />
-          <Input label="Certifications (comma separated)" name="certifications" value={profile.certifications} onChange={handleChange} />
-
-          <Input label="GitHub URL" name="github" value={profile.github} onChange={handleChange} />
-          <Input label="LinkedIn URL" name="linkedin" value={profile.linkedin} onChange={handleChange} />
-
-          <div className="md:col-span-2 mt-4">
-            <button
-              type="submit"
-              disabled={saving}
-              className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:opacity-90 transition duration-300"
-            >
-              {saving ? "Saving..." : "Update Profile"}
-            </button>
+          {/* SIDEBAR */}
+          <div className="lg:col-span-3">
+            <QuickLinksSidebar links={menuLinks} activeId={activeSection} />
           </div>
 
-        </form>
+          {/* MAIN AREA */}
+          <div className="lg:col-span-9 space-y-12">
+
+
+            {/* RESUME & HEADLINE */}
+            <ProfileCard
+              id="resume-headline"
+              title="Resume & Headline"
+              onEdit={() => setIsEditing("resume-headline")}
+            >
+              <div className="mb-6 pb-6 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-bold text-slate-700 mb-1">Resume</h4>
+                  {profile.resumeId ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-green-500 text-lg">📄</span>
+                      <span className="text-sm font-medium text-slate-600">Resume attached</span>
+                      <a 
+                        href={`http://localhost:5000/api/files/${profile.resumeId}`} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="text-xs text-blue-600 hover:underline ml-2 font-bold"
+                      >
+                        View
+                      </a>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-slate-400">Resume is the most important document recruiters look for.</p>
+                  )}
+                </div>
+                
+                <div className="relative">
+                   <input type="file" id="resumeUpload" className="hidden" accept=".pdf" onChange={handleResumeUpload} />
+                   <label 
+                      htmlFor="resumeUpload" 
+                      className={`cursor-pointer px-4 py-2 border-2 border-dashed border-blue-200 rounded-xl text-xs font-black uppercase tracking-widest text-blue-600 hover:bg-blue-50 transition-colors ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
+                    >
+                      {uploading ? 'Uploading...' : 'Upload PDF'}
+                   </label>
+                </div>
+              </div>
+
+              {isEditing === "resume-headline" ? (
+                <form onSubmit={handleUpdate} className="animate-fadeIn">
+                  <h4 className="text-sm font-bold text-slate-700 mb-2">Resume Headline</h4>
+                  <textarea
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all h-24 mb-4"
+                    value={profile.headline}
+                    name="headline"
+                    onChange={(e) => setProfile({ ...profile, headline: e.target.value })}
+                  />
+                  <div className="flex justify-end gap-3">
+                    <button type="button" onClick={() => setIsEditing(null)} className="text-sm font-bold text-slate-400 px-4">Cancel</button>
+                    <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-indigo-700 transition">Save</button>
+                  </div>
+                </form>
+              ) : (
+                <div>
+                  <h4 className="text-sm font-bold text-slate-700 mb-2">Resume Headline</h4>
+                  <p className="font-medium text-slate-600 leading-relaxed text-sm">
+                    {profile.headline || "It is the first thing recruiters notice in your profile. Write a concise headline about your professional identity."}
+                  </p>
+                </div>
+              )}
+            </ProfileCard>
+
+            {/* KEY SKILLS */}
+            <ProfileCard
+              id="key-skills"
+              title="Key skills"
+              onEdit={() => setIsEditing("key-skills")}
+            >
+              {isEditing === "key-skills" ? (
+                <form onSubmit={handleUpdate} className="animate-fadeIn">
+                  <input
+                    type="text"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none mb-4"
+                    value={profile.skills}
+                    placeholder="Ex: React, Node, CSS (comma separated)"
+                    onChange={(e) => setProfile({ ...profile, skills: e.target.value })}
+                  />
+                  <div className="flex justify-end gap-3">
+                    <button type="button" onClick={() => setIsEditing(null)} className="text-sm font-bold text-slate-400 px-4">Cancel</button>
+                    <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-indigo-700 transition">Save</button>
+                  </div>
+                </form>
+              ) : (
+                <div className="flex flex-wrap pt-2">
+                  {profile.skills ? profile.skills.split(",").map((s) => <SkillTag key={s} label={s.trim()} />) : <span className="text-slate-300 italic">Add your top technical skills here</span>}
+                </div>
+              )}
+            </ProfileCard>
+
+            {/* EMPLOYMENT */}
+            <ProfileCard
+              id="employment"
+              title="Employment"
+              onAdd={() => setIsEditing("employment")}
+            >
+              {isEditing === "employment" ? (
+                <form onSubmit={handleUpdate} className="grid md:grid-cols-2 gap-5 animate-fadeIn">
+                  <div className="md:col-span-2 space-y-3">
+                    <label className="text-xs font-bold text-slate-400">Employment Status</label>
+                    <div className="flex flex-wrap gap-6">
+                      {["Student", "Fresher", "Experienced"].map((status) => (
+                        <label key={status} className="flex items-center gap-2 cursor-pointer group">
+                          <input 
+                            type="radio" 
+                            name="employmentStatus" 
+                            value={status} 
+                            checked={profile.employmentStatus === status}
+                            onChange={(e) => setProfile({ ...profile, employmentStatus: e.target.value })}
+                            className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-slate-300"
+                          />
+                          <span className="text-sm text-slate-600 group-hover:text-slate-900 transition-colors">{status}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {profile.employmentStatus === "Experienced" && (
+                    <>
+                      <div className="space-y-4 md:col-span-2 mt-2">
+                        <label className="text-xs font-bold text-slate-400">Total Experience (Years)</label>
+                        <input type="number" step="0.1" className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.experience} onChange={(e) => setProfile({ ...profile, experience: e.target.value })} />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-slate-400">Current Designation</label>
+                        <input className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.designation} onChange={(e) => setProfile({ ...profile, designation: e.target.value })} />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-slate-400">Current Company</label>
+                        <input className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.currentCompany} onChange={(e) => setProfile({ ...profile, currentCompany: e.target.value })} />
+                      </div>
+                    </>
+                  )}
+
+                  <div className="md:col-span-2 flex justify-end gap-3 mt-4">
+                    <button type="button" onClick={() => setIsEditing(null)} className="text-sm font-bold text-slate-400 px-4">Cancel</button>
+                    <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-indigo-700 transition">Save Details</button>
+                  </div>
+                </form>
+              ) : (
+                <div className="py-2">
+                  {profile.employmentStatus === "Student" || profile.employmentStatus === "Fresher" ? (
+                    <div className="flex gap-4 items-center">
+                      <div className="w-10 h-10 bg-blue-50 text-blue-500 rounded flex items-center justify-center text-xl">🎓</div>
+                      <div>
+                        <h4 className="font-bold text-slate-800">{profile.employmentStatus}</h4>
+                        <p className="text-slate-500 font-medium text-sm">Currently seeking entry-level opportunities</p>
+                      </div>
+                    </div>
+                  ) : profile.currentCompany ? (
+                    <div className="flex gap-4">
+                      <div className="w-10 h-10 bg-slate-100 rounded flex items-center justify-center text-xl grayscale opacity-30">🏢</div>
+                      <div>
+                        <h4 className="font-bold text-slate-800">{profile.designation}</h4>
+                        <p className="text-slate-500 font-medium">{profile.currentCompany}</p>
+                        <p className="text-slate-400 text-xs mt-1">{profile.experience} years of total experience</p>
+                      </div>
+                    </div>
+                  ) : <span className="text-slate-300 italic">Mention your current or past employment to attract recruiters</span>}
+                </div>
+              )}
+            </ProfileCard>
+
+            {/* EDUCATION */}
+            <ProfileCard
+              id="education"
+              title="Education"
+              onAdd={() => setIsEditing("education")}
+            >
+              {isEditing === "education" ? (
+                <form onSubmit={handleUpdate} className="grid md:grid-cols-2 gap-5 animate-fadeIn">
+                  
+                  {/* Highest Qualification */}
+                  <div className="md:col-span-2 space-y-2">
+                    <label className="text-xs font-bold text-slate-400">Highest Qualification</label>
+                    <select 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                        value={profile.highestQualification}
+                      onChange={(e) => setProfile({ ...profile, highestQualification: e.target.value })}
+                    >
+                      <option value="">Select Qualification</option>
+                      <option value="Doctorate/PhD">Doctorate/PhD</option>
+                      <option value="Masters/Post-Graduation">Masters/Post-Graduation</option>
+                      <option value="Graduation/Diploma">Graduation/Diploma</option>
+                      <option value="12th (Intermediate)">12th (Intermediate)</option>
+                      <option value="10th">10th</option>
+                    </select>
+                  </div>
+
+                  {/* University & College */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-400">University / Board</label>
+                    <input 
+                      placeholder="e.g. Delhi University / CBSE"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" 
+                      value={profile.university} 
+                      onChange={(e) => setProfile({ ...profile, university: e.target.value })} 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-400">College / School Name</label>
+                    <input 
+                      placeholder="e.g. IIT Delhi / Delhi Public School"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" 
+                      value={profile.collegeName} 
+                      onChange={(e) => setProfile({ ...profile, collegeName: e.target.value })} 
+                    />
+                  </div>
+
+                  {/* Course & Stream */}
+                  {profile.highestQualification !== "10th" && (
+                    <>
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400">Course / Degree</label>
+                        <SearchableSelect 
+                          options={availableDegrees}
+                          value={profile.course}
+                          onChange={(val) => setProfile({ ...profile, course: val, stream: "" })}
+                          placeholder="Select or type Course/Degree"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400">Specialization / Stream</label>
+                        <SearchableSelect 
+                          options={availableStreams.length > 0 ? [...availableStreams, "Other"] : []}
+                          value={profile.stream}
+                          onChange={(val) => setProfile({ ...profile, stream: val })}
+                          placeholder="Select or type Specialization/Stream"
+                        />
+                      </div>
+
+                      {/* Course Type */}
+                      <div className="md:col-span-2 space-y-3">
+                        <label className="text-xs font-bold text-slate-400">Course type</label>
+                        <div className="flex flex-wrap gap-6">
+                          {["Full time", "Part time", "Correspondence/Distance learning"].map((type) => (
+                            <label key={type} className="flex items-center gap-2 cursor-pointer group">
+                              <input 
+                                type="radio" 
+                                name="courseType" 
+                                value={type} 
+                                checked={profile.courseType === type}
+                                onChange={(e) => setProfile({ ...profile, courseType: e.target.value })}
+                                className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-slate-300"
+                              />
+                              <span className="text-sm text-slate-600 group-hover:text-slate-900 transition-colors">{type}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Year Range */}
+                  <div className="md:col-span-2 space-y-2">
+                    <label className="text-xs font-bold text-slate-400">Course duration</label>
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1">
+                        <SearchableSelect 
+                          options={Array.from({length: 30}, (_, i) => String(new Date().getFullYear() - i))}
+                          value={profile.startingYear} 
+                          onChange={(val) => setProfile({ ...profile, startingYear: val })}
+                          placeholder="Starting year"
+                        />
+                      </div>
+                      <span className="text-slate-400 font-medium">To</span>
+                      <div className="flex-1">
+                        <SearchableSelect 
+                          options={Array.from({length: 35}, (_, i) => String(new Date().getFullYear() + 5 - i))}
+                          value={profile.graduationYear} 
+                          onChange={(val) => setProfile({ ...profile, graduationYear: val })}
+                          placeholder="Ending year"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Grading */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-400">Grading System</label>
+                    <select 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                      value={profile.gradingSystem} 
+                      onChange={(e) => setProfile({ ...profile, gradingSystem: e.target.value })}
+                    >
+                      <option value="">Select Scale</option>
+                      <option value="Percentage">Percentage (out of 100)</option>
+                      <option value="CGPA">CGPA (out of 10)</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-400">Grade / Score</label>
+                    <input 
+                      type="number"
+                      step={profile.gradingSystem === "CGPA" ? "0.01" : "1"}
+                      placeholder={profile.gradingSystem === "CGPA" ? "e.g. 8.5" : "e.g. 85"}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" 
+                      value={profile.grade} 
+                      onChange={(e) => setProfile({ ...profile, grade: e.target.value })} 
+                    />
+                  </div>
+
+                  <div className="md:col-span-2 flex justify-end gap-3 mt-4">
+                    <button type="button" onClick={() => setIsEditing(null)} className="text-sm font-bold text-slate-400 px-4">Cancel</button>
+                    <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-indigo-700 transition">Save Education</button>
+                  </div>
+                </form>
+              ) : (
+                <div className="py-2">
+                  {profile.highestQualification ? (
+                    <div>
+                      <h4 className="font-bold text-slate-800 break-words text-base">{profile.highestQualification}</h4>
+                      {profile.course && <p className="text-slate-700 font-semibold text-sm">{profile.course} {profile.stream ? `- ${profile.stream}` : ''}</p>}
+                      <p className="text-slate-500 font-medium text-sm mt-1">{profile.collegeName} {profile.university ? `(${profile.university})` : ''}</p>
+                      
+                      <div className="flex flex-wrap items-center gap-4 mt-3">
+                         {profile.courseType && (
+                           <span className="text-slate-500 text-[10px] font-black uppercase tracking-wider bg-slate-100/50 border border-slate-100 px-2 py-1 rounded-md">
+                             {profile.courseType}
+                           </span>
+                         )}
+                         <span className="text-slate-400 text-xs font-bold">
+                            {profile.startingYear && profile.graduationYear ? `${profile.startingYear} - ${profile.graduationYear}` : (profile.graduationYear || 'Present')}
+                         </span>
+                         {profile.grade && (
+                           <span className="text-blue-600 text-xs font-bold bg-blue-50/50 px-2 py-1 rounded-md">
+                              {profile.grade} {profile.gradingSystem === "CGPA" ? "CGPA" : "%"}
+                           </span>
+                         )}
+                      </div>
+                    </div>
+                  ) : <span className="text-slate-300 italic">Add details of your degrees and achievements</span>}
+                </div>
+              )}
+            </ProfileCard>
+
+          {/* PERSONAL DETAILS */}
+            <ProfileCard
+              id="personal-details"
+              title="Personal details"
+              onEdit={() => setIsEditing("personal-details")}
+            >
+              {isEditing === "personal-details" ? (
+                <form onSubmit={handleUpdate} className="grid md:grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4 animate-fadeIn">
+                  
+                  {/* Read-only primary details */}
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-slate-400">Primary Mobile</label>
+                    <input className="w-full bg-slate-100 border border-slate-200 rounded-lg p-3 text-sm text-slate-500 cursor-not-allowed" disabled value={profile.mobile} />
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-slate-400">Email Address</label>
+                    <input className="w-full bg-slate-100 border border-slate-200 rounded-lg p-3 text-sm text-slate-500 cursor-not-allowed" disabled value={profile.email} />
+                  </div>
+                  
+                  {/* Editable contact */}
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-slate-400 flex items-center gap-1">Alternate Mobile <span className="text-rose-500">*</span></label>
+                    <input 
+                      required
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500" 
+                      value={profile.altMobile} 
+                      onChange={(e) => setProfile({ ...profile, altMobile: e.target.value })} 
+                      placeholder="Enter alternate number"
+                    />
+                  </div>
+
+                  {/* Basic Demographics */}
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-slate-400">Gender</label>
+                    <select 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" 
+                      value={profile.gender} 
+                      onChange={(e) => setProfile({ ...profile, gender: e.target.value })}
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                      <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-slate-400 flex items-center gap-1">Date of Birth</label>
+                    <input 
+                      type="date"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" 
+                      value={profile.dob} 
+                      onChange={(e) => setProfile({ ...profile, dob: e.target.value })} 
+                    />
+                  </div>
+
+                  {/* Location Info */}
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-slate-400">Current Location / City</label>
+                    <input placeholder="e.g. Bangalore" className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.location} onChange={(e) => setProfile({ ...profile, location: e.target.value })} />
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-slate-400">Hometown</label>
+                    <input placeholder="e.g. Pune" className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.hometown} onChange={(e) => setProfile({ ...profile, hometown: e.target.value })} />
+                  </div>
+                  <div className="md:col-span-1 lg:col-span-2 space-y-4">
+                    <label className="text-xs font-bold text-slate-400">Permanent Address</label>
+                    <textarea placeholder="Enter your full address" className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.address} onChange={(e) => setProfile({ ...profile, address: e.target.value })} />
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-slate-400">State</label>
+                    <input placeholder="e.g. Karnataka" className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.state} onChange={(e) => setProfile({ ...profile, state: e.target.value })} />
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-slate-400">Pincode</label>
+                    <input placeholder="e.g. 560001" className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.pincode} onChange={(e) => setProfile({ ...profile, pincode: e.target.value })} />
+                  </div>
+
+                  {/* Extras */}
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-slate-400">Languages Known</label>
+                    <input 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" 
+                      placeholder="e.g. English, Hindi"
+                      value={profile.languagesKnown} 
+                      onChange={(e) => setProfile({ ...profile, languagesKnown: e.target.value })} 
+                    />
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-slate-400">Industry</label>
+                    <input className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.industry} onChange={(e) => setProfile({ ...profile, industry: e.target.value })} />
+                  </div>
+
+                  <div className="lg:col-span-2 flex justify-end gap-3 mt-4">
+                    <button type="button" onClick={() => setIsEditing(null)} className="text-sm font-bold text-slate-400 px-4">Cancel</button>
+                    <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-indigo-700 transition">Save Details</button>
+                  </div>
+                </form>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-y-6 gap-x-8 pt-2">
+                  <InfoRow label="Email" value={profile.email} />
+                  <InfoRow label="Mobile" value={profile.mobile} />
+                  <InfoRow label="Alternate Mobile" value={profile.altMobile} />
+                  <InfoRow label="Gender" value={profile.gender} />
+                  <InfoRow label="Date of Birth" value={profile.dob ? new Date(profile.dob).toLocaleDateString('en-GB') : "Not updated"} />
+                  <InfoRow label="Current City" value={profile.location} />
+                  <InfoRow label="Hometown" value={profile.hometown} />
+                  <InfoRow label="State" value={profile.state} />
+                  <InfoRow label="Pincode" value={profile.pincode} />
+                  <InfoRow label="Address" value={profile.address} />
+                  <InfoRow label="Languages" value={profile.languagesKnown} />
+                  <InfoRow label="Industry" value={profile.industry} />
+                </div>
+              )}
+            </ProfileCard>
+
+          </div>
+        </div>
       </div>
     </div>
   );
 };
-
-const Input = ({ label, ...props }) => (
-  <div>
-    <label className="block text-sm font-medium text-gray-600 mb-1">
-      {label}
-    </label>
-    <input
-      {...props}
-      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none transition"
-    />
-  </div>
-);
 
 export default JobSeekerProfile;

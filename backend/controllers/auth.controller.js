@@ -1,405 +1,4 @@
 
-// import bcrypt from "bcrypt";
-// import Recruiter from "../models/recruiter.js";
-// import JobSeeker from "../models/jobSeeker.js";
-// import TempRecruiter from "../models/temprecruiter.js";
-// import TempJobSeeker from "../models/tempJobSeeker.js";
-// import mailTransporter from "../utils/mailTransporter.js";
-// import jwt from "jsonwebtoken";
-
-// /* =====================================================
-//    TOKEN GENERATOR
-// ===================================================== */
-// const generateTokens = (user, role) => {
-//   const accessToken = jwt.sign(
-//     {
-//       id: user._id,
-//       role: role,
-//     },
-//     process.env.JWT_SECRET,
-//     { expiresIn: "15m" }
-//   );
-
-//   const refreshToken = jwt.sign(
-//     {
-//       id: user._id,
-//     },
-//     process.env.JWT_REFRESH_SECRET,
-//     { expiresIn: "7d" }
-//   );
-
-//   return { accessToken, refreshToken };
-// };
-
-// /* =====================================================
-//    HELPER: Choose Temp Model based on role
-// ===================================================== */
-// const getTempModel = (role) => {
-//   if (role === "recruiter") return TempRecruiter;
-//   if (role === "jobseeker") return TempJobSeeker;
-//   return null;
-// };
-
-// /* =====================================================
-//    SEND OTP
-// ===================================================== */
-// export const sendOtp = async (req, res) => {
-//   try {
-//     const { fullName, email, role } = req.body;
-
-//     if (!fullName || !email || !role) {
-//       return res.status(400).json({
-//         message: "Full name, email and role are required",
-//       });
-//     }
-
-//     const TempModel = getTempModel(role);
-//     if (!TempModel) {
-//       return res.status(400).json({ message: "Invalid role" });
-//     }
-
-//     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-//     const otpExpiresAt = Date.now() + 10 * 60 * 1000;
-
-//     let tempUser = await TempModel.findOne({ email });
-
-//     if (tempUser) {
-//       tempUser.otp = otp;
-//       tempUser.otpExpiresAt = otpExpiresAt;
-//       tempUser.isVerified = false;
-//       await tempUser.save();
-//     } else {
-//       await TempModel.create({
-//         fullName,
-//         email,
-//         otp,
-//         otpExpiresAt,
-//         isVerified: false,
-//       });
-//     }
-
-//     await mailTransporter.sendMail({
-//       from: process.env.EMAIL_USER,
-//       to: email,
-//       subject: "Email Verification OTP",
-//       html: `
-//         <h3>Your OTP is <b>${otp}</b></h3>
-//         <p>This OTP will expire in 10 minutes</p>
-//       `,
-//     });
-
-//     return res.status(200).json({
-//       message: "OTP sent successfully",
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ message: "Server error" });
-//   }
-// };
-
-// /* =====================================================
-//    VERIFY OTP
-// ===================================================== */
-// export const verifyOtp = async (req, res) => {
-//   try {
-//     const { email, otp, role } = req.body;
-
-//     if (!email || !otp || !role) {
-//       return res.status(400).json({
-//         message: "Email, OTP and role are required",
-//       });
-//     }
-
-//     const TempModel = getTempModel(role);
-//     if (!TempModel) {
-//       return res.status(400).json({ message: "Invalid role" });
-//     }
-
-//     const tempUser = await TempModel.findOne({ email });
-
-//     if (!tempUser) {
-//       return res.status(400).json({
-//         message: "OTP not found. Please resend OTP",
-//       });
-//     }
-
-//     if (tempUser.otpExpiresAt < Date.now()) {
-//       return res.status(400).json({
-//         message: "OTP expired",
-//       });
-//     }
-
-//     if (tempUser.otp !== otp) {
-//       return res.status(400).json({
-//         message: "Invalid OTP",
-//       });
-//     }
-
-//     tempUser.isVerified = true;
-//     await tempUser.save();
-
-//     return res.status(200).json({
-//       message: "OTP verified successfully",
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ message: "Server error" });
-//   }
-// };
-
-// /* =====================================================
-//    RESEND OTP
-// ===================================================== */
-// export const resendOtp = async (req, res) => {
-//   try {
-//     const { email, role } = req.body;
-
-//     if (!email || !role) {
-//       return res.status(400).json({
-//         message: "Email and role are required",
-//       });
-//     }
-
-//     const TempModel = getTempModel(role);
-//     if (!TempModel) {
-//       return res.status(400).json({ message: "Invalid role" });
-//     }
-
-//     const tempUser = await TempModel.findOne({ email });
-
-//     if (!tempUser) {
-//       return res.status(400).json({
-//         message: "No OTP request found. Please start again",
-//       });
-//     }
-
-//     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-//     const otpExpiresAt = Date.now() + 10 * 60 * 1000;
-
-//     tempUser.otp = otp;
-//     tempUser.otpExpiresAt = otpExpiresAt;
-//     tempUser.isVerified = false;
-//     await tempUser.save();
-
-//     await mailTransporter.sendMail({
-//       from: process.env.EMAIL_USER,
-//       to: email,
-//       subject: "Resent OTP",
-//       html: `
-//         <h3>Your new OTP is <b>${otp}</b></h3>
-//         <p>This OTP will expire in 10 minutes</p>
-//       `,
-//     });
-
-//     return res.status(200).json({
-//       message: "OTP resent successfully",
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ message: "Server error" });
-//   }
-// };
-
-// /* =====================================================
-//    RECRUITER SIGNUP
-// ===================================================== */
-// export const signupRecruiter = async (req, res) => {
-//   try {
-//     const {
-//       fullName,
-//       email,
-//       password,
-//       mobile,
-//       designation,
-//       companyDetails,
-//     } = req.body;
-
-//     if (
-//       !fullName ||
-//       !email ||
-//       !password ||
-//       !mobile ||
-//       !designation ||
-//       !companyDetails ||
-//       !companyDetails.name
-//     ) {
-//       return res.status(400).json({
-//         message: "Required fields missing",
-//       });
-//     }
-
-//     const temp = await TempRecruiter.findOne({ email });
-//     if (!temp || !temp.isVerified) {
-//       return res.status(400).json({
-//         message: "Email not verified",
-//       });
-//     }
-
-//     const existingUser = await Recruiter.findOne({ email });
-//     if (existingUser) {
-//       return res.status(400).json({
-//         message: "Email already registered",
-//       });
-//     }
-
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     const recruiter = await Recruiter.create({
-//       fullName,
-//       email,
-//       password: hashedPassword,
-//       mobile,
-//       designation,
-//       companyDetails,
-//     });
-
-//     await TempRecruiter.deleteOne({ email });
-
-//     return res.status(201).json({
-//       message: "Recruiter signed up successfully",
-//       recruiterId: recruiter._id,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ message: "Server error" });
-//   }
-// };
-
-// /* =====================================================
-//    JOB SEEKER SIGNUP
-// ===================================================== */
-// export const signupJobSeeker = async (req, res) => {
-//   try {
-//     const {
-//       fullName,
-//       email,
-//       password,
-//       mobile,
-//       gender,
-//       qualification,
-//       status,
-//       experience,
-//       location,
-//     } = req.body;
-
-//     if (
-//       !fullName ||
-//       !email ||
-//       !password ||
-//       !mobile ||
-//       !gender ||
-//       !qualification ||
-//       !status ||
-//       !location
-//     ) {
-//       return res.status(400).json({
-//         message: "Required fields missing",
-//       });
-//     }
-
-//     if (status === "Experienced" && (experience === undefined || experience === null)) {
-//       return res.status(400).json({
-//         message: "Experience is required for experienced candidates",
-//       });
-//     }
-
-//     const temp = await TempJobSeeker.findOne({ email });
-//     if (!temp || !temp.isVerified) {
-//       return res.status(400).json({
-//         message: "Email not verified",
-//       });
-//     }
-
-//     const existingUser = await JobSeeker.findOne({ email });
-//     if (existingUser) {
-//       return res.status(400).json({
-//         message: "Email already registered",
-//       });
-//     }
-
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     const jobSeeker = await JobSeeker.create({
-//       fullName,
-//       email,
-//       password: hashedPassword,
-//       mobile,
-//       gender,
-//       qualification,
-//       status,
-//       experience: status === "Experienced" ? experience : 0,
-//       location,
-//     });
-
-//     await TempJobSeeker.deleteOne({ email });
-
-//     return res.status(201).json({
-//       message: "Job seeker signed up successfully",
-//       jobSeekerId: jobSeeker._id,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ message: "Server error" });
-//   }
-// };
-
-// /* =====================================================
-//    LOGIN
-// ===================================================== */
-// export const login = async (req, res) => {
-//   try {
-//     const { email, password, role } = req.body;
-
-//     if (!email || !password || !role) {
-//       return res.status(400).json({
-//         message: "Email, password and role are required",
-//       });
-//     }
-
-//     let user;
-
-//     if (role === "recruiter") {
-//       user = await Recruiter.findOne({ email });
-//     } else if (role === "jobseeker") {
-//       user = await JobSeeker.findOne({ email });
-//     } else {
-//       return res.status(400).json({ message: "Invalid role" });
-//     }
-
-//     if (!user) {
-//       return res.status(400).json({ message: "User not found" });
-//     }
-
-//     const isMatch = await bcrypt.compare(password, user.password);
-
-//     if (!isMatch) {
-//       return res.status(400).json({ message: "Invalid password" });
-//     }
-
-//     const { accessToken, refreshToken } = generateTokens(user, role);
-
-//     res.cookie("refreshToken", refreshToken, {
-//       httpOnly: true,
-//       secure: false,
-//       sameSite: "lax",
-//     });
-
-//     return res.status(200).json({
-//       message: "Login successful",
-//       token: accessToken,
-//       user: {
-//         id: user._id,
-//         email: user.email,
-//         role,
-//       },
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ message: "Server error" });
-//   }
-// };
-
-
 import bcrypt from "bcrypt";
 import Recruiter from "../models/recruiter.js";
 import JobSeeker from "../models/jobSeeker.js";
@@ -418,7 +17,7 @@ const generateTokens = (user, role) => {
       role,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "15m" }
+    { expiresIn: "7d" }
   );
 
   const refreshToken = jwt.sign(
@@ -719,6 +318,7 @@ export const login = async (req, res) => {
     }
 
     const { accessToken, refreshToken } = generateTokens(user, role);
+    console.log(`Generated Token for ${role}:`, accessToken.substring(0, 10) + "...");
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -732,8 +332,10 @@ export const login = async (req, res) => {
       token: accessToken,
       user: {
         id: user._id,
+        fullName: user.fullName,
         email: user.email,
         role,
+        profilePhotoId: role === "recruiter" ? user.profilePhotoId : user.profile?.profilePhotoId
       },
     });
   } catch (error) {
@@ -833,7 +435,7 @@ export const forgotPassword = async (req, res) => {
 /* =====================================================
    VERIFY FORGOT OTP
 ===================================================== */
-  export const verifyForgotOtp = async (req, res) => {
+export const verifyForgotOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
 
@@ -878,7 +480,7 @@ export const forgotPassword = async (req, res) => {
 /* =====================================================
    RESET PASSWORD
 ===================================================== */
- export const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
   try {
     const { email, otp, password } = req.body;
 
@@ -933,13 +535,34 @@ export const forgotPassword = async (req, res) => {
 ===================================================== */
 export const getMe = async (req, res) => {
   try {
+    const { id, role } = req.user;
+    let user;
+
+    if (role === "recruiter") {
+      user = await Recruiter.findById(id).select("-password");
+    } else {
+      user = await JobSeeker.findById(id).select("-password");
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     return res.status(200).json({
       message: "User authenticated",
-      user: req.user,
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: role,
+        profilePhotoId: role === "recruiter" ? user.profilePhotoId : user.profile?.profilePhotoId
+      },
     });
   } catch (error) {
+    console.error("GetMe Error:", error);
     return res.status(500).json({
       message: "Server error",
     });
   }
 };
+

@@ -1,27 +1,4 @@
-// import axios from "axios";
 
-// const api = axios.create({
-//   baseURL: "http://localhost:5000/api",
-//   withCredentials: true, // important for refresh token cookie
-// });
-
-// // Request Interceptor (Attach Access Token)
-// api.interceptors.request.use(
-//   (config) => {
-//     const token = localStorage.getItem("accessToken");
-
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
-
-// export default api;
 import axios from "axios";
 
 const api = axios.create({
@@ -29,9 +6,13 @@ const api = axios.create({
   withCredentials: true,
 });
 
+/* =========================
+   REQUEST INTERCEPTOR
+========================= */
+
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("token");
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -44,5 +25,22 @@ api.interceptors.request.use(
   }
 );
 
-export default api;
+/* =========================
+   RESPONSE INTERCEPTOR
+========================= */
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      console.log("Unauthorized - Redirecting to login");
+
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+export default api;

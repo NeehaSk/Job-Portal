@@ -33,21 +33,35 @@ import {
   getMyProfile,
   updateProfile,
   uploadProfilePic,
-  uploadResume
+  uploadResume,
+  getDashboardData,
+  getPublicProfile
 } from "../controllers/jobSeeker.controller.js";
+import multer from "multer";
+import { recruiterOnly } from "../middleware/authmiddleware.js";
 
 const router = express.Router();
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
 
 // ===== GET PROFILE =====
 router.get("/profile", authMiddleware, getMyProfile);
+
+// ===== GET PUBLIC PROFILE (Recruiters) =====
+router.get("/profile/:id", authMiddleware, recruiterOnly, getPublicProfile);
+
+// ===== GET DASHBOARD DATA =====
+router.get("/dashboard", authMiddleware, getDashboardData);
 
 // ===== UPDATE PROFILE DETAILS =====
 router.put("/update-profile", authMiddleware, updateProfile);
 
 // ===== UPLOAD PROFILE PHOTO =====
-router.put("/upload-profile-pic", authMiddleware, uploadProfilePic);
+router.put("/upload-profile-pic", authMiddleware, upload.single("file"), uploadProfilePic);
 
 // ===== UPLOAD RESUME =====
-router.put("/upload-resume", authMiddleware, uploadResume);
+router.put("/upload-resume", authMiddleware, upload.single("file"), uploadResume);
+
 
 export default router;

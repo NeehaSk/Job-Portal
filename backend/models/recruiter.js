@@ -20,7 +20,7 @@
 //       trim: true,
 //     },
 //   },
-  
+
 // );
 
 // const userSchema = new mongoose.Schema(
@@ -57,7 +57,7 @@
 //     },
 
 
-    
+
 //     // Recruiter-specific
 //     designation: {
 //       type: String,
@@ -81,7 +81,7 @@
 //     },
 
 //     // System fields
-    
+
 //   },
 //   {
 //     timestamps: true,
@@ -137,18 +137,27 @@ const recruiterSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    alternateMobile: { type: String, 
+      trim: true },
 
     companyDetails: {
-      type: companyDetailsSchema,
-      required: true,
+      name: { type: String, required: true, trim: true },
+      location: { type: String, trim: true },
+      website: { type: String, trim: true },
+      industry: { type: String, trim: true },
+      companySize: { type: String, trim: true },
+      description: { type: String, trim: true },
     },
-resetOtp: {
-  type: Number,
-},
+    linkedin: { type: String, trim: true },
+    bio: { type: String, trim: true },
+    profilePhotoId: { type: String }, // Explicitly add this for clarity
+    resetOtp: {
+      type: Number,
+    },
 
-resetOtpExpires: {
-  type: Number,
-},
+    resetOtpExpires: {
+      type: Number,
+    },
 
     // email verification status
     // isEmailVerified: {

@@ -19,7 +19,7 @@ const connectDB = async (app) => {
 
     console.log("MongoDB connected successfully");
 
-    // ===== Create GridFS Bucket Immediately =====
+    // =====  GridFS Bucket  =====
     const bucket = new mongoose.mongo.GridFSBucket(
       mongoose.connection.db,
       {

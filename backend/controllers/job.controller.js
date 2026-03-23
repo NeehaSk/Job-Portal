@@ -1,0 +1,1233 @@
+
+// import Job from "../models/job.model.js";
+// import Application from "../models/application.model.js";
+
+// import JobSeeker from "../models/jobSeeker.js";
+// import mailTransporter from "../utils/mailTransporter.js";
+// // ================= CREATE JOB =================
+// // export const createJob = async (req, res) => {
+// //   try {
+// //     const {
+// //       title,
+// //       companyName,
+// //       location,
+// //       category,
+// //       workMode,
+// //       jobType,
+// //       salary,
+// //       skillsRequired,
+// //       experienceLevel,
+// //       description,
+// //       expireAt,
+// //     } = req.body;
+
+// //     // Basic Validation
+// //     if (
+// //       !title ||
+// //       !companyName ||
+// //       !category ||
+// //       !location ||
+// //       !workMode ||
+// //       !jobType ||
+// //       !salary ||
+// //       !salary.min ||
+// //       !salary.max ||
+// //       !experienceLevel ||
+// //       !description
+// //     ) {
+// //       return res.status(400).json({
+// //         message: "Please fill all required fields",
+// //       });
+// //     }
+
+// //     const job = await Job.create({
+// //       recruiter: req.user.id,
+// //       title,
+// //       companyName,
+// //       location,
+// //       category,
+// //       workMode,
+// //       jobType,
+// //       salary,
+// //       skillsRequired,
+// //       experienceLevel,
+// //       description,
+// //       expireAt,
+// //     });
+
+// //     return res.status(201).json({
+// //       message: "Job created successfully",
+// //       job,
+// //     });
+
+// //   } catch (error) {
+// //     console.error("Create Job Error:", error);
+// //     return res.status(500).json({
+// //       message: "Server error",
+// //     });
+// //   }
+// // };
+
+// // ================= CREATE JOB =================
+// export const createJob = async (req, res) => {
+//   try {
+//     const {
+//       title,
+//       companyName,
+//       location,
+//       category,
+//       workMode,
+//       jobType,
+//       salary,
+//       skillsRequired,
+//       experienceLevel,
+//       description,
+//       expireAt,
+//     } = req.body;
+
+//     if (
+//       !title ||
+//       !companyName ||
+//       !category ||
+//       !location ||
+//       !workMode ||
+//       !jobType ||
+//       !salary ||
+//       !salary.min ||
+//       !salary.max ||
+//       !experienceLevel ||
+//       !description
+//     ) {
+//       return res.status(400).json({
+//         message: "Please fill all required fields",
+//       });
+//     }
+
+//     // ✅ Normalize skills safely
+//     const normalizedSkills = Array.isArray(skillsRequired)
+//       ? skillsRequired.map((skill) => skill.trim().toLowerCase())
+//       : [];
+
+//     // ✅ Save Job
+//     const job = await Job.create({
+//       recruiter: req.user.id,
+//       title,
+//       companyName,
+//       location,
+//       category,
+//       workMode,
+//       jobType,
+//       salary,
+//       skillsRequired: normalizedSkills,
+//       experienceLevel,
+//       description,
+//       expireAt,
+//     });
+
+//     // ✅ Skill-based matching
+//     if (normalizedSkills.length > 0) {
+//       const matchedSeekers = await JobSeeker.find({
+//         isActive: true,
+//         isProfileComplete: true,
+//         "profile.skills": {
+//           $elemMatch: {
+//             $in: normalizedSkills,
+//           },
+//         },
+//       });
+
+//       console.log("Matched Seekers:", matchedSeekers.length);
+
+//       for (const seeker of matchedSeekers) {
+//         try {
+//           await mailTransporter.sendMail({
+//             from: process.env.EMAIL_USER,
+//             to: seeker.email,
+//             subject: `New Job Matching Your Skills - ${title}`,
+//             html: `
+//               <div style="font-family: Arial; padding: 20px;">
+//                 <h2 style="color: #4f46e5;">New Job Alert 🔔</h2>
+//                 <p>Hi ${seeker.fullName},</p>
+//                 <p>A new job matching your skills has been posted.</p>
+
+//                 <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+//                   <h3>${title}</h3>
+//                   <p><strong>Company:</strong> ${companyName}</p>
+//                   <p><strong>Location:</strong> ${location}</p>
+//                   <p><strong>Experience:</strong> ${experienceLevel}</p>
+//                 </div>
+
+//                 <a href="http://localhost:5173/jobs"
+//                    style="display: inline-block; padding: 10px 20px; background-color: #4f46e5; color: white; text-decoration: none; border-radius: 6px;">
+//                    Apply Now
+//                 </a>
+
+//                 <p style="margin-top: 20px;">Best Regards,<br/>Job Portal Team</p>
+//               </div>
+//             `,
+//           });
+
+//           console.log("Email sent to:", seeker.email);
+//         } catch (mailError) {
+//           console.error("Mail Error for:", seeker.email, mailError.message);
+//         }
+//       }
+//     }
+
+//     return res.status(201).json({
+//       message: "Job created successfully and notifications processed",
+//       job,
+//     });
+
+//   } catch (error) {
+//     console.error("Create Job Error:", error);
+//     return res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
+// export const getAllJobs = async (req, res) => {
+//   try {
+//     const {
+//       keyword,
+//       location,
+//       jobType,
+//       experience,
+//       minSalary,
+//       maxSalary,
+//       sort = "latest",
+//       page = 1,
+//       limit = 6,
+//     } = req.query;
+
+//     let filter = {};
+
+//     if (keyword) {
+//       filter.title = { $regex: keyword, $options: "i" };
+//     }
+
+//     if (location) {
+//       filter.location = { $regex: location, $options: "i" };
+//     }
+
+//     if (jobType) {
+//       filter.jobType = jobType;
+//     }
+
+//     if (experience) {
+//       filter.experience = experience;
+//     }
+
+//     if (minSalary && maxSalary) {
+//       filter.salary = { $gte: Number(minSalary), $lte: Number(maxSalary) };
+//     }
+
+//     // ✅ Sorting logic
+//     let sortOption = {};
+
+//     if (sort === "salary_asc") {
+//       sortOption.salary = 1;
+//     } else if (sort === "salary_desc") {
+//       sortOption.salary = -1;
+//     } else {
+//       sortOption.createdAt = -1; // latest
+//     }
+
+//     const skip = (page - 1) * limit;
+
+//     const jobs = await Job.find(filter)
+//       .sort(sortOption)
+//       .skip(skip)
+//       .limit(Number(limit));
+
+//     const totalJobs = await Job.countDocuments(filter);
+
+//     res.status(200).json({
+//       success: true,
+//       totalJobs,
+//       totalPages: Math.ceil(totalJobs / limit),
+//       currentPage: Number(page),
+//       jobs,
+//     });
+
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+
+
+// // ================= APPLY JOB =================
+// export const applyToJob = async (req, res) => {
+//   try {
+
+//     // ✅ Only jobseekers can apply
+//     if (req.user.role !== "jobseeker") {
+//       return res.status(403).json({
+//         message: "Only job seekers can apply",
+//       });
+//     }
+
+//     const { jobId } = req.params;
+
+//     const job = await Job.findById(jobId);
+
+//     if (!job) {
+//       return res.status(404).json({
+//         message: "Job not found",
+//       });
+//     }
+
+//     if (job.status !== "Open") {
+//       return res.status(400).json({
+//         message: "Job is closed",
+//       });
+//     }
+
+//     // ✅ Prevent duplicate manually (extra safety)
+//     const existingApplication = await Application.findOne({
+//       job: jobId,
+//       applicant: req.user.id,
+//     });
+
+//     if (existingApplication) {
+//       return res.status(400).json({
+//         message: "You already applied for this job",
+//       });
+//     }
+
+//     const application = await Application.create({
+//       job: jobId,
+//       applicant: req.user.id,
+//     });
+
+//     // Increase counter
+//     job.applicantsCount += 1;
+//     await job.save();
+
+//     return res.status(201).json({
+//       message: "Applied successfully",
+//       application,
+//     });
+
+//   } catch (error) {
+//     console.error("Apply Job Error:", error);
+//     return res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
+
+// // ================= GET SINGLE JOB =================
+// export const getSingleJob = async (req, res) => {
+//   try {
+//     const { jobId } = req.params;
+
+//     const job = await Job.findById(jobId)
+//       .populate("recruiter", "companyName email");
+
+//     if (!job) {
+//       return res.status(404).json({
+//         message: "Job not found",
+//       });
+//     }
+
+//     return res.status(200).json(job);
+
+//   } catch (error) {
+//     console.error("Get Single Job Error:", error);
+//     return res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
+// // ================= GET APPLICANTS FOR A JOB =================
+// export const getJobApplicants = async (req, res) => {
+//   try {
+//     const { jobId } = req.params;
+
+//     const job = await Job.findById(jobId);
+
+//     if (!job) {
+//       return res.status(404).json({
+//         message: "Job not found",
+//       });
+//     }
+
+//     // Only recruiter who created job can view applicants
+//     if (job.recruiter.toString() !== req.user.id) {
+//       return res.status(403).json({
+//         message: "Not authorized to view applicants",
+//       });
+//     }
+
+//     const applications = await Application.find({ job: jobId })
+//       .populate("applicant", "fullName email skills experienceLevel")
+//       .sort({ createdAt: -1 });
+
+//     return res.status(200).json({
+//       totalApplicants: applications.length,
+//       applications,
+//     });
+
+//   } catch (error) {
+//     console.error("Get Applicants Error:", error);
+//     return res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
+
+
+// // ================= GET MY APPLIED JOBS =================
+// export const getMyApplications = async (req, res) => {
+//   try {
+//     // Only jobseekers
+//     if (req.user.role !== "jobseeker") {
+//       return res.status(403).json({
+//         message: "Only job seekers can access this",
+//       });
+//     }
+
+//     const applications = await Application.find({
+//       applicant: req.user.id,
+//     })
+//       .populate({
+//         path: "job",
+//         select: "title companyName location jobType salary status",
+//       })
+//       .sort({ createdAt: -1 });
+
+//     return res.status(200).json({
+//       totalApplied: applications.length,
+//       applications,
+//     });
+
+//   } catch (error) {
+//     console.error("Get My Applications Error:", error);
+//     return res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// };
+import Job from "../models/job.model.js";
+import Application from "../models/application.model.js";
+import JobSeeker from "../models/jobSeeker.js";
+import Notification from "../models/notification.js";
+import mailTransporter from "../utils/mailTransporter.js";
+import mongoose from "mongoose";
+
+/* =========================================================
+   CREATE JOB
+========================================================= */
+// export const createJob = async (req, res) => {
+//   try {
+//     const {
+//       title,
+//       companyName,
+//       location,
+//       category,
+//       workMode,
+//       jobType,
+//       salary,
+//       skillsRequired,
+//       experienceLevel,
+//       description,
+//       expireAt,
+//       requirements
+//     } = req.body;
+
+//     if (
+//       !title ||
+//       !companyName ||
+//       !category ||
+//       !location ||
+//       !workMode ||
+//       !jobType ||
+//       !salary ||
+//       !salary.min ||
+//       !salary.max ||
+//       !experienceLevel ||
+//       !description
+//     ) {
+//       return res.status(400).json({
+//         message: "Please fill all required fields",
+//       });
+//     }
+
+//     // Normalize skills
+//     const normalizedSkills = Array.isArray(skillsRequired)
+//       ? skillsRequired.map((s) => s.trim().toLowerCase())
+//       : [];
+
+//     const job = await Job.create({
+//       recruiter: req.user.id,
+//       title,
+//       companyName,
+//       location,
+//       category,
+//       workMode,
+//       jobType,
+//       salary,
+//       skillsRequired: normalizedSkills,
+//       experienceLevel,
+//       description,
+//       requirements,
+//       applicationDeadline: expireAt,
+//       status: "Open",
+//     });
+
+//     /* ================= SKILL MATCHING ================= */
+//     if (normalizedSkills.length > 0) {
+//       const matchedSeekers = await JobSeeker.find({
+//         isActive: true,
+//         isProfileComplete: true,
+//         "profile.skills": {
+//           $in: normalizedSkills,
+//         },
+//       });
+
+//       for (const seeker of matchedSeekers) {
+//         try {
+//           await mailTransporter.sendMail({
+//             from: process.env.EMAIL_USER,
+//             to: seeker.email,
+//             subject: `New Job Matching Your Skills - ${title}`,
+//             html: `
+//               <div style="font-family: Arial; padding: 20px;">
+//                 <h2 style="color: #4f46e5;">New Job Alert 🔔</h2>
+//                 <p>Hi ${seeker.fullName},</p>
+//                 <p>A new job matching your skills has been posted.</p>
+
+//                 <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+//                   <h3>${title}</h3>
+//                   <p><strong>Company:</strong> ${companyName}</p>
+//                   <p><strong>Location:</strong> ${location}</p>
+//                   <p><strong>Experience:</strong> ${experienceLevel}</p>
+//                 </div>
+
+//                 <a href="http://localhost:5173/jobs/${job._id}"
+//                    style="display: inline-block; padding: 10px 20px; background-color: #4f46e5; color: white; text-decoration: none; border-radius: 6px;">
+//                    Apply Now
+//                 </a>
+//               </div>
+//             `,
+//           });
+//         } catch (err) {
+//           console.error("Mail error:", err.message);
+//         }
+//       }
+//     }
+
+//     return res.status(201).json({
+//       message: "Job created successfully",
+//       job,
+//     });
+
+//   } catch (error) {
+//     console.error("Create Job Error:", error);
+//     return res.status(500).json({ message: "Server error" });
+//   }
+// };
+/* =========================================================
+   CREATE JOB
+========================================================= */
+export const createJob = async (req, res) => {
+  try {
+
+    const {
+      title,
+      companyName,
+      location,
+      category,
+      workMode,
+      jobType,
+      salary,
+      skillsRequired,
+      experienceLevel,
+      description,
+      expireAt,
+      requirements
+    } = req.body;
+
+    /* ================= VALIDATION ================= */
+
+    if (
+      !title ||
+      !companyName ||
+      !category ||
+      !location ||
+      !workMode ||
+      !jobType ||
+      !experienceLevel ||
+      !description
+    ) {
+      return res.status(400).json({
+        message: "Please fill all required fields"
+      });
+    }
+
+    if (!salary || !salary.min || !salary.max) {
+      return res.status(400).json({
+        message: "Salary range is required"
+      });
+    }
+
+    /* ================= NORMALIZE SKILLS ================= */
+
+    const normalizedSkills = Array.isArray(skillsRequired)
+      ? skillsRequired.map((s) => s.trim().toLowerCase())
+      : [];
+
+    /* ================= CREATE JOB ================= */
+
+    const job = await Job.create({
+      recruiter: req.user.id,
+      title,
+      companyName,
+      location,
+      category,
+      workMode,
+      jobType,
+      salary,
+      skillsRequired: normalizedSkills,
+      experienceLevel,
+      description,
+      requirements,
+      applicationDeadline: expireAt,
+      status: "Open",
+    });
+
+    /* ================= SKILL MATCHING ================= */
+
+    if (normalizedSkills.length > 0) {
+
+      const matchedSeekers = await JobSeeker.find({
+        isActive: true,
+        isProfileComplete: true,
+        "profile.skills": { $in: normalizedSkills }
+      });
+
+      for (const seeker of matchedSeekers) {
+        try {
+
+          await mailTransporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: seeker.email,
+            subject: `New Job Matching Your Skills - ${title}`,
+            html: `
+              <div style="font-family: Arial; padding: 20px;">
+                <h2 style="color: #4f46e5;">New Job Alert 🔔</h2>
+                <p>Hi ${seeker.fullName},</p>
+                <p>A new job matching your skills has been posted.</p>
+
+                <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                  <h3>${title}</h3>
+                  <p><strong>Company:</strong> ${companyName}</p>
+                  <p><strong>Location:</strong> ${location}</p>
+                  <p><strong>Experience:</strong> ${experienceLevel}</p>
+                </div>
+
+                <a href="http://localhost:5173/jobs/${job._id}"
+                   style="display: inline-block; padding: 10px 20px; background-color: #4f46e5; color: white; text-decoration: none; border-radius: 6px;">
+                   Apply Now
+                </a>
+              </div>
+            `,
+          });
+
+        } catch (err) {
+          console.error("Mail error:", err.message);
+        }
+      } // End for loop
+
+      // Create in-app notifications in bulk
+      try {
+        const notifications = matchedSeekers.map(seeker => ({
+          recipient: seeker._id,
+          recipientModel: "JobSeeker",
+          title: "New Job Matching Your Skills!",
+          message: `${companyName} is hiring for ${title} in ${location}.`,
+          type: "NewJob",
+          link: `/job/${job._id}`
+        }));
+        if (notifications.length > 0) {
+          await Notification.insertMany(notifications);
+        }
+      } catch (notifyError) {
+        console.error("Failed to send in-app notifications:", notifyError);
+      }
+    }
+
+    return res.status(201).json({
+      message: "Job created successfully",
+      job
+    });
+
+  } catch (error) {
+
+    console.error("Create Job Error:", error);
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        message: error.message
+      });
+    }
+
+    return res.status(500).json({
+      message: "Server error"
+    });
+
+  }
+};
+/* =========================================================
+   GET ALL JOBS (FILTER + PAGINATION)
+========================================================= */
+export const getAllJobs = async (req, res) => {
+  try {
+    const {
+      keyword,
+      location,
+      jobType,
+      experience,
+      minSalary,
+      maxSalary,
+      sort = "latest",
+      page = 1,
+      limit = 6,
+    } = req.query;
+
+    let filter = { status: "Open" };
+
+    // Keyword search
+    if (keyword) {
+      filter.$text = { $search: keyword };
+    }
+
+    if (location) {
+      filter.location = { $regex: location, $options: "i" };
+    }
+
+    if (jobType) {
+      filter.jobType = jobType;
+    }
+
+    if (experience) {
+      filter.experienceLevel = experience;
+    }
+
+    // Salary filter (nested)
+    if (minSalary) {
+      filter["salary.min"] = { $gte: Number(minSalary) };
+    }
+
+    if (maxSalary) {
+      filter["salary.max"] = { $lte: Number(maxSalary) };
+    }
+
+    /* Sorting */
+    let sortOption = {};
+
+    if (sort === "salary_asc") {
+      sortOption["salary.min"] = 1;
+    } else if (sort === "salary_desc") {
+      sortOption["salary.max"] = -1;
+    } else {
+      sortOption.createdAt = -1;
+    }
+
+    const skip = (page - 1) * limit;
+
+    const jobs = await Job.find(filter)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(Number(limit));
+
+    const totalJobs = await Job.countDocuments(filter);
+
+    res.status(200).json({
+      success: true,
+      totalJobs,
+      totalPages: Math.ceil(totalJobs / limit),
+      currentPage: Number(page),
+      jobs,
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/* =========================================================
+   APPLY TO JOB
+========================================================= */
+// export const applyToJob = async (req, res) => {
+//   try {
+//     if (req.user.role !== "jobseeker") {
+//       return res.status(403).json({
+//         message: "Only job seekers can apply",
+//       });
+//     }
+
+//     const { jobId } = req.params;
+
+//     const job = await Job.findById(jobId);
+
+//     if (!job) {
+//       return res.status(404).json({ message: "Job not found" });
+//     }
+
+//     if (job.status !== "Open") {
+//       return res.status(400).json({ message: "Job is closed" });
+//     }
+
+//     const existing = await Application.findOne({
+//       job: jobId,
+//       applicant: req.user.id,
+//     });
+
+//     if (existing) {
+//       return res.status(400).json({
+//         message: "You already applied for this job",
+//       });
+//     }
+
+//     if (!req.body) {
+//       return res.status(400).json({ message: "Request body is missing" });
+//     }
+
+//     const { fullName, email, skills, experience } = req.body;
+
+export const applyToJob = async (req, res) => {
+  try {
+
+    if (req.user.role !== "jobseeker") {
+      return res.status(403).json({
+        message: "Only job seekers can apply",
+      });
+    }
+
+    const { jobId } = req.params;
+
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    if (job.status !== "Open") {
+      return res.status(400).json({ message: "Job is closed" });
+    }
+
+    const existing = await Application.findOne({
+      job: jobId,
+      applicant: req.user.id,
+    });
+
+    if (existing) {
+      return res.status(400).json({
+        message: "You already applied for this job",
+      });
+    }
+
+    /* ================= GET APPLICANT DETAILS ================= */
+
+    // Body fields are optional — if not provided (quick-apply), fetch from DB
+    let { fullName, email, skills, experience } = req.body || {};
+
+    if (!fullName || !email) {
+      const seeker = await JobSeeker.findById(req.user.id).select("fullName email profile.skills");
+      if (seeker) {
+        fullName = fullName || seeker.fullName;
+        email = email || seeker.email;
+        if (!skills && seeker.profile?.skills?.length) {
+          skills = seeker.profile.skills;
+        }
+      }
+    }
+
+    if (!fullName || !email) {
+      return res.status(400).json({
+        message: "Could not determine applicant details. Please complete your profile.",
+      });
+    }
+
+    /* ================= CREATE APPLICATION ================= */
+
+    const application = await Application.create({
+      job: jobId,
+      applicant: req.user.id,
+      applicantDetails: {
+        fullName,
+        email,
+        skills: Array.isArray(skills)
+          ? skills
+          : skills
+            ? skills.split(",").map((s) => s.trim()).filter(Boolean)
+            : [],
+        experience: experience || "",
+      },
+    });
+
+    job.applicantsCount += 1;
+    await job.save();
+
+    res.status(201).json({
+      message: "Applied successfully",
+      application,
+    });
+
+  } catch (error) {
+    console.error("Apply Job Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* =========================================================
+   GET SINGLE JOB
+========================================================= */
+export const getSingleJob = async (req, res) => {
+  try {
+    const { jobId } = req.params;
+
+    const job = await Job.findById(jobId)
+      .populate("recruiter", "fullName email");
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    let hasApplied = false;
+    
+    // Check if user is logged in and is a jobseeker
+    if (req.user && req.user.role === "jobseeker") {
+      const existingApplication = await Application.findOne({
+        job: jobId,
+        applicant: req.user.id
+      });
+      hasApplied = !!existingApplication;
+    }
+
+    // Spread job into plain object and add hasApplied
+    res.status(200).json({
+      ...job.toObject(),
+      hasApplied
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* =========================================================
+   GET RECRUITER JOBS
+========================================================= */
+export const getRecruiterJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find({
+      recruiter: req.user.id,
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json(jobs);
+
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* =========================================================
+   GET JOB APPLICANTS
+========================================================= */
+export const getJobApplicants = async (req, res) => {
+  try {
+    const { jobId } = req.params;
+
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    if (job.recruiter.toString() !== req.user.id) {
+      return res.status(403).json({
+        message: "Not authorized",
+      });
+    }
+
+    const applications = await Application.find({ job: jobId })
+      .populate("applicant", "fullName email profile.skills profile.experience")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      totalApplicants: applications.length,
+      applicants: applications,
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* =========================================================
+   GET MY APPLICATIONS
+========================================================= */
+export const getMyApplications = async (req, res) => {
+  try {
+    if (req.user.role !== "jobseeker") {
+      return res.status(403).json({
+        message: "Only job seekers allowed",
+      });
+    }
+
+    const applications = await Application.find({
+      applicant: req.user.id,
+    })
+      .populate("job", "title companyName location jobType salary status")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      totalApplied: applications.length,
+      applications,
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* =========================================================
+   UPDATE JOB (Recruiter only)
+========================================================= */
+export const updateJob = async (req, res) => {
+  try {
+    const { jobId } = req.params;
+    const updates = req.body;
+
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    if (job.recruiter.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    if (updates.skillsRequired && Array.isArray(updates.skillsRequired)) {
+      updates.skillsRequired = updates.skillsRequired.map(s => s.trim().toLowerCase());
+    }
+
+    const updatedJob = await Job.findByIdAndUpdate(
+      jobId,
+      { $set: updates },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      message: "Job updated successfully",
+      job: updatedJob
+    });
+
+  } catch (error) {
+    console.error("Update Job Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* =========================================================
+   DELETE JOB (Recruiter only)
+========================================================= */
+export const deleteJob = async (req, res) => {
+  try {
+    const { jobId } = req.params;
+
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    if (job.recruiter.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    await Job.findByIdAndDelete(jobId);
+    await Application.deleteMany({ job: jobId });
+
+    res.status(200).json({ message: "Job deleted successfully" });
+
+  } catch (error) {
+    console.error("Delete Job Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* =========================================================
+   UPDATE APPLICATION STATUS (Recruiter only)
+========================================================= */
+export const updateApplicationStatus = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const { status } = req.body;
+
+    if (!status || !["Pending", "Shortlisted", "Interview", "Selected", "Rejected"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const application = await Application.findById(applicationId).populate('job');
+
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    // Only recruiter who created job can update status
+    if (application.job.recruiter.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    // Define next steps based on status
+    let nextStep = "Wait for recruiter review";
+    if (status === "Shortlisted") nextStep = "You have been shortlisted! Wait for interview details.";
+    if (status === "Interview") nextStep = "Prepare for technical round/interview";
+    if (status === "Selected") nextStep = "Check your email for offer details";
+    if (status === "Rejected") nextStep = "Keep applying! Better opportunities await.";
+
+    application.status = status;
+    application.nextStep = nextStep;
+
+    const { message: customMessage, interviewDetails } = req.body;
+
+    // Save interview details if provided
+    if (status === "Interview" && interviewDetails) {
+      application.interviewDetails = {
+        date: interviewDetails.date,
+        time: interviewDetails.time,
+        link: interviewDetails.link,
+        instructions: interviewDetails.instructions || ""
+      };
+    }
+
+    // Add custom feedback/message if provided
+    if (customMessage) {
+      application.messages.push({
+        sender: req.user.id,
+        senderModel: "Recruiter",
+        content: customMessage
+      });
+    }
+
+    await application.save();
+
+    // --- TRIGGER NOTIFICATION FOR APPLICANT ---
+    try {
+      await Notification.create({
+        recipient: application.applicant,
+        recipientModel: "JobSeeker",
+        title: `Application Update: ${status}`,
+        message: customMessage || `Your application for ${application.job.title} at ${application.job.companyName} has been updated to ${status}.`,
+        type: "ApplicationStatus",
+        link: `/my-applications/${applicationId}/tracker`
+      });
+    } catch (notifyError) {
+      console.error("Failed to send status notification:", notifyError);
+    }
+
+    res.status(200).json({
+      message: `Status updated to ${status}`,
+      application
+    });
+
+  } catch (error) {
+    console.error("Update Status Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* =========================================================
+   GET ALL RECRUITER APPLICATIONS
+========================================================= */
+export const getRecruiterAllApplications = async (req, res) => {
+  try {
+    // 1. Find all jobs posted by this recruiter
+    const jobs = await Job.find({ recruiter: req.user.id }).select("_id");
+    const jobIds = jobs.map(job => job._id);
+
+    // 2. Find all applications for these jobs
+    const applications = await Application.find({ job: { $in: jobIds } })
+      .populate("applicant", "fullName email profile.skills profile.experience profile.designation profile.profilePhotoId resume")
+      .populate("job", "title companyName location")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      totalApplicants: applications.length,
+      applications
+    });
+
+  } catch (error) {
+    console.error("Get All Recruiter Applications Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* =========================================================
+   ADD MESSAGE TO APPLICATION (Recruiter or JobSeeker)
+========================================================= */
+export const addApplicationMessage = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const { content } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ message: "Message content required" });
+    }
+
+    const application = await Application.findById(applicationId).populate('job');
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    // Check authorization (must be recruiter of the job or the applicant)
+    const isRecruiter = application.job.recruiter.toString() === req.user.id;
+    const isApplicant = application.applicant.toString() === req.user.id;
+
+    if (!isRecruiter && !isApplicant) {
+      return res.status(403).json({ message: "Not authorized to message on this application" });
+    }
+
+    const senderModel = isRecruiter ? "Recruiter" : "JobSeeker";
+    const recipientId = isRecruiter ? application.applicant : application.job.recruiter;
+    const recipientModel = isRecruiter ? "JobSeeker" : "Recruiter";
+
+    application.messages.push({
+      sender: req.user.id,
+      senderModel,
+      content
+    });
+
+    await application.save();
+
+    // Notify recipient
+    try {
+      await Notification.create({
+        recipient: recipientId,
+        recipientModel,
+        title: `New message for ${application.job.title}`,
+        message: content.substring(0, 50) + (content.length > 50 ? "..." : ""),
+        type: "System",
+        link: isRecruiter ? `/my-applications/${applicationId}/tracker` : `/recruiter/job/${application.job._id}/applicants`
+      });
+    } catch (notifyError) {
+      console.error("Failed to send message notification:", notifyError);
+    }
+
+    res.status(200).json({
+      message: "Message sent",
+      application
+    });
+
+  } catch (error) {
+    console.error("Add Message Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
