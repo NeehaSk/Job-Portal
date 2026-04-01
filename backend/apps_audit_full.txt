@@ -1,8 +1,0 @@
---- ALL APPLICATIONS IN DATABASE ---
-Total Applications: 6
-[Wed Mar 25 2026 02:07:35 GMT+0530 (India Standard Time)] Status: Pending | ApplicantID: 6993fdb96b45d168b1793e06 | Name: p sowmya (pothurajusowmya29@gmail.com) | AppDetails Email: pothurajusowmya29@gmail.com
-[Wed Mar 25 2026 00:08:53 GMT+0530 (India Standard Time)] Status: Pending | ApplicantID: 69c2da3dd2ca691b241cc4e0 | Name: John Doe (john.seeker@test.com) | AppDetails Email: N/A
-[Wed Mar 25 2026 00:08:53 GMT+0530 (India Standard Time)] Status: Shortlisted | ApplicantID: 69c2da3dd2ca691b241cc4e1 | Name: Emma Wilson (emma.seeker@test.com) | AppDetails Email: N/A
-[Wed Mar 25 2026 00:08:53 GMT+0530 (India Standard Time)] Status: Interview | ApplicantID: 69c2da3dd2ca691b241cc4e1 | Name: Emma Wilson (emma.seeker@test.com) | AppDetails Email: N/A
-[Wed Mar 25 2026 00:08:53 GMT+0530 (India Standard Time)] Status: Selected | ApplicantID: 69c2da3dd2ca691b241cc4e2 | Name: David Kim (david.seeker@test.com) | AppDetails Email: N/A
-[Wed Mar 25 2026 00:08:53 GMT+0530 (India Standard Time)] Status: Rejected | ApplicantID: 69c2da3dd2ca691b241cc4e0 | Name: John Doe (john.seeker@test.com) | AppDetails Email: N/A

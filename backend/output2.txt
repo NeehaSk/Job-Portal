@@ -1,6 +1,0 @@
-Total applications in entire database: 6
-Found 8 job seekers.
-- Seeker: p sowmya (pothurajusowmya29@gmail.com) has 1 applications.
-- Seeker: John Doe (john.seeker@test.com) has 2 applications.
-- Seeker: Emma Wilson (emma.seeker@test.com) has 2 applications.
-- Seeker: David Kim (david.seeker@test.com) has 1 applications.
