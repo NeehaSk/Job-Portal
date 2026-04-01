@@ -2,16 +2,8 @@ import React, { useState, useEffect, useCallback, useContext } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/apiCheck";
 import { AuthContext } from "../context/AuthContext";
-
-/* ─── Standard SVG Icons ─── */
-const BriefcaseIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>;
-const CheckCircleIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>;
-const BellIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>;
-const ClockIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>;
-const LightbulbIcon = () => <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>;
-const EyeIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>;
-const SearchIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35"></path></svg>;
-const BookmarkIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>;
+import { StatCard } from "../components/ProfileComponents";
+import { Briefcase, CheckCircle, Bell, Bookmark, Eye, Lightbulb } from "lucide-react";
 
 
 const Dashboard = () => {
@@ -69,78 +61,30 @@ const Dashboard = () => {
     return (
         <div className="min-h-screen bg-slate-50 pb-24 font-sans text-slate-800">
             
-            {/* ─── HEADER ─── */}
-            <header className="bg-white border-b border-slate-200 py-10 mb-8 shadow-sm">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                        <div>
-                            <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-md text-xs font-bold uppercase tracking-wide mb-3">
-                                Job Seeker Dashboard
-                            </div>
-                            <h1 className="text-3xl font-bold text-slate-900 leading-tight">
-                                Welcome back, {user?.fullName || 'User'}
-                            </h1>
-                            <p className="text-slate-500 mt-1">
-                                Your central hub for career progress and profile analytics.
-                            </p>
-                        </div>
-                        <div className="flex gap-4">
-                            <Link 
-                                to="/jobseeker/profile" 
-                                className="px-5 py-2.5 bg-white border border-slate-300 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm"
-                            >
-                                Edit Profile
-                            </Link>
-                            <Link 
-                                to="/jobs" 
-                                className="px-5 py-2.5 bg-indigo-600 border border-transparent text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm"
-                            >
-                                Search Jobs
-                            </Link>
-                        </div>
-                    </div>
+            {/* CORPORATE HEADER */}
+            <div className="h-56 bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 w-full flex flex-col justify-center relative overflow-hidden">
+                <div className="absolute inset-0 opacity-10">
+                    <svg className="absolute w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white"></path>
+                    </svg>
                 </div>
-            </header>
 
-            <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 relative z-10 text-center">
+                    <h1 className="text-white text-4xl font-black uppercase tracking-widest leading-none mb-3">
+                        Job Seeker Dashboard
+                    </h1>
+                    <p className="text-indigo-200 text-sm font-bold uppercase tracking-widest">Your central hub for career progress</p>
+                </div>
+            </div>
+
+            <main className="max-w-7xl mx-auto -mt-10 px-4 sm:px-6 relative z-20">
                 
                 {/* ─── TOP KPI METRICS GRID ─── */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                    <div className="bg-white rounded-xl border border-slate-200 p-6 flex flex-col justify-center shadow-sm hover:shadow-md transition-shadow">
-                        <div className="flex justify-between items-start mb-4">
-                            <div className="bg-indigo-50 p-3 rounded-lg text-indigo-600"><BriefcaseIcon /></div>
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Total</span>
-                        </div>
-                        <h2 className="text-3xl font-bold text-slate-900 mb-1">{stats.totalApplications}</h2>
-                        <Link to="/my-applications" className="text-sm font-medium text-indigo-600 hover:underline">View Applications →</Link>
-                    </div>
-
-                    <div className="bg-white rounded-xl border border-slate-200 p-6 flex flex-col justify-center shadow-sm hover:shadow-md transition-shadow">
-                        <div className="flex justify-between items-start mb-4">
-                            <div className="bg-emerald-50 p-3 rounded-lg text-emerald-600"><CheckCircleIcon /></div>
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Active</span>
-                        </div>
-                        <h2 className="text-3xl font-bold text-slate-900 mb-1">{activeInterviews}</h2>
-                        <p className="text-sm font-medium text-slate-500">Interview Requests</p>
-                    </div>
-
-                    <div className="bg-white rounded-xl border border-slate-200 p-6 flex flex-col justify-center shadow-sm hover:shadow-md transition-shadow">
-                        <div className="flex justify-between items-start mb-4">
-                            <div className="bg-amber-50 p-3 rounded-lg text-amber-600"><BellIcon /></div>
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Inbox</span>
-                        </div>
-                        <h2 className="text-3xl font-bold text-slate-900 mb-1">{stats.unreadNotifications}</h2>
-                        <p className="text-sm font-medium text-slate-500">Unread Notifications</p>
-                    </div>
-
-                    <div className="bg-white rounded-xl border border-slate-200 p-6 flex flex-col justify-center shadow-sm hover:shadow-md transition-shadow">
-                        <div className="flex justify-between items-start mb-4">
-                            <div className="bg-blue-50 p-3 rounded-lg text-blue-600"><ClockIcon /></div>
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Saved</span>
-                        </div>
-                        <h2 className="text-3xl font-bold text-slate-900 mb-1">{savedJobs.length}</h2>
-                        <p className="text-sm font-medium text-slate-500">Bookmarked Jobs</p>
-                    </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <StatCard label="Total Applications" value={stats.totalApplications} icon={<Briefcase size={28} />} color="indigo" />
+                    <StatCard label="Active Interviews" value={activeInterviews} icon={<CheckCircle size={28} />} color="emerald" />
+                    <StatCard label="Unread Notifications" value={stats.unreadNotifications} icon={<Bell size={28} />} color="amber" />
+                    <StatCard label="Bookmarked Jobs" value={savedJobs.length} icon={<Bookmark size={28} />} color="blue" />
                 </div>
 
                 {/* ─── MAIN CONTENT AREA (2 COLUMNS) ─── */}

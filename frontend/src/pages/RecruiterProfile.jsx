@@ -6,6 +6,7 @@ import ImageCropModal from "../components/ImageCropModal";
 import { getCroppedImg } from "../utils/imageCrop";
 import React, { useEffect, useState, useCallback, useRef, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { Building2, MapPin, Globe, Users, Lightbulb } from "lucide-react";
 
 const RecruiterProfile = () => {
   const navigate = useNavigate();
@@ -159,7 +160,9 @@ const RecruiterProfile = () => {
                       onError={() => setImgError(true)}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-6xl opacity-10">🏢</div>
+                    <div className="w-full h-full flex items-center justify-center text-6xl opacity-10 text-indigo-600">
+                      <Building2 size={64} />
+                    </div>
                   )}
 
                   <div className="absolute inset-0 bg-indigo-600/60 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-all duration-300 backdrop-blur-sm">
@@ -203,19 +206,19 @@ const RecruiterProfile = () => {
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black text-slate-200 uppercase tracking-widest mb-1">Location</span>
                   <span className="text-sm font-bold text-slate-600 flex items-center gap-1.5">
-                    <span className="text-indigo-400">📍</span> {profile.location || "Global HQ"}
+                    <MapPin size={14} className="text-indigo-400" /> {profile.location || "Global HQ"}
                   </span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black text-slate-200 uppercase tracking-widest mb-1">Network</span>
                   <span className="text-sm font-bold text-slate-600 flex items-center gap-1.5">
-                    <span className="text-indigo-400">🌐</span> {profile.website || "No link"}
+                    <Globe size={14} className="text-indigo-400" /> {profile.website || "No link"}
                   </span>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black text-slate-200 uppercase tracking-widest mb-1">Organization</span>
                   <span className="text-sm font-bold text-slate-600 flex items-center gap-1.5">
-                    <span className="text-indigo-400">👥</span> {profile.companySize || "Scale-up"}
+                    <Users size={14} className="text-indigo-400" /> {profile.companySize || "Scale-up"}
                   </span>
                 </div>
               </div>
@@ -235,7 +238,9 @@ const RecruiterProfile = () => {
               {/* HIRING TIP - NOW INSIDE STICKY SIDEBAR */}
               <div className="bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 p-8 rounded-[32px] shadow-xl shadow-indigo-100 relative overflow-hidden group">
                 <div className="relative z-10">
-                  <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-xl mb-4">💡</div>
+                  <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-xl mb-4 text-indigo-300">
+                    <Lightbulb size={24} />
+                  </div>
                   <h4 className="text-white font-black text-[10px] uppercase tracking-widest mb-2">Hiring Tip</h4>
                   <p className="text-indigo-100 text-[11px] leading-relaxed font-medium">
                     Adding a detailed organization bio increases application quality by 40%.

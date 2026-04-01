@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../api/apiCheck";
 import toast from "react-hot-toast";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import { AlertCircle, Building2 } from "lucide-react";
 
 export default function MyApplications() {
   const [applications, setApplications] = useState([]);
@@ -63,7 +64,9 @@ export default function MyApplications() {
       <div className="max-w-4xl mx-auto mt-8 px-4 sm:px-6">
       {error ? (
           <div className="bg-white rounded-2xl shadow-sm border border-rose-200 p-12 text-center">
-            <p className="text-rose-500 text-base font-semibold">⚠️ {error}</p>
+            <p className="text-rose-500 text-base font-semibold flex items-center justify-center gap-2">
+              <AlertCircle size={20} /> {error}
+            </p>
             <p className="text-slate-400 text-sm mt-2">Please make sure you are logged in as a <strong>Job Seeker</strong>.</p>
           </div>
         ) : applications.length === 0 ? (
@@ -78,8 +81,8 @@ export default function MyApplications() {
                 className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex items-center justify-between hover:border-indigo-200 transition-colors duration-300 group"
               >
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 bg-indigo-50 rounded-xl flex items-center justify-center text-xl shadow-inner group-hover:bg-indigo-100 transition-colors">
-                    🏢
+                  <div className="h-12 w-12 bg-indigo-50 rounded-xl flex items-center justify-center text-xl shadow-inner group-hover:bg-indigo-100 transition-colors text-indigo-600">
+                    <Building2 size={24} />
                   </div>
                 <div>
                     <h3 className="text-base font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors">{app.job?.title}</h3>

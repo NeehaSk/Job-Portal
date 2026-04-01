@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Building2, Briefcase, MapPin, DollarSign } from "lucide-react";
 import api from "../api/apiCheck";
 import toast from "react-hot-toast";
 
@@ -163,7 +164,9 @@ const SeekerATSView = () => {
                             
                             <div className="space-y-6">
                                 <div className="flex gap-4">
-                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm text-lg">🏢</div>
+                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm text-lg text-indigo-600">
+                                        <Building2 size={20} />
+                                    </div>
                                     <div>
                                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-tight block">Organization</label>
                                         <p className="text-sm font-bold text-slate-800">{application.job?.companyName}</p>
@@ -171,7 +174,9 @@ const SeekerATSView = () => {
                                 </div>
 
                                 <div className="flex gap-4">
-                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm text-lg">💼</div>
+                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm text-lg text-indigo-600">
+                                        <Briefcase size={20} />
+                                    </div>
                                     <div>
                                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-tight block">Position Type</label>
                                         <p className="text-sm font-bold text-slate-800">{application.job?.jobType}</p>
@@ -179,7 +184,9 @@ const SeekerATSView = () => {
                                 </div>
 
                                 <div className="flex gap-4">
-                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm text-lg">📍</div>
+                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm text-lg text-indigo-600">
+                                        <MapPin size={20} />
+                                    </div>
                                     <div>
                                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-tight block">Workstation</label>
                                         <p className="text-sm font-bold text-slate-800">{application.job?.location}</p>
@@ -187,7 +194,9 @@ const SeekerATSView = () => {
                                 </div>
 
                                 <div className="flex gap-4">
-                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm text-lg">💰</div>
+                                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm text-lg text-indigo-600">
+                                        <DollarSign size={20} />
+                                    </div>
                                     <div>
                                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-tight block">Comp. Structure</label>
                                         <p className="text-sm font-bold text-slate-800">

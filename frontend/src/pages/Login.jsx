@@ -45,7 +45,7 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.user.id);
       localStorage.setItem("userRole", role);
-      toast.success("Login successful 🎉");
+      toast.success("Login successful");
       loginUser({ token: res.data.token, user: res.data.user });
       if (role === "jobseeker") navigate("/jobseeker/profile");
       else if (role === "admin") navigate("/admin/dashboard");

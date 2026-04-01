@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Users, Mail, Briefcase, Calendar, FileText, ChevronRight, MoreHorizontal, Send } from "lucide-react";
 import api from "../api/apiCheck";
 import ApplicationThreadModal from "../components/ApplicationThreadModal";
 import toast from "react-hot-toast";
@@ -7,7 +8,7 @@ import toast from "react-hot-toast";
 const RecruiterApplicants = () => {
     const [applicants, setApplicants] = useState([]);
     const [viewMode, setViewMode] = useState("board"); // 'list' or 'board'
-    
+
     // Modal States
     const [selectedApp, setSelectedApp] = useState(null);
     const [showStatusModal, setShowStatusModal] = useState(false);
@@ -17,8 +18,7 @@ const RecruiterApplicants = () => {
     const [loading, setLoading] = useState(true);
     const [chatOpen, setChatOpen] = useState(false);
     const [chatApp, setChatApp] = useState(null);
-    
-    
+
     // Interview Scheduling States
     const [interviewData, setInterviewData] = useState({
         date: "",
@@ -44,10 +44,9 @@ const RecruiterApplicants = () => {
     }, []);
 
     const handleStatusUpdate = (applicationId, status) => {
-        // Find existing status to see if we're actually changing
         const app = applicants.find(a => a._id === applicationId);
         if (app && app.status === status) return;
-        
+
         setPendingAppId(applicationId);
         setPendingStatus(status);
         setShowStatusModal(true);
@@ -57,11 +56,11 @@ const RecruiterApplicants = () => {
     const onDragStart = (e, appId) => {
         e.dataTransfer.setData("appId", appId);
     };
-    
+
     const onDragOver = (e) => {
         e.preventDefault();
     };
-    
+
     const onDrop = (e, newStatus) => {
         const appId = e.dataTransfer.getData("appId");
         if (appId) {
@@ -77,9 +76,9 @@ const RecruiterApplicants = () => {
 
     const confirmStatusUpdate = async () => {
         try {
-            const payload = { 
+            const payload = {
                 status: pendingStatus,
-                message: statusMessage 
+                message: statusMessage
             };
 
             if (pendingStatus === "Interview") {
@@ -91,274 +90,287 @@ const RecruiterApplicants = () => {
 
             await api.put(`/jobs/application/${pendingAppId}/status`, payload);
             toast.success(`Candidate ${pendingStatus} successful`);
-            
-            // Success cleanup
+
             setShowStatusModal(false);
             setStatusMessage("");
             setInterviewData({ date: "", time: "", link: "", instructions: "" });
-            
-            // Refresh list
-            fetchApplicants(); 
+            fetchApplicants();
         } catch (error) {
             toast.error(error.response?.data?.message || "Update failed");
         }
     };
 
+    const getStatusColor = (status) => {
+        switch (status) {
+            case "Pending": return "bg-amber-50 text-amber-700 border-amber-100";
+            case "Shortlisted": return "bg-indigo-50 text-indigo-700 border-indigo-100";
+            case "Interview": return "bg-purple-50 text-purple-700 border-purple-100";
+            case "Selected": return "bg-emerald-50 text-emerald-700 border-emerald-100";
+            case "Rejected": return "bg-rose-50 text-rose-700 border-rose-100";
+            default: return "bg-slate-50 text-slate-700 border-slate-100";
+        }
+    };
+
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center text-indigo-600 font-medium bg-slate-50">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-                    <p className="font-bold uppercase tracking-widest text-xs">Syncing Applicants Console...</p>
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <div className="flex flex-col items-center gap-3">
+                    <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Loading Console...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-slate-100 pb-20">
-            {/* HEADER */}
-            <div className="h-56 bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 w-full flex flex-col justify-center relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10">
-                    <svg className="absolute w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                        <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white"></path>
-                    </svg>
-                </div>
-                <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 relative z-10 text-center">
-                    <h2 className="text-white text-4xl font-black uppercase tracking-widest leading-none mb-3">
-                        Applicants Console
-                    </h2>
-                    <p className="text-indigo-200 text-sm font-bold uppercase tracking-widest">Review candidates from all your active listings</p>
+        <div className="min-h-screen bg-slate-50 pb-20 font-sans pt-16">
+            {/* COMPACT PROFESSIONAL HEADER */}
+            <div className="bg-white border-b border-slate-200">
+                <div className="max-w-7xl mx-auto px-6 py-8 md:py-10">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div className="space-y-1">
+                            <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+                                Applicants Console
+                            </h2>
+                            <p className="text-slate-500 text-xs font-medium">Review and manage candidates across all active job listings</p>
+                        </div>
+
+                        <div className="flex items-center gap-3 bg-slate-100 p-1 rounded-xl w-fit">
+                            <button
+                                onClick={() => setViewMode("board")}
+                                className={`px-4 py-1.5 text-[10px] font-bold rounded-lg transition-all ${viewMode === "board" ? "bg-white text-indigo-600 shadow-sm shadow-slate-200" : "text-slate-500 hover:text-slate-700"}`}
+                            >
+                                Board
+                            </button>
+                            <button
+                                onClick={() => setViewMode("list")}
+                                className={`px-4 py-1.5 text-[10px] font-bold rounded-lg transition-all ${viewMode === "list" ? "bg-white text-indigo-600 shadow-sm shadow-slate-200" : "text-slate-500 hover:text-slate-700"}`}
+                            >
+                                List
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto -mt-10 px-4 sm:px-6 relative z-20">
+            <div className="max-w-7xl mx-auto px-6 py-10">
                 {applicants.length === 0 ? (
-                    <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 p-20 text-center">
-                        <div className="text-6xl mb-6 grayscale opacity-20">👥</div>
-                        <h3 className="text-xl font-extrabold text-slate-800 mb-2 tracking-tight uppercase">No applicants found</h3>
-                        <p className="text-slate-400 font-bold text-sm">When candidates apply to your jobs, they will appear here.</p>
+                    <div className="bg-white rounded-3xl border border-slate-200 p-24 text-center">
+                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 mx-auto mb-6">
+                            <Users size={24} />
+                        </div>
+                        <h3 className="text-lg font-bold text-slate-800 mb-2">No Candidates Yet</h3>
+                        <p className="text-slate-500 text-sm max-w-xs mx-auto">Applications for your job listings will automatically appear here once candidates apply.</p>
                     </div>
                 ) : (
-                    <div className="flex flex-col gap-6">
-                        <div className="flex items-center justify-between mb-2 px-4">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Showing {applicants.length} applications</span>
-                            <div className="flex gap-2 bg-white rounded-full p-1 shadow-sm border border-slate-100">
-                                <button 
-                                    onClick={() => setViewMode("board")}
-                                    className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-full transition-all ${viewMode === "board" ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "text-slate-400 hover:text-slate-600"}`}
-                                >
-                                    Board
-                                </button>
-                                <button 
-                                    onClick={() => setViewMode("list")}
-                                    className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-full transition-all ${viewMode === "list" ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "text-slate-400 hover:text-slate-600"}`}
-                                >
-                                    List
-                                </button>
-                            </div>
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between px-2">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em]">
+                                {applicants.length} Total Applications
+                            </span>
                         </div>
 
                         {viewMode === "list" ? (
-                            <div className="grid grid-cols-1 gap-6">
+                            <div className="grid grid-cols-1 gap-4">
                                 {applicants.map((app) => (
                                     <div
                                         key={app._id}
-                                        className="bg-white rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 p-8 flex flex-col md:flex-row md:items-center gap-8 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] group relative overflow-hidden"
+                                        className="bg-white rounded-2xl border border-slate-200 p-4 md:p-5 flex flex-col md:flex-row md:items-center gap-5 hover:border-indigo-200 transition-all hover:shadow-lg hover:shadow-slate-200/50 group"
                                     >
-                                        <div className="absolute top-0 right-0">
-                                            <div className="bg-indigo-600 text-white text-[9px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-tighter shadow-sm">
-                                                {app.job?.title}
-                                            </div>
-                                        </div>
-
-                                        <div className="w-24 h-24 rounded-[32px] bg-slate-50 border border-slate-100 overflow-hidden flex-shrink-0 relative group-hover:scale-105 transition-transform duration-500">
+                                        {/* AVATAR - COMPACT */}
+                                        <div className="w-14 h-14 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden flex-shrink-0">
                                             {app.applicant?.profile?.profilePhotoId ? (
                                                 <img
                                                     src={`http://localhost:5000/api/files/${app.applicant.profile.profilePhotoId}`}
-                                                    className="w-full h-full object-cover"
+                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                                     alt="Avatar"
                                                 />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-4xl opacity-20 bg-indigo-50 text-indigo-600 font-black">
+                                                <div className="w-full h-full flex items-center justify-center text-lg bg-indigo-50 text-indigo-600 font-bold">
                                                     {app.applicant?.fullName?.charAt(0) || "U"}
                                                 </div>
                                             )}
                                         </div>
 
-                                        <div className="flex-1">
-                                            <div className="flex flex-wrap items-center gap-3 mb-2">
-                                                <Link 
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex flex-wrap items-center gap-3 mb-1">
+                                                <Link
                                                     to={`/recruiter/seeker/${app.applicant?._id}`}
-                                                    className="text-2xl font-black text-slate-800 tracking-tight uppercase hover:text-indigo-600 transition-colors"
+                                                    className="text-base font-bold text-slate-900 truncate hover:text-indigo-600 transition-colors"
                                                 >
                                                     {app.applicantDetails?.fullName || app.applicant?.fullName || "Applicant"}
                                                 </Link>
-                                                <span
-                                                    className={`px-4 py-1 text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm border ${app.status === "Pending"
-                                                        ? "bg-amber-50 text-amber-600 border-amber-100"
-                                                        : app.status === "Interview"
-                                                            ? "bg-purple-50 text-purple-600 border-purple-100"
-                                                            : app.status === "Selected"
-                                                                ? "bg-green-50 text-green-600 border-green-100"
-                                                                : app.status === "Shortlisted"
-                                                                    ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-                                                                    : "bg-rose-50 text-rose-600 border-rose-100"
-                                                        }`}
-                                                >
+                                                <span className={`px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-md border ${getStatusColor(app.status)}`}>
                                                     {app.status}
                                                 </span>
                                             </div>
 
-                                            <p className="text-sm font-bold text-slate-400 mb-6 flex items-center gap-2">
-                                                <span className="text-indigo-400">✉</span> {app.applicantDetails?.email || app.applicant?.email}
-                                            </p>
+                                            <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-400">
+                                                <span className="flex items-center gap-1.5 min-w-0">
+                                                    <Mail size={12} className="text-slate-300 shrink-0" />
+                                                    <span className="truncate">{app.applicantDetails?.email || app.applicant?.email}</span>
+                                                </span>
+                                                <span className="flex items-center gap-1.5 min-w-0">
+                                                    <Briefcase size={12} className="text-slate-300 shrink-0" />
+                                                    <span className="truncate uppercase tracking-tight text-[10px] font-bold">{app.job?.title}</span>
+                                                </span>
+                                            </div>
+                                        </div>
 
-                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                                                <div className="flex flex-col">
-                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Experience</span>
-                                                    <span className="text-sm font-bold text-slate-600">{app.applicantDetails?.experience || app.applicant?.profile?.experience || "N/A"}</span>
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Skills</span>
-                                                    <div className="flex flex-wrap gap-1 mt-1">
-                                                        {(app.applicantDetails?.skills || app.applicant?.profile?.skills || []).slice(0, 3).map((skill, idx) => (
-                                                            <span key={idx} className="bg-slate-50 text-[10px] px-2 py-0.5 rounded border border-slate-100 text-slate-500 font-bold">
-                                                                {skill}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col col-span-2">
-                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Applied For</span>
-                                                    <span className="text-sm font-black text-indigo-600 uppercase tracking-tight truncate">{app.job?.title}</span>
+                                        {/* INFO GRID - COMPACT */}
+                                        <div className="hidden lg:grid grid-cols-2 gap-x-6 border-l border-slate-100 pl-6 h-full">
+                                            <div className="flex flex-col">
+                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Exp</span>
+                                                <span className="text-xs font-bold text-slate-700">{app.applicantDetails?.experience || app.applicant?.profile?.experience || "0"}y</span>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Skills</span>
+                                                <div className="flex gap-1 mt-0.5 overflow-hidden">
+                                                    {(app.applicantDetails?.skills || app.applicant?.profile?.skills || []).slice(0, 2).map((skill, idx) => (
+                                                        <span key={idx} className="bg-slate-50 text-[8px] px-1.5 py-0.5 rounded border border-slate-100 text-slate-500 font-bold whitespace-nowrap">
+                                                            {skill}
+                                                        </span>
+                                                    ))}
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="flex flex-wrap md:flex-nowrap gap-3 pt-6 md:pt-0">
+                                        <div className="flex items-center gap-2 pt-4 md:pt-0 border-t md:border-t-0 border-slate-50">
                                             {app.status === "Pending" && (
                                                 <button
                                                     onClick={() => handleStatusUpdate(app._id, "Shortlisted")}
-                                                    className="px-8 py-3 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-100 active:scale-95"
+                                                    className="flex-1 md:flex-none px-4 py-2 bg-emerald-600 text-white text-[9px] font-bold uppercase tracking-widest rounded-lg hover:bg-emerald-700 transition-all active:scale-95"
                                                 >
                                                     Shortlist
                                                 </button>
                                             )}
-
                                             {app.status === "Shortlisted" && (
                                                 <button
                                                     onClick={() => handleStatusUpdate(app._id, "Interview")}
-                                                    className="px-8 py-3 bg-purple-500 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-purple-600 transition-all shadow-xl shadow-purple-100 active:scale-95"
+                                                    className="flex-1 md:flex-none px-4 py-2 bg-purple-600 text-white text-[9px] font-bold uppercase tracking-widest rounded-lg hover:bg-purple-700 transition-all active:scale-95"
                                                 >
                                                     Interview
                                                 </button>
                                             )}
-
                                             {app.status === "Interview" && (
                                                 <button
                                                     onClick={() => handleStatusUpdate(app._id, "Selected")}
-                                                    className="px-8 py-3 bg-green-500 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-green-600 transition-all shadow-xl shadow-green-100 active:scale-95"
+                                                    className="flex-1 md:flex-none px-4 py-2 bg-green-600 text-white text-[9px] font-bold uppercase tracking-widest rounded-lg hover:bg-green-700 transition-all active:scale-95"
                                                 >
                                                     Select
                                                 </button>
                                             )}
-
                                             {app.status !== "Rejected" && app.status !== "Selected" && (
                                                 <button
                                                     onClick={() => handleStatusUpdate(app._id, "Rejected")}
-                                                    className="px-8 py-3 bg-white text-rose-600 border border-rose-100 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-rose-50 transition-all active:scale-95"
+                                                    className="flex-1 md:flex-none px-4 py-2 bg-white text-slate-400 hover:text-rose-600 border border-slate-200 hover:border-rose-200 text-[9px] font-bold uppercase tracking-widest rounded-lg transition-all"
                                                 >
                                                     Reject
                                                 </button>
                                             )}
 
-
-
-                                            {app.applicant?.profile?.resumeId && (
-                                                <a
-                                                    href={`http://localhost:5000/api/files/${app.applicant.profile.resumeId}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="px-8 py-3 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-black transition-all flex items-center gap-3 shadow-xl shadow-slate-200 active:scale-95"
+                                            <div className="flex gap-2 ml-2">
+                                                {app.applicant?.profile?.resumeId && (
+                                                    <a
+                                                        href={`http://localhost:5000/api/files/${app.applicant.profile.resumeId}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-black transition-all flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest"
+                                                        title="View CV"
+                                                    >
+                                                        <FileText size={14} />
+                                                        <span>CV</span>
+                                                    </a>
+                                                )}
+                                                <button
+                                                    onClick={() => { setChatApp(app); setChatOpen(true); }}
+                                                    className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-all flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest"
+                                                    title="Send Message"
                                                 >
-                                                    <span>CV</span>
-                                                </a>
-                                            )}
-                                            <button
-                                                onClick={() => { setChatApp(app); setChatOpen(true); }}
-                                                className="px-8 py-3 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-100 transition-all flex items-center gap-3 shadow-xl shadow-indigo-200"
-                                            >
-                                                <span>Chat</span>
-                                            </button>
+                                                    <Mail size={14} />
+                                                    <span>Send Mail</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="flex gap-6 overflow-x-auto pb-8 snap-x" style={{ scrollbarWidth: "thin" }}>
+                            <div className="flex gap-4 overflow-x-auto pb-8 snap-x" style={{ scrollbarWidth: "thin" }}>
                                 {columns.map(col => (
-                                    <div 
-                                        key={col} 
-                                        className={`min-w-[320px] max-w-[320px] rounded-[32px] p-4 flex-shrink-0 snap-center border-t-4 transition-colors ${
-                                            col === "Pending" ? "bg-amber-50/50 border-amber-400" :
-                                            col === "Shortlisted" ? "bg-emerald-50/50 border-emerald-400" :
-                                            col === "Interview" ? "bg-purple-50/50 border-purple-400" :
-                                            col === "Selected" ? "bg-green-50/50 border-green-400" :
-                                            "bg-rose-50/50 border-rose-400"
-                                        }`}
+                                    <div
+                                        key={col}
+                                        className="min-w-[260px] max-w-[260px] flex-shrink-0 snap-current flex flex-col h-full"
                                     >
-                                        <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-6 flex justify-between items-center">
-                                            {col}
-                                            <span className="bg-white text-slate-500 font-bold px-3 py-1 rounded-full shadow-sm text-[10px]">{groupedApplicants[col].length}</span>
-                                        </h3>
-                                        <div className="space-y-4 min-h-[600px]" 
-                                            onDragOver={onDragOver} 
+                                        <div className="flex items-center justify-between mb-4 px-2">
+                                            <h3 className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.15em] flex items-center gap-2">
+                                                <span className={`w-1.5 h-1.5 rounded-full ${col === "Pending" ? "bg-amber-400" :
+                                                        col === "Shortlisted" ? "bg-indigo-400" :
+                                                            col === "Interview" ? "bg-purple-400" :
+                                                                col === "Selected" ? "bg-green-400" :
+                                                                    "bg-rose-400"
+                                                    }`}></span>
+                                                {col}
+                                            </h3>
+                                            <span className="bg-slate-200 text-slate-600 font-bold px-1.5 py-0.5 rounded text-[8px]">{groupedApplicants[col].length}</span>
+                                        </div>
+
+                                        <div className="space-y-3 min-h-[450px] bg-slate-100/50 p-2 rounded-2xl border border-slate-100/50"
+                                            onDragOver={onDragOver}
                                             onDrop={(e) => onDrop(e, col)}
                                         >
                                             {groupedApplicants[col].map(app => (
-                                                <div 
-                                                    draggable 
+                                                <div
+                                                    draggable
                                                     onDragStart={(e) => onDragStart(e, app._id)}
-                                                    key={app._id} 
-                                                    className="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 cursor-grab active:cursor-grabbing hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all group hover:-translate-y-1"
+                                                    key={app._id}
+                                                    className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-grab active:cursor-grabbing hover:border-indigo-300 transition-all group"
                                                 >
-                                                    <div className="flex items-center gap-3 mb-4">
-                                                        <div className="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0 shadow-inner">
+                                                    <div className="flex items-center gap-3 mb-3">
+                                                        <div className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-100 overflow-hidden flex-shrink-0">
                                                             {app.applicant?.profile?.profilePhotoId ? (
                                                                 <img src={`http://localhost:5000/api/files/${app.applicant.profile.profilePhotoId}`} className="w-full h-full object-cover" />
                                                             ) : (
-                                                                <div className="w-full h-full flex items-center justify-center text-indigo-600 font-black">{app.applicantDetails?.fullName?.charAt(0) || "U"}</div>
+                                                                <div className="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-600 font-bold text-xs">{app.applicantDetails?.fullName?.charAt(0) || "U"}</div>
                                                             )}
                                                         </div>
-                                                        <div className="overflow-hidden">
-                                                            <Link to={`/recruiter/seeker/${app.applicant?._id}`} className="text-sm font-black text-slate-800 hover:text-indigo-600 truncate block transition-colors">
+                                                        <div className="min-w-0">
+                                                            <Link to={`/recruiter/seeker/${app.applicant?._id}`} className="text-[11px] font-bold text-slate-900 hover:text-indigo-600 block transition-colors truncate">
                                                                 {app.applicantDetails?.fullName || app.applicant?.fullName || "Applicant"}
                                                             </Link>
-                                                            <p className="text-[10px] font-bold text-slate-400 truncate uppercase tracking-wider">{app.job?.title}</p>
+                                                            <p className="text-[8px] font-medium text-slate-400 truncate uppercase mt-0.5 tracking-tight">{app.job?.title}</p>
                                                         </div>
                                                     </div>
-                                                    
-                                                    <div className="text-[10px] font-bold text-slate-500 flex flex-wrap gap-2 mb-4">
-                                                        <span className="bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">{app.applicantDetails?.experience || app.applicant?.profile?.experience || "Fresher"} yrs</span>
-                                                    </div>
 
-                                                    <div className="flex gap-2">
-                                                        {app.applicant?.profile?.resumeId && (
-                                                            <a href={`http://localhost:5000/api/files/${app.applicant.profile.resumeId}`} target="_blank" className="flex-1 bg-slate-900 hover:bg-black text-white text-[10px] font-black uppercase tracking-widest py-2.5 rounded-xl text-center shadow-lg shadow-slate-200 transition-colors">CV</a>
-                                                        )}
-                                                        <button 
-                                                            onClick={() => { setChatApp(app); setChatOpen(true); }}
-                                                            className="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-[10px] font-black uppercase tracking-widest py-2.5 rounded-xl text-center transition-colors"
-                                                        >
-                                                            Chat
-                                                        </button>
+                                                    <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-50">
+                                                        <span className="bg-slate-50 text-[8px] font-bold px-1.5 py-0.5 rounded text-slate-500 border border-slate-100">
+                                                            {app.applicantDetails?.experience || app.applicant?.profile?.experience || "0"}y Exp
+                                                        </span>
+                                                        <div className="flex gap-1.5">
+                                                            {app.applicant?.profile?.resumeId && (
+                                                                <a
+                                                                    href={`http://localhost:5000/api/files/${app.applicant.profile.resumeId}`}
+                                                                    target="_blank"
+                                                                    className="px-2.5 py-1.5 bg-slate-900 text-white rounded-lg flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider hover:bg-black"
+                                                                >
+                                                                    <FileText size={12} />
+                                                                    <span>CV</span>
+                                                                </a>
+                                                            )}
+                                                            <button
+                                                                onClick={() => { setChatApp(app); setChatOpen(true); }}
+                                                                className="px-2.5 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider hover:bg-indigo-100"
+                                                            >
+                                                                <Mail size={12} />
+                                                                <span>Message</span>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             ))}
                                             {groupedApplicants[col].length === 0 && (
-                                                <div className="h-24 border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center text-[10px] font-bold text-slate-400 uppercase tracking-widest selection:bg-transparent">
-                                                    Drop Here
+                                                <div className="h-16 border border-dashed border-slate-200 rounded-xl flex items-center justify-center text-[9px] font-bold text-slate-400 uppercase tracking-widest italic opacity-50">
+                                                    Empty
                                                 </div>
                                             )}
                                         </div>
@@ -370,90 +382,77 @@ const RecruiterApplicants = () => {
                 )}
             </div>
 
-            {/* INTEGRATED STATUS MODAL (SHORTLIST, INTERVIEW, REJECT, SELECT) */}
+            {/* STATUS MODAL - COMPACT */}
             {showStatusModal && (
-                <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-slate-900/80 backdrop-blur-xl">
-                    <div className="bg-white w-full max-w-lg rounded-[48px] shadow-2xl p-12 animate-in fade-in zoom-in duration-300 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -mr-16 -mt-16"></div>
-                        
-                        <div className="relative z-10">
-                            <h3 className="text-3xl font-black text-slate-800 uppercase tracking-tight mb-2 leading-none">
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
+                    <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+                        <div>
+                            <h3 className="text-lg font-bold text-slate-900 mb-1">
                                 {pendingStatus === "Interview" ? "Schedule Interview" : `Confirm ${pendingStatus}`}
                             </h3>
-                            <p className="text-sm font-bold text-slate-400 mb-8 uppercase tracking-widest leading-relaxed">
-                                {pendingStatus === "Interview" 
-                                    ? "Set up the technical or managerial round" 
-                                    : `Provide feedback or instructions for this ${pendingStatus.toLowerCase()} candidate`}
+                            <p className="text-xs text-slate-500 mb-6 font-medium">
+                                {pendingStatus === "Interview"
+                                    ? "Define the session details."
+                                    : `Apply status update to this candidate.`}
                             </p>
 
-                            {/* CONDITIONAL INTERVIEW FIELDS */}
                             {pendingStatus === "Interview" && (
-                                <div className="space-y-4 mb-8">
+                                <div className="space-y-4 mb-6">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-1">
-                                            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Date</label>
-                                            <input 
-                                                type="date" 
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold text-slate-700 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all"
+                                            <label className="text-[10px] font-bold text-slate-500 uppercase ml-0.5 tracking-wider">Date</label>
+                                            <input
+                                                type="date"
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-xs font-semibold outline-none focus:border-indigo-600 transition-all"
                                                 value={interviewData.date}
-                                                onChange={(e) => setInterviewData({...interviewData, date: e.target.value})}
+                                                onChange={(e) => setInterviewData({ ...interviewData, date: e.target.value })}
                                             />
                                         </div>
                                         <div className="space-y-1">
-                                            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Time</label>
-                                            <input 
-                                                type="time" 
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold text-slate-700 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all"
+                                            <label className="text-[10px] font-bold text-slate-500 uppercase ml-0.5 tracking-wider">Time</label>
+                                            <input
+                                                type="time"
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-xs font-semibold outline-none focus:border-indigo-600 transition-all"
                                                 value={interviewData.time}
-                                                onChange={(e) => setInterviewData({...interviewData, time: e.target.value})}
+                                                onChange={(e) => setInterviewData({ ...interviewData, time: e.target.value })}
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Interview Link (Zoom/Meet)</label>
-                                        <input 
-                                            type="url" 
-                                            placeholder="https://meet.google.com/..."
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold text-slate-700 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all"
+                                        <label className="text-[10px] font-bold text-slate-500 uppercase ml-0.5 tracking-wider">Meet Link</label>
+                                        <input
+                                            type="url"
+                                            placeholder="https://..."
+                                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-xs font-semibold outline-none focus:border-indigo-600 transition-all"
                                             value={interviewData.link}
-                                            onChange={(e) => setInterviewData({...interviewData, link: e.target.value})}
-                                        />
-                                    </div>
-                                     <div className="space-y-1">
-                                        <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Internal Instructions (Optional)</label>
-                                        <input 
-                                            type="text" 
-                                            placeholder="Code editor ready, 45 mins technical interview"
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold text-slate-700 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all"
-                                            value={interviewData.instructions}
-                                            onChange={(e) => setInterviewData({...interviewData, instructions: e.target.value})}
+                                            onChange={(e) => setInterviewData({ ...interviewData, link: e.target.value })}
                                         />
                                     </div>
                                 </div>
                             )}
 
-                            <div className="space-y-1 mb-8">
-                                <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Candidate Message / Feedback</label>
+                            <div className="space-y-1 mb-6">
+                                <label className="text-[10px] font-bold text-slate-500 uppercase ml-0.5 tracking-wider">Message (Optional)</label>
                                 <textarea
                                     value={statusMessage}
                                     onChange={(e) => setStatusMessage(e.target.value)}
-                                    placeholder={pendingStatus === "Interview" ? "Join the link 5 mins early with your CV." : "Add a custom note..."}
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-[32px] p-6 text-sm font-bold text-slate-700 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all min-h-[120px]"
+                                    placeholder="Brief note to candidate..."
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs font-semibold outline-none focus:border-indigo-600 transition-all min-h-[80px]"
                                 />
                             </div>
 
-                            <div className="flex gap-4">
+                            <div className="flex gap-2.5">
                                 <button
-                                    onClick={() => { setShowStatusModal(false); setStatusMessage(""); setInterviewData({date:"", time:"", link:"", instructions:""}); }}
-                                    className="flex-1 py-5 bg-slate-50 text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] rounded-3xl hover:bg-slate-100 hover:text-slate-600 transition-all border border-slate-100/50"
+                                    onClick={() => { setShowStatusModal(false); setStatusMessage(""); setInterviewData({ date: "", time: "", link: "", instructions: "" }); }}
+                                    className="flex-1 py-2.5 text-[10px] font-bold text-slate-400 rounded-lg hover:bg-slate-50 uppercase tracking-widest transition-all"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={confirmStatusUpdate}
-                                    className="flex-1 py-5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-3xl hover:bg-black shadow-2xl shadow-indigo-100 transition-all active:scale-95 border border-slate-800"
+                                    className="flex-[2] py-2.5 bg-indigo-600 text-white text-[10px] font-bold rounded-lg hover:bg-indigo-700 uppercase tracking-widest shadow-lg shadow-indigo-100/50 transition-all active:scale-95"
                                 >
-                                    Confirm Action
+                                    Update Status
                                 </button>
                             </div>
                         </div>
@@ -461,15 +460,13 @@ const RecruiterApplicants = () => {
                 </div>
             )}
 
-
-            {/* MESSAGING MODAL */}
             {chatApp && (
-                <ApplicationThreadModal 
-                    isOpen={chatOpen} 
-                    onClose={() => setChatOpen(false)} 
-                    applicationId={chatApp._id} 
-                    application={chatApp} 
-                    role="Recruiter" 
+                <ApplicationThreadModal
+                    isOpen={chatOpen}
+                    onClose={() => setChatOpen(false)}
+                    applicationId={chatApp._id}
+                    application={chatApp}
+                    role="Recruiter"
                 />
             )}
         </div>

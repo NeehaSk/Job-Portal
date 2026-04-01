@@ -160,14 +160,14 @@ const CreateJob = () => {
                             <Section title="Requirements & Skills">
                                 <div className="space-y-8">
                                     <div className="space-y-2">
-                                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Job Description</label>
+                                        <label className="text-xs font-bold text-slate-700">Job Description</label>
                                         <textarea
                                             name="description"
                                             rows="5"
                                             value={jobData.description}
                                             onChange={handleChange}
                                             placeholder="Clearly outline roles and responsibilities..."
-                                            className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 focus:bg-white focus:outline-none transition-all text-slate-700 font-medium leading-relaxed shadow-inner"
+                                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 focus:outline-none transition-all text-sm text-slate-800 font-medium leading-relaxed placeholder:text-slate-400"
                                             required
                                         ></textarea>
                                     </div>
@@ -190,13 +190,13 @@ const CreateJob = () => {
                                 </div>
                             </Section>
 
-                            <div className="pt-8 border-t border-slate-50">
+                            <div className="pt-6 border-t border-slate-200 flex justify-end">
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full py-5 bg-indigo-600 text-white font-black rounded-2xl shadow-2xl shadow-indigo-200 hover:bg-indigo-700 transition-all transform active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3 uppercase tracking-widest text-xs"
+                                    className="px-8 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-md shadow-indigo-200 hover:bg-indigo-700 hover:shadow-lg focus:ring-4 focus:ring-indigo-500/20 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
                                 >
-                                    {loading ? "Publishing listing..." : "🚀 Post Job Vacancy"}
+                                    {loading ? "Publishing listing..." : "Publish Job Vacancy"}
                                 </button>
                             </div>
 
@@ -209,35 +209,35 @@ const CreateJob = () => {
 };
 
 const Section = ({ title, children }) => (
-    <div className="space-y-8">
-        <h3 className="text-xl font-black text-slate-800 flex items-center gap-4 uppercase tracking-tight">
-            <span className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg font-black shadow-inner">
-                {title.startsWith("Basic") ? "01" : title.startsWith("Salary") ? "02" : "03"}
+    <div className="space-y-6">
+        <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-3">
+            <span className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold">
+                {title.startsWith("Basic") ? "1" : title.startsWith("Salary") ? "2" : "3"}
             </span>
             {title}
         </h3>
-        <div className="pl-2 border-l-2 border-slate-50 ml-6">
+        <div className="pt-2">
             {children}
         </div>
     </div>
 );
 
 const Input = ({ label, ...props }) => (
-    <div className="space-y-2">
-        <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest">{label}</label>
+    <div className="space-y-1.5">
+        <label className="text-xs font-bold text-slate-700">{label}</label>
         <input
             {...props}
-            className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 focus:bg-white focus:outline-none transition-all text-slate-700 font-bold placeholder:text-slate-300 shadow-inner"
+            className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 focus:outline-none transition-all text-sm text-slate-800 font-semibold placeholder:text-slate-400 placeholder:font-medium"
         />
     </div>
 );
 
 const Select = ({ label, options, ...props }) => (
-    <div className="space-y-2">
-        <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest">{label}</label>
+    <div className="space-y-1.5">
+        <label className="text-xs font-bold text-slate-700">{label}</label>
         <select
             {...props}
-            className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 focus:bg-white focus:outline-none transition-all text-slate-700 font-bold shadow-inner"
+            className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 focus:outline-none transition-all text-sm text-slate-800 font-semibold"
         >
             {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
         </select>

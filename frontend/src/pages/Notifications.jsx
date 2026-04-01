@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from "../api/apiCheck";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { Briefcase, FileText, Bell, Mailbox } from "lucide-react";
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState([]);
@@ -45,9 +46,9 @@ const Notifications = () => {
 
     const getIcon = (type) => {
         switch (type) {
-            case "NewJob": return "💼";
-            case "ApplicationStatus": return "📑";
-            default: return "🔔";
+            case "NewJob": return <Briefcase size={20} />;
+            case "ApplicationStatus": return <FileText size={20} />;
+            default: return <Bell size={20} />;
         }
     };
 
@@ -124,7 +125,9 @@ const Notifications = () => {
                     </div>
                 ) : (
                     <div className="text-center py-32 bg-white rounded-[3rem] border border-slate-100 italic">
-                        <div className="text-5xl mb-6">📭</div>
+                        <div className="text-5xl mb-6 mx-auto flex justify-center text-slate-200">
+                            <Mailbox size={64} />
+                        </div>
                         <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">All caught up</h3>
                         <p className="text-slate-500 font-bold text-sm mt-1 uppercase tracking-widest">No new notifications at the moment</p>
                     </div>

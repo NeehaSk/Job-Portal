@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/apiCheck";
 import { AuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
+import { Heart, MapPin, Clock, Building2, DollarSign, GraduationCap } from "lucide-react";
 
 const JobDetails = () => {
     const { jobId } = useParams();
@@ -77,7 +78,7 @@ const JobDetails = () => {
         setIsApplying(true);
         try {
             await api.post(`/jobs/${jobId}/apply`, applyFormData);
-            toast.success("Applied successfully! 🚀");
+            toast.success("Applied successfully!");
             setApplyModalOpen(false);
             fetchJobDetails(); // Refresh to show applied status
         } catch (error) {
@@ -196,7 +197,11 @@ const JobDetails = () => {
                                         : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                                     }`}
                             >
-                                {isSaved ? "Saved ♥" : "Save for later ♡"}
+                                {isSaved ? (
+                                    <span className="flex items-center gap-2">Saved <Heart size={16} fill="currentColor" /></span>
+                                ) : (
+                                    <span className="flex items-center gap-2">Save for later <Heart size={16} /></span>
+                                )}
                             </button>
                             <button
                                 onClick={() => setApplyModalOpen(true)}
@@ -327,11 +332,11 @@ const JobDetails = () => {
                             <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Key Insights</h3>
 
                             <div className="space-y-6">
-                                <Insight icon="📍" label="Location" value={job?.location} />
-                                <Insight icon="⏳" label="Job Type" value={job?.jobType} />
-                                <Insight icon="🏢" label="Work Mode" value={job?.workMode} />
-                                <Insight icon="💰" label="Salary Range" value={`${job?.salary?.min?.toLocaleString()} - ${job?.salary?.max?.toLocaleString()} ${job?.salary?.currency}`} />
-                                <Insight icon="🎓" label="Experience" value={job?.experienceLevel} />
+                                <Insight icon={<MapPin size={18} />} label="Location" value={job?.location} />
+                                <Insight icon={<Clock size={18} />} label="Job Type" value={job?.jobType} />
+                                <Insight icon={<Building2 size={18} />} label="Work Mode" value={job?.workMode} />
+                                <Insight icon={<DollarSign size={18} />} label="Salary Range" value={`${job?.salary?.min?.toLocaleString()} - ${job?.salary?.max?.toLocaleString()} ${job?.salary?.currency}`} />
+                                <Insight icon={<GraduationCap size={18} />} label="Experience" value={job?.experienceLevel} />
                             </div>
 
                             {ownsJob && (
@@ -444,7 +449,7 @@ const JobDetails = () => {
 
 const Insight = ({ icon, label, value }) => (
     <div className="flex items-center gap-4 group">
-        <div className="w-12 h-12 rounded-2xl bg-indigo-50/50 text-xl flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
+        <div className="w-12 h-12 rounded-2xl bg-indigo-50/50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
             {icon}
         </div>
         <div>

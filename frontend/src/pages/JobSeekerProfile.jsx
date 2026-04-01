@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef, useContext } from "rea
 import api from "../api/apiCheck";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { User, FileText, GraduationCap, Building2 } from "lucide-react";
 import { ProfileCard, QuickLinksSidebar, SkillTag, InfoRow } from "../components/ProfileComponents";
 import ImageCropModal from "../components/ImageCropModal";
 import { getCroppedImg } from "../utils/imageCrop";
@@ -309,7 +310,7 @@ const JobSeekerProfile = () => {
   if (loading) return <div className="h-screen flex items-center justify-center font-bold text-blue-600 animate-pulse text-lg tracking-tight">Syncing Profile...</div>;
 
   return (
-    <div className="profile-page min-h-screen bg-[#fafbfc] pb-24 font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="profile-page min-h-screen bg-slate-50 pb-24 font-sans selection:bg-slate-200 selection:text-slate-900 pt-14">
 
       {showCropModal && (
         <ImageCropModal
@@ -324,9 +325,9 @@ const JobSeekerProfile = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
 
-            {/* Circular Profile Pic Design */}
+            {/* Circular Profile Pic Design - REDUCED SIZE */}
             <div className="relative group">
-              <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 bg-white rounded-full p-1.5 shadow-xl border border-slate-100">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 bg-white rounded-full p-1 shadow-md border border-slate-100">
                 <div
                   onClick={() => fileInputRef.current.click()}
                   className="w-full h-full rounded-full overflow-hidden bg-slate-50 cursor-pointer relative group/img"
@@ -339,7 +340,9 @@ const JobSeekerProfile = () => {
                       onError={() => setImgError(true)}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-4xl sm:text-6xl text-slate-300">👤</div>
+                    <div className="w-full h-full flex items-center justify-center text-3xl sm:text-4xl text-slate-200">
+                      <User size={48} />
+                    </div>
                   )}
 
                   <div className="absolute inset-0 bg-blue-600/60 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-all duration-300 backdrop-blur-sm">
@@ -367,22 +370,22 @@ const JobSeekerProfile = () => {
 
             <div className="flex-1 text-center md:text-left space-y-3 md:space-y-4">
               <div className="space-y-1">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-full text-[11px] font-bold tracking-wider mb-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
-                  Open to Work
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[9px] font-bold uppercase tracking-wider mb-2 border border-slate-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  Active Candidate
                 </div>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-800 tracking-tight leading-none">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 tracking-tight leading-none">
                   {profile.fullName}
                 </h1>
-                <p className="text-sm sm:text-base md:text-lg font-bold text-slate-400 max-w-2xl leading-relaxed">
-                  Looking for opportunities in <span className="text-blue-600">{profile.location || "High-growth tech"}</span>
+                <p className="text-xs sm:text-sm md:text-base font-medium text-slate-500 max-w-2xl leading-relaxed">
+                  Based in <span className="text-indigo-600 font-bold">{profile.location || "International Network"}</span>
                 </p>
               </div>
 
               <div className="flex flex-wrap justify-center md:justify-start gap-6 sm:gap-8 pt-2">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-slate-400 tracking-wider mb-1">Email</span>
-                  <span className="text-xs sm:text-sm font-bold text-blue-600 underline decoration-blue-100 underline-offset-4">
+                  <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest mb-0.5">Primary Contact</span>
+                  <span className="text-xs font-bold text-slate-700">
                     {profile.email}
                   </span>
                 </div>
@@ -425,7 +428,7 @@ const JobSeekerProfile = () => {
                   <h4 className="text-sm font-bold text-slate-700 mb-1">Resume</h4>
                   {profile.resumeId ? (
                     <div className="flex items-center gap-2">
-                      <span className="text-green-500 text-lg">📄</span>
+                       <FileText size={20} className="text-emerald-500" />
                       <span className="text-sm font-medium text-slate-600">Resume attached</span>
                       <a 
                         href={`http://localhost:5000/api/files/${profile.resumeId}`} 
@@ -558,7 +561,9 @@ const JobSeekerProfile = () => {
                 <div className="py-2">
                   {profile.employmentStatus === "Student" || profile.employmentStatus === "Fresher" ? (
                     <div className="flex gap-4 items-center">
-                      <div className="w-10 h-10 bg-blue-50 text-blue-500 rounded flex items-center justify-center text-xl">🎓</div>
+                      <div className="w-10 h-10 bg-blue-50 text-blue-500 rounded flex items-center justify-center text-xl">
+                        <GraduationCap size={20} />
+                      </div>
                       <div>
                         <h4 className="font-bold text-slate-800">{profile.employmentStatus}</h4>
                         <p className="text-slate-500 font-medium text-sm">Currently seeking entry-level opportunities</p>
@@ -566,7 +571,9 @@ const JobSeekerProfile = () => {
                     </div>
                   ) : profile.currentCompany ? (
                     <div className="flex gap-4">
-                      <div className="w-10 h-10 bg-slate-100 rounded flex items-center justify-center text-xl grayscale opacity-30">🏢</div>
+                      <div className="w-10 h-10 bg-slate-100 rounded flex items-center justify-center text-xl grayscale opacity-30 text-slate-400">
+                         <Building2 size={20} />
+                      </div>
                       <div>
                         <h4 className="font-bold text-slate-800">{profile.designation}</h4>
                         <p className="text-slate-500 font-medium">{profile.currentCompany}</p>

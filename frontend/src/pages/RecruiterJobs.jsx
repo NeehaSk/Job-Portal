@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/apiCheck";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Megaphone, Users, Activity, FolderOpen } from "lucide-react";
 import { JobCard, StatCard } from "../components/ProfileComponents";
 
 const RecruiterJobs = () => {
@@ -9,6 +10,8 @@ const RecruiterJobs = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const [filteredJobs, setFilteredJobs] = useState([]);
 
   useEffect(() => {
     fetchJobs();
@@ -18,12 +21,32 @@ const RecruiterJobs = () => {
     try {
       const res = await api.get("/jobs/my-jobs");
       setJobs(res.data || []);
+      setFilteredJobs(res.data || []);
     } catch (error) {
       toast.error("Failed to fetch jobs");
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const q = searchParams.get("search")?.toLowerCase();
+    if (!q) {
+      setFilteredJobs(jobs);
+    } else {
+      setFilteredJobs(
+        jobs.filter(job =>
+          job.title?.toLowerCase().includes(q) ||
+          job.companyName?.toLowerCase().includes(q) ||
+          job.location?.toLowerCase().includes(q) ||
+          job.jobType?.toLowerCase().includes(q) ||
+          job.workMode?.toLowerCase().includes(q) ||
+          (job.skillsRequired && job.skillsRequired.some(s => s.toLowerCase().includes(q))) ||
+          (job.requirements && job.requirements.some(r => r.toLowerCase().includes(q)))
+        )
+      );
+    }
+  }, [searchParams, jobs]);
 
   const handleDeleteJob = async (jobId) => {
     if (!window.confirm("Are you sure you want to delete this job posting? This action cannot be undone and all associated applications will be lost.")) {
@@ -67,16 +90,15 @@ const RecruiterJobs = () => {
 
       <div className="max-w-7xl mx-auto -mt-10 px-4 sm:px-6 relative z-20">
 
-        {/* STATS ROW */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <StatCard label="Total Job Postings" value={jobs.length} icon="📢" color="indigo" />
-          <StatCard label="Total Applications Received" value={totalApplicants} icon="👥" color="emerald" />
-          <StatCard label="Avg. Response Rate" value="92%" icon="📉" color="orange" />
+          <StatCard label="Total Job Postings" value={jobs.length} icon={<Megaphone size={32} />} color="indigo" />
+          <StatCard label="Total Applications Received" value={totalApplicants} icon={<Users size={32} />} color="emerald" />
+          <StatCard label="Avg. Response Rate" value="92%" icon={<Activity size={32} />} color="orange" />
         </div>
 
         <div className="flex items-center justify-between mb-8 px-2">
           <h2 className="text-xl font-black text-slate-800 tracking-tight uppercase">
-            Active Managed Roles <span className="text-indigo-600 ml-2">({jobs.length})</span>
+            Active Managed Roles <span className="text-indigo-600 ml-2">({filteredJobs.length})</span>
           </h2>
           <button
             onClick={() => navigate("/recruiter/create-job")}
@@ -86,21 +108,23 @@ const RecruiterJobs = () => {
           </button>
         </div>
 
-        {jobs.length === 0 ? (
+        {filteredJobs.length === 0 ? (
           <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 p-20 text-center">
-            <div className="text-6xl mb-6 grayscale opacity-20">📂</div>
-            <h3 className="text-xl font-extrabold text-slate-800 mb-2 tracking-tight uppercase">No jobs found in your dashboard</h3>
-            <p className="text-slate-400 font-bold text-sm mb-10">Start your recruitment journey by posting your first role today.</p>
+            <div className="text-6xl mb-6 mx-auto flex justify-center text-slate-300">
+              <FolderOpen size={64} />
+            </div>
+            <h3 className="text-xl font-extrabold text-slate-800 mb-2 tracking-tight uppercase">No matching jobs found</h3>
+            <p className="text-slate-400 font-bold text-sm mb-10">Try a different search or post a new role.</p>
             <button
               onClick={() => navigate("/recruiter/create-job")}
               className="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-black text-sm hover:bg-indigo-700 transition shadow-2xl shadow-indigo-100 uppercase tracking-widest active:scale-95"
             >
-              Post Your First Job Now
+              Post New Job
             </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pb-20">
-            {jobs.map((job) => (
+            {filteredJobs.map((job) => (
               <JobCard
                 key={job._id}
                 job={job}

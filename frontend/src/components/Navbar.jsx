@@ -78,10 +78,21 @@ export default function Navbar() {
     }
   };
 
+  useEffect(() => {
+    const q = new URLSearchParams(location.search).get("search");
+    setSearchQuery(q || "");
+  }, [location.search]);
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/jobs?search=${searchQuery}`);
+      if (role === "recruiter") {
+        navigate(`/recruiter/jobs?search=${searchQuery}`);
+      } else if (role === "admin") {
+        navigate(`/admin/dashboard?search=${searchQuery}`);
+      } else {
+        navigate(`/jobs?search=${searchQuery}`);
+      }
     }
   };
   const [imgError, setImgError] = useState(false);
@@ -94,19 +105,19 @@ export default function Navbar() {
 
   return (
     <>
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm`}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14">
 
           {/* LOGO & NAVIGATION */}
-          <div className="flex items-center gap-12">
+          <div className="flex items-center gap-10">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-indigo-100 group-hover:rotate-6 transition-transform">
+              <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm shadow-indigo-100 group-hover:rotate-3 transition-transform">
                 <img src={nexusLogo} className="w-full h-full object-cover" alt="NEXAL" />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="text-xl font-black tracking-tighter text-slate-800">NEXAL</span>
-                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400">Job Portal</span>
+                <span className="text-lg font-black tracking-tight text-slate-900">NEXAL</span>
+                <span className="text-[9px] font-bold tracking-[0.1em] uppercase text-slate-400">Job Portal</span>
               </div>
             </Link>
 
@@ -123,25 +134,37 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* SEARCH BAR (Center/Right) */}
-          {user && (
-            <div className="hidden md:flex flex-1 max-w-sm mx-8">
-              <form onSubmit={handleSearch} className="relative w-full">
+          {/* SEARCH BAR (Center/Right) - Premium Live Search */}
+          {user && !isHomePage && (
+            <div className="hidden md:flex flex-1 max-w-[400px] mx-10">
+              <form onSubmit={handleSearch} className="relative w-full group">
                 <input
                   type="text"
-                  placeholder="Search jobs, skills..."
+                  placeholder={
+                    role === "recruiter" ? "Lookup mandates..." : 
+                    role === "admin" ? "Search directory..." : 
+                    "Discover your next role..."
+                  }
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className={`w-full ${isHomePage ? 'bg-white text-slate-900 placeholder:text-slate-300 border-slate-200' : 'bg-slate-50 text-slate-700 border-slate-100 placeholder:text-slate-300'} border text-sm px-10 py-2.5 rounded-full focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium`}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSearchQuery(val);
+                    // Update URL live for real-time filtering
+                    if (role === "recruiter") {
+                      navigate(`/recruiter/jobs?search=${val}`, { replace: true });
+                    } else if (role === "admin") {
+                      navigate(`/admin/dashboard?search=${val}`, { replace: true });
+                    } else if (location.pathname === "/jobs") {
+                      navigate(`/jobs?search=${val}`, { replace: true });
+                    }
+                  }}
+                  className="w-full bg-slate-50 border border-slate-200 text-xs px-10 py-2.5 rounded-full focus:outline-none focus:border-indigo-600 focus:bg-white transition-all font-semibold text-slate-800 placeholder:text-slate-400"
                 />
-                <button
-                  type="submit"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
-                >
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
-                </button>
+                </div>
               </form>
             </div>
           )}
@@ -151,10 +174,10 @@ export default function Navbar() {
             {user && (
               <button
                 onClick={() => setIsDrawerOpen(true)}
-                className={`relative ${isHomePage ? 'text-white/70 hover:text-white' : 'text-slate-400 hover:text-indigo-600'} transition-colors`}
+                className={`relative ${isHomePage ? 'text-white/90 hover:text-white' : 'text-slate-600 hover:text-indigo-600'} hover:-translate-x-1 transition-all duration-300`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[8px] font-black text-white ring-2 ring-white">
@@ -173,9 +196,9 @@ export default function Navbar() {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
-                  className="flex items-center gap-2 group transition-all"
+                  className="flex items-center gap-1.5 group transition-all"
                 >
-                  <div className="w-10 h-10 rounded-full border-2 border-transparent group-hover:border-indigo-100 overflow-hidden bg-slate-100 transition-all ring-1 ring-slate-100 group-hover:ring-indigo-100 flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full border border-slate-100 overflow-hidden bg-slate-100 transition-all flex-shrink-0">
                     {(photoId && !imgError) ? (
                       <img
                         src={`http://localhost:5000/api/files/${photoId}?t=${Date.now()}`}
@@ -184,12 +207,12 @@ export default function Navbar() {
                         onError={() => setImgError(true)}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-sm font-bold text-indigo-400 uppercase">
+                      <div className="w-full h-full flex items-center justify-center text-xs font-bold text-indigo-400 uppercase">
                         {user.fullName ? user.fullName.charAt(0).toUpperCase() : "U"}
                       </div>
                     )}
                   </div>
-                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 ${isHomePage ? 'text-slate-400' : 'text-slate-300'} transition-transform duration-300 ${profileOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-3 w-3 ${isHomePage ? 'text-slate-400' : 'text-slate-300'} transition-transform duration-300 ${profileOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
@@ -287,15 +310,26 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          {user && (
+          {user && !isHomePage && (
             <div className="pt-6 border-t border-slate-50">
               <form onSubmit={handleSearch} className="relative">
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Search platform..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-slate-50 px-6 py-4 rounded-2xl text-sm font-semibold focus:outline-none"
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSearchQuery(val);
+                    // Update URL live for real-time filtering
+                    if (role === "recruiter") {
+                      navigate(`/recruiter/jobs?search=${val}`, { replace: true });
+                    } else if (role === "admin") {
+                      navigate(`/admin/dashboard?search=${val}`, { replace: true });
+                    } else if (location.pathname === "/jobs") {
+                      navigate(`/jobs?search=${val}`, { replace: true });
+                    }
+                  }}
+                  className="w-full bg-slate-50 px-6 py-4 rounded-2xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all"
                 />
               </form>
             </div>

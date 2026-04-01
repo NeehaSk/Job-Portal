@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../api/apiCheck";
 import toast from "react-hot-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { Search, Lightbulb } from "lucide-react";
 import { JobCard, FilterSidebar } from "../components/ProfileComponents";
 
 export default function Jobs() {
@@ -85,10 +86,10 @@ export default function Jobs() {
   const handleApply = async (jobId) => {
     try {
       await api.post(`/jobs/${jobId}/apply`);
-      toast.success("Applied Successfully ✅");
+      toast.success("Applied Successfully");
       setAppliedJobIds(prev => new Set([...prev, jobId]));
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error applying ❌");
+      toast.error(error.response?.data?.message || "Error applying");
     }
   };
 
@@ -122,25 +123,28 @@ export default function Jobs() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
           {/* LEFT SIDEBAR - FILTERS */}
-          <div className="lg:col-span-1 lg:sticky lg:top-24 h-max">
+          <div className="lg:col-span-1 lg:sticky lg:top-28 self-start space-y-4">
             <FilterSidebar
               categories={categories}
               selectedCategory={selectedCategory}
               onSelect={handleFilter}
             />
 
-            <div className="mt-6 bg-slate-900 rounded-2xl p-8 text-white shadow-xl shadow-indigo-900/10 relative overflow-hidden">
-               <div className="relative z-10 text-center">
-                 <div className="w-12 h-12 bg-indigo-600 rounded-xl mx-auto flex items-center justify-center text-xl mb-6 shadow-md shadow-indigo-600/20 font-bold">B</div>
-                 <h4 className="text-lg font-bold mb-3 tracking-tight">Personal Branding</h4>
-                 <p className="text-slate-400 text-sm font-medium leading-relaxed mb-8">
+            <div className="bg-gradient-to-br from-indigo-700 via-indigo-800 to-slate-900 rounded-[2rem] p-8 text-white shadow-xl shadow-indigo-900/20 relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-400/20 rounded-full blur-2xl -mr-10 -mt-10 transition-all group-hover:bg-indigo-400/30"></div>
+               <div className="relative z-10">
+                 <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-indigo-100 mb-6 backdrop-blur-md border border-white/5">
+                   <Lightbulb size={24} strokeWidth={2} />
+                 </div>
+                 <h4 className="text-xs font-black mb-3 tracking-widest text-white uppercase">Branding Tip</h4>
+                 <p className="text-indigo-100/90 text-[11px] font-semibold leading-relaxed mb-8 pr-2">
                    Premium profiles are prioritized in our recruiter intelligence engine.
                  </p>
                  <button 
                    onClick={() => navigate('/jobseeker/profile')}
-                   className="w-full py-3 bg-white text-slate-950 rounded-lg text-sm font-semibold hover:bg-indigo-50 transition-all active:scale-95"
+                   className="w-full py-3.5 bg-white text-indigo-950 rounded-[14px] text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all shadow-lg shadow-white/5 active:scale-[0.98]"
                  >
-                   Optimize Profile
+                   Optimize Now
                  </button>
                </div>
             </div>
@@ -159,7 +163,9 @@ export default function Jobs() {
 
             {filteredJobs.length === 0 ? (
               <div className="bg-white rounded-[40px] border border-slate-100 p-24 text-center shadow-sm">
-                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 grayscale opacity-40">🔎</div>
+                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 text-slate-200">
+                    <Search size={40} />
+                </div>
                 <h3 className="text-xl font-bold text-slate-800 mb-2 tracking-tight">No Matching Roles</h3>
                 <p className="text-slate-400 font-medium text-sm max-w-xs mx-auto">Try broadening your filters or checking back as new opportunities are posted daily.</p>
               </div>

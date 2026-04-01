@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import api from "../api/apiCheck";
 import toast from "react-hot-toast";
 import {
@@ -37,6 +38,8 @@ const AdminDashboard = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("seekers");
+  const [searchParams] = useSearchParams();
+  const [filteredData, setFilteredData] = useState({ recruiters: [], jobseekers: [], jobs: [] });
 
   useEffect(() => {
     fetchData();
@@ -53,12 +56,40 @@ const AdminDashboard = () => {
       setStats(statsRes.data.stats);
       setUsers(usersRes.data.users);
       setJobs(jobsRes.data.jobs);
+      setFilteredData({
+        recruiters: usersRes.data.users.recruiters,
+        jobseekers: usersRes.data.users.jobseekers,
+        jobs: jobsRes.data.jobs
+      });
     } catch (error) {
       toast.error("Failed to fetch admin data");
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const q = searchParams.get("search")?.toLowerCase();
+    if (!q) {
+      setFilteredData({
+        recruiters: users.recruiters,
+        jobseekers: users.jobseekers,
+        jobs: jobs
+      });
+    } else {
+      setFilteredData({
+        recruiters: users.recruiters.filter(u => u.fullName.toLowerCase().includes(q) || u.companyDetails?.name?.toLowerCase().includes(q)),
+        jobseekers: users.jobseekers.filter(u => u.fullName.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)),
+        jobs: jobs.filter(j => 
+          j.title.toLowerCase().includes(q) || 
+          j.companyName.toLowerCase().includes(q) ||
+          j.location?.toLowerCase().includes(q) ||
+          j.jobType?.toLowerCase().includes(q) ||
+          j.workMode?.toLowerCase().includes(q)
+        )
+      });
+    }
+  }, [searchParams, users, jobs]);
 
   const handleToggleStatus = async (recruiterId) => {
     try {
@@ -232,7 +263,7 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 bg-white">
-                {activeTab === "seekers" && users.jobseekers.length > 0 && users.jobseekers.map(u => (
+                {activeTab === "seekers" && filteredData.jobseekers.length > 0 && filteredData.jobseekers.map(u => (
                   <tr key={u._id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="px-5 py-3 whitespace-nowrap">
                        <div className="flex items-center">
@@ -256,7 +287,7 @@ const AdminDashboard = () => {
                   </tr>
                 ))}
                 
-                {activeTab === "recruiters" && users.recruiters.length > 0 && users.recruiters.map(u => (
+                {activeTab === "recruiters" && filteredData.recruiters.length > 0 && filteredData.recruiters.map(u => (
                   <tr key={u._id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="px-5 py-3 whitespace-nowrap">
                        <div className="flex items-center">
@@ -285,7 +316,7 @@ const AdminDashboard = () => {
                   </tr>
                 ))}
 
-                {activeTab === "jobs" && jobs.length > 0 && jobs.map(j => (
+                {activeTab === "jobs" && filteredData.jobs.length > 0 && filteredData.jobs.map(j => (
                   <tr key={j._id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="px-5 py-3 whitespace-nowrap">
                        <div>
@@ -306,14 +337,14 @@ const AdminDashboard = () => {
                 ))}
 
                 {/* EMPTY STATES FOR TABLES */}
-                {activeTab === "seekers" && users.jobseekers.length === 0 && (
-                   <tr><td colSpan="3" className="px-5 py-12 text-center text-slate-500 text-sm bg-slate-50/50">Data synchronization pending. No candidates available.</td></tr>
+                {activeTab === "seekers" && filteredData.jobseekers.length === 0 && (
+                   <tr><td colSpan="3" className="px-5 py-12 text-center text-slate-500 text-sm bg-slate-50/50">No candidates found matching the criteria.</td></tr>
                 )}
-                {activeTab === "recruiters" && users.recruiters.length === 0 && (
-                   <tr><td colSpan="3" className="px-5 py-12 text-center text-slate-500 text-sm bg-slate-50/50">Data synchronization pending. No recruiters available.</td></tr>
+                {activeTab === "recruiters" && filteredData.recruiters.length === 0 && (
+                   <tr><td colSpan="3" className="px-5 py-12 text-center text-slate-500 text-sm bg-slate-50/50">No recruiters found matching the criteria.</td></tr>
                 )}
-                {activeTab === "jobs" && jobs.length === 0 && (
-                   <tr><td colSpan="3" className="px-5 py-12 text-center text-slate-500 text-sm bg-slate-50/50">Data synchronization pending. No jobs active.</td></tr>
+                {activeTab === "jobs" && filteredData.jobs.length === 0 && (
+                   <tr><td colSpan="3" className="px-5 py-12 text-center text-slate-500 text-sm bg-slate-50/50">No job postings found matching the criteria.</td></tr>
                 )}
               </tbody>
             </table>

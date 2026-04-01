@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/apiCheck";
 import toast from "react-hot-toast";
+import { FileText } from "lucide-react";
 
 const PublicSeekerProfile = () => {
   const { id } = useParams();
@@ -155,7 +156,9 @@ const PublicSeekerProfile = () => {
           <div className="bg-slate-900 rounded-[40px] p-8 text-center relative overflow-hidden shadow-2xl shadow-indigo-200">
              <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-transparent to-transparent"></div>
              <div className="relative z-10 space-y-6">
-                <div className="w-16 h-16 bg-white/10 rounded-2xl mx-auto flex items-center justify-center text-3xl">📄</div>
+                <div className="w-16 h-16 bg-white/10 rounded-2xl mx-auto flex items-center justify-center text-indigo-400">
+                    <FileText size={40} />
+                </div>
                 <div>
                   <h4 className="text-white font-black text-lg tracking-tight uppercase mb-1">Resume / CV</h4>
                   <p className="text-indigo-200/50 text-[10px] font-bold uppercase tracking-widest">Formal Documentation</p>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Mailbox } from "lucide-react";
 import api from "../api/apiCheck";
 import ApplicationThreadModal from "../components/ApplicationThreadModal";
 import toast from "react-hot-toast";
@@ -128,7 +129,9 @@ const JobApplicants = () => {
             <div className="max-w-7xl mx-auto px-6 -mt-16 relative z-20">
                 {applicants.length === 0 ? (
                     <div className="bg-white rounded-[48px] shadow-sm border border-slate-100 p-24 text-center">
-                        <div className="text-7xl mb-6 opacity-10 grayscale">📬</div>
+                        <div className="text-7xl mb-6 mx-auto flex justify-center text-slate-200">
+                            <Mailbox size={72} />
+                        </div>
                         <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tight mb-2">Empty Inbox</h3>
                         <p className="text-slate-400 font-bold">No candidates have applied for this position yet.</p>
                     </div>

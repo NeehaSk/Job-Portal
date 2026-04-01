@@ -7,7 +7,6 @@ export default function VerifyReset() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ✅ FIXED EMAIL EXTRACTION
   const email = location.state?.email;
 
   const [otp, setOtp] = useState("");

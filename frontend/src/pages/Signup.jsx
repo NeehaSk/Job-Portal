@@ -103,7 +103,7 @@ function Signup() {
       }
       
       await axios.post(signupUrl, payload);
-      toast.success("Signup successful 🎉");
+      toast.success("Signup successful");
       setTimeout(() => {
         navigate("/login");
       }, 2000);
