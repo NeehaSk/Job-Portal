@@ -68,14 +68,18 @@ const CreateJob = () => {
     return (
         <div className="min-h-screen bg-[#f8fafc] pb-20">
             {/* HEADER BANNER */}
-            <div className="h-64 bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 w-full flex flex-col justify-center items-center relative overflow-hidden">
-                <div className="absolute inset-0 opacity-20">
+            <div className="h-56 bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 w-full flex flex-col justify-center relative overflow-hidden">
+                <div className="absolute inset-0 opacity-10">
                     <svg className="absolute w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                        <path d="M0 100 C 20 0 50 0 100 100 Z" fill="rgba(255,255,255,0.05)"></path>
+                        <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white"></path>
                     </svg>
                 </div>
-                <h1 className="text-3xl font-black text-white tracking-widest uppercase mb-2 relative z-10">Create Job</h1>
-                <p className="text-indigo-200 text-sm font-bold relative z-10">List a new opportunity for top talent</p>
+                <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 relative z-10 text-center">
+                    <h1 className="text-white text-4xl font-black uppercase tracking-widest leading-none mb-3">
+                        Create New Listing
+                    </h1>
+                    <p className="text-indigo-200 text-sm font-bold uppercase tracking-widest">List a new opportunity for top talent</p>
+                </div>
             </div>
 
             <div className="max-w-4xl mx-auto -mt-10 px-4 sm:px-6 relative z-20">
@@ -220,7 +224,7 @@ const Section = ({ title, children }) => (
 
 const Input = ({ label, ...props }) => (
     <div className="space-y-2">
-        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{label}</label>
+        <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest">{label}</label>
         <input
             {...props}
             className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 focus:bg-white focus:outline-none transition-all text-slate-700 font-bold placeholder:text-slate-300 shadow-inner"
@@ -230,7 +234,7 @@ const Input = ({ label, ...props }) => (
 
 const Select = ({ label, options, ...props }) => (
     <div className="space-y-2">
-        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{label}</label>
+        <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest">{label}</label>
         <select
             {...props}
             className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 focus:bg-white focus:outline-none transition-all text-slate-700 font-bold shadow-inner"

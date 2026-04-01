@@ -1,1387 +1,661 @@
-// // import { useNavigate } from "react-router-dom";
-
-// // function Home() {
-
-// //   const navigate = useNavigate();
-
-// //   return (
-// //     <div className="min-h-screen bg-slate-50">
-
-// //       {/* HERO SECTION */}
-// //       <section className="bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 text-white py-24 relative overflow-hidden">
-// //         <div className="absolute inset-0 opacity-10">
-// //           <svg className="absolute w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-// //             <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white"></path>
-// //           </svg>
-// //         </div>
-
-// //         <div className="max-w-7xl mx-auto px-6 text-center">
-
-// //           <h1 className="text-5xl font-extrabold leading-tight mb-6">
-// //             Find Your Dream Job <br />
-// //             <span className="text-indigo-200">or Hire Top Talent</span>
-// //           </h1>
-
-// //           <p className="text-lg text-indigo-100 max-w-2xl mx-auto mb-10">
-// //             JobPortal connects job seekers with companies looking for the
-// //             best talent. Discover opportunities or post jobs easily.
-// //           </p>
-
-// //           <div className="flex justify-center gap-4">
-
-// //             <button
-// //               onClick={() => navigate("/jobs")}
-// //               className="bg-white text-indigo-700 px-6 py-3 rounded-xl font-semibold shadow hover:bg-indigo-50"
-// //             >
-// //               Browse Jobs
-// //             </button>
-// // z
-// //             <button
-// //               onClick={() => navigate("/signup")}
-// //               className="bg-indigo-500 px-6 py-3 rounded-xl font-semibold hover:bg-indigo-600"
-// //             >
-// //               Get Started
-// //             </button>
-
-// //           </div>
-
-// //         </div>
-
-// //       </section>
-
-// //       {/* FEATURES SECTION */}
-// //       <section className="py-20">
-
-// //         <div className="max-w-7xl mx-auto px-6">
-
-// //           <h2 className="text-3xl font-bold text-center text-slate-800 mb-14">
-// //             Why Choose JobPortal?
-// //           </h2>
-
-// //           <div className="grid md:grid-cols-3 gap-10">
-
-// //             <div className="bg-white p-8 rounded-2xl shadow-sm border">
-// //               <div className="text-4xl mb-4">🔎</div>
-// //               <h3 className="font-bold text-lg mb-2">
-// //                 Find the Right Job
-// //               </h3>
-// //               <p className="text-slate-500">
-// //                 Explore thousands of opportunities across industries and
-// //                 apply with a single click.
-// //               </p>
-// //             </div>
-
-// //             <div className="bg-white p-8 rounded-2xl shadow-sm border">
-// //               <div className="text-4xl mb-4">🏢</div>
-// //               <h3 className="font-bold text-lg mb-2">
-// //                 Hire Top Talent
-// //               </h3>
-// //               <p className="text-slate-500">
-// //                 Recruiters can post jobs and discover qualified candidates
-// //                 quickly and easily.
-// //               </p>
-// //             </div>
-
-// //             <div className="bg-white p-8 rounded-2xl shadow-sm border">
-// //               <div className="text-4xl mb-4">⚡</div>
-// //               <h3 className="font-bold text-lg mb-2">
-// //                 Faster Hiring
-// //               </h3>
-// //               <p className="text-slate-500">
-// //                 Our platform helps companies connect with skilled job seekers
-// //                 efficiently.
-// //               </p>
-// //             </div>
-
-// //           </div>
-
-// //         </div>
-
-// //       </section>
-
-// //       {/* CTA SECTION */}
-// //       <section className="bg-gradient-to-r from-indigo-900 to-indigo-800 py-16 text-center text-white">
-
-// //         <h2 className="text-3xl font-bold mb-4">
-// //           Ready to Start Your Journey?
-// //         </h2>
-
-// //         <p className="text-indigo-200 mb-6">
-// //           Create your account and discover new opportunities today.
-// //         </p>
-
-// //         <button
-// //           onClick={() => navigate("/signup")}
-// //           className="bg-white text-indigo-700 px-6 py-3 rounded-xl font-semibold hover:bg-indigo-100"
-// //         >
-// //           Create Account
-// //         </button>
-
-// //       </section>
-
-// //     </div>
-// //   );
-// // }
-
-// // export default Home;
-
-// import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-
-// // ─── SVG Icons ────────────────────────────────────────────────────────────────
-// const SearchIcon = () => (
-//   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-//     <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
-//   </svg>
-// );
-// const MapPinIcon = () => (
-//   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-//     <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" />
-//   </svg>
-// );
-// const ChevronLeft = () => (
-//   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-//     <path d="m15 18-6-6 6-6" />
-//   </svg>
-// );
-// const ChevronRight = () => (
-//   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-//     <path d="m9 18 6-6-6-6" />
-//   </svg>
-// );
-// const ArrowRight = () => (
-//   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-//     <path d="M5 12h14M12 5l7 7-7 7" />
-//   </svg>
-// );
-// const BriefcaseIcon = () => (
-//   <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-//     <rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /><path d="M2 12h20" />
-//   </svg>
-// );
-// const UsersIcon = () => (
-//   <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-//     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
-//     <path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-//   </svg>
-// );
-// const ZapIcon = () => (
-//   <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-//     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-//   </svg>
-// );
-// const ShieldIcon = () => (
-//   <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-//     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-//   </svg>
-// );
-
-// // ─── Data ─────────────────────────────────────────────────────────────────────
-// const STATS = [
-//   { value: "50K+", label: "Jobs Posted" },
-//   { value: "120K+", label: "Job Seekers" },
-//   { value: "8K+", label: "Companies" },
-//   { value: "95%", label: "Placement Rate" },
-// ];
-
-// const COMPANIES = [
-//   {
-//     name: "Google",
-//     industry: "Technology",
-//     location: "Mountain View, CA",
-//     openings: 320,
-//     logo: "G",
-//     logoFrom: "#4285F4",
-//     logoTo: "#34A853",
-//     tag: "Top Employer",
-//     tagClass: "bg-blue-100 text-blue-700",
-//     rating: "4.8",
-//     founded: "1998",
-//   },
-//   {
-//     name: "Microsoft",
-//     industry: "Software & Cloud",
-//     location: "Redmond, WA",
-//     openings: 215,
-//     logo: "M",
-//     logoFrom: "#0078D4",
-//     logoTo: "#00B4D8",
-//     tag: "Hiring Now",
-//     tagClass: "bg-green-100 text-green-700",
-//     rating: "4.7",
-//     founded: "1975",
-//   },
-//   {
-//     name: "Amazon",
-//     industry: "E-Commerce & Cloud",
-//     location: "Seattle, WA",
-//     openings: 480,
-//     logo: "A",
-//     logoFrom: "#FF9900",
-//     logoTo: "#FFD166",
-//     tag: "Fastest Growing",
-//     tagClass: "bg-orange-100 text-orange-700",
-//     rating: "4.5",
-//     founded: "1994",
-//   },
-//   {
-//     name: "Meta",
-//     industry: "Social Media & AI",
-//     location: "Menlo Park, CA",
-//     openings: 175,
-//     logo: "M",
-//     logoFrom: "#0668E1",
-//     logoTo: "#6C63FF",
-//     tag: "Top Employer",
-//     tagClass: "bg-blue-100 text-blue-700",
-//     rating: "4.6",
-//     founded: "2004",
-//   },
-//   {
-//     name: "Apple",
-//     industry: "Consumer Tech",
-//     location: "Cupertino, CA",
-//     openings: 290,
-//     logo: "🍎",
-//     logoFrom: "#555",
-//     logoTo: "#999",
-//     tag: "Premium Brand",
-//     tagClass: "bg-slate-100 text-slate-700",
-//     rating: "4.9",
-//     founded: "1976",
-//   },
-//   {
-//     name: "Netflix",
-//     industry: "Streaming & Media",
-//     location: "Los Gatos, CA",
-//     openings: 130,
-//     logo: "N",
-//     logoFrom: "#E50914",
-//     logoTo: "#B20710",
-//     tag: "Hiring Now",
-//     tagClass: "bg-red-100 text-red-700",
-//     rating: "4.6",
-//     founded: "1997",
-//   },
-//   {
-//     name: "Salesforce",
-//     industry: "CRM & SaaS",
-//     location: "San Francisco, CA",
-//     openings: 195,
-//     logo: "S",
-//     logoFrom: "#00A1E0",
-//     logoTo: "#0070D2",
-//     tag: "Best Culture",
-//     tagClass: "bg-sky-100 text-sky-700",
-//     rating: "4.7",
-//     founded: "1999",
-//   },
-// ];
-
-// const FEATURES = [
-//   { icon: <BriefcaseIcon />, title: "Smart Job Matching", desc: "Our AI-powered engine matches your skills to the most relevant openings — saving you hours of searching.", colorClass: "text-indigo-600", bgClass: "bg-indigo-50" },
-//   { icon: <UsersIcon />, title: "Hire Top Talent", desc: "Recruiters can post jobs and instantly surface qualified candidates from our growing talent pool.", colorClass: "text-sky-600", bgClass: "bg-sky-50" },
-//   { icon: <ZapIcon />, title: "One-Click Apply", desc: "Apply to multiple jobs with your saved profile. No repetitive forms — your first impression, perfected.", colorClass: "text-amber-600", bgClass: "bg-amber-50" },
-//   { icon: <ShieldIcon />, title: "Verified Employers", desc: "Every company on JobPortal is vetted. You only see real opportunities from legitimate, trusted employers.", colorClass: "text-emerald-600", bgClass: "bg-emerald-50" },
-// ];
-
-// const HOW_IT_WORKS = [
-//   { step: "01", title: "Create Your Profile", desc: "Sign up and build a standout profile in minutes — upload your resume or fill in your details." },
-//   { step: "02", title: "Browse & Apply", desc: "Explore thousands of listings filtered by role, location, salary, and more. Apply with one click." },
-//   { step: "03", title: "Get Hired", desc: "Connect directly with employers, schedule interviews, and land your next role — fast." },
-// ];
-
-// const CATEGORIES = [
-//   { label: "Engineering", count: "12,400 jobs", emoji: "⚙️" },
-//   { label: "Design", count: "4,200 jobs", emoji: "🎨" },
-//   { label: "Marketing", count: "6,800 jobs", emoji: "📣" },
-//   { label: "Finance", count: "5,100 jobs", emoji: "📊" },
-//   { label: "Healthcare", count: "9,300 jobs", emoji: "🏥" },
-//   { label: "Education", count: "3,700 jobs", emoji: "📚" },
-// ];
-
-// // ─── Company Carousel ─────────────────────────────────────────────────────────
-// function CompanyCarousel({ navigate }) {
-//   const [current, setCurrent] = useState(0);
-//   const VISIBLE = 3;
-//   const maxIndex = COMPANIES.length - VISIBLE;
-
-//   const prev = () => setCurrent((c) => Math.max(0, c - 1));
-//   const next = () => setCurrent((c) => Math.min(maxIndex, c + 1));
-
-//   return (
-//     <section className="py-16 md:py-20 bg-white">
-//       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-
-//         {/* Header */}
-//         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-10 gap-4">
-//           <div>
-//             <p className="text-indigo-600 font-bold text-xs uppercase tracking-widest mb-2">Top Companies</p>
-//             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-//               Featured Employers Hiring Now
-//             </h2>
-//             <p className="text-slate-500 text-sm mt-2 max-w-md">
-//               Explore opportunities at world-class companies actively looking for talent.
-//             </p>
-//           </div>
-
-//           {/* Arrow controls */}
-//           <div className="flex items-center gap-3 shrink-0">
-//             <button
-//               onClick={prev}
-//               disabled={current === 0}
-//               className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-600 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-//             >
-//               <ChevronLeft />
-//             </button>
-//             <span className="text-sm text-slate-400 font-medium tabular-nums">
-//               {current + 1} / {maxIndex + 1}
-//             </span>
-//             <button
-//               onClick={next}
-//               disabled={current >= maxIndex}
-//               className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-600 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-//             >
-//               <ChevronRight />
-//             </button>
-//           </div>
-//         </div>
-
-//         {/* Carousel Track */}
-//         <div className="overflow-hidden">
-//           <div
-//             className="flex gap-5 transition-transform duration-500 ease-in-out"
-//             style={{
-//               transform: `translateX(calc(-${current} * (100% / ${VISIBLE} + ${20 / VISIBLE}px)))`,
-//             }}
-//           >
-//             {COMPANIES.map((company, i) => (
-//               <div
-//                 key={i}
-//                 className="flex-shrink-0 bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer group"
-//                 style={{ minWidth: `calc(${100 / VISIBLE}% - ${(20 * (VISIBLE - 1)) / VISIBLE}px)` }}
-//                 onClick={() => navigate(`/company/${company.name.toLowerCase()}`)}
-//               >
-//                 {/* Top row */}
-//                 <div className="flex items-start justify-between mb-5">
-//                   <div
-//                     className="w-14 h-14 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md"
-//                     style={{ background: `linear-gradient(135deg, ${company.logoFrom}, ${company.logoTo})` }}
-//                   >
-//                     {company.logo}
-//                   </div>
-//                   <span className={`text-xs font-semibold px-3 py-1 rounded-full ${company.tagClass}`}>
-//                     {company.tag}
-//                   </span>
-//                 </div>
-
-//                 {/* Name & Industry */}
-//                 <h3 className="text-lg font-bold text-slate-800 group-hover:text-indigo-600 transition-colors leading-tight">
-//                   {company.name}
-//                 </h3>
-//                 <p className="text-sm text-slate-400 mt-0.5">{company.industry}</p>
-
-//                 {/* Location */}
-//                 <div className="flex items-center gap-1.5 text-slate-400 text-xs mt-2">
-//                   <MapPinIcon />
-//                   <span>{company.location}</span>
-//                 </div>
-
-//                 {/* Divider */}
-//                 <div className="border-t border-slate-100 my-4" />
-
-//                 {/* Stats */}
-//                 <div className="grid grid-cols-3 gap-2 text-center mb-5">
-//                   <div>
-//                     <p className="text-base font-extrabold text-indigo-600">{company.openings}+</p>
-//                     <p className="text-xs text-slate-400 mt-0.5">Openings</p>
-//                   </div>
-//                   <div>
-//                     <p className="text-base font-extrabold text-slate-700">{company.rating}★</p>
-//                     <p className="text-xs text-slate-400 mt-0.5">Rating</p>
-//                   </div>
-//                   <div>
-//                     <p className="text-base font-extrabold text-slate-700">{company.founded}</p>
-//                     <p className="text-xs text-slate-400 mt-0.5">Founded</p>
-//                   </div>
-//                 </div>
-
-//                 {/* View Jobs Button */}
-//                 <button
-//                   onClick={(e) => {
-//                     e.stopPropagation();
-//                     navigate(`/jobs?company=${company.name.toLowerCase()}`);
-//                   }}
-//                   className="w-full py-2.5 rounded-xl border-2 border-indigo-100 text-indigo-600 font-semibold text-sm hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all duration-200"
-//                 >
-//                   View Jobs →
-//                 </button>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-
-//         {/* Dot Indicators */}
-//         <div className="flex justify-center gap-2 mt-8">
-//           {Array.from({ length: maxIndex + 1 }).map((_, i) => (
-//             <button
-//               key={i}
-//               onClick={() => setCurrent(i)}
-//               className={`h-2 rounded-full transition-all duration-300 ${
-//                 current === i ? "w-6 bg-indigo-600" : "w-2 bg-slate-300 hover:bg-slate-400"
-//               }`}
-//             />
-//           ))}
-//         </div>
-
-//         {/* View All Link */}
-//         <div className="text-center mt-8">
-//           <button
-//             onClick={() => navigate("/companies")}
-//             className="inline-flex items-center gap-2 text-indigo-600 font-semibold text-sm hover:gap-3 transition-all"
-//           >
-//             View All Companies <ArrowRight />
-//           </button>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-// // ─── Main Home Component ──────────────────────────────────────────────────────
-// export default function Home() {
-//   const navigate = useNavigate();
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [location, setLocation] = useState("");
-//   const handleSearch = () => {
-//     navigate(`/jobs?q=${encodeURIComponent(searchQuery)}&location=${encodeURIComponent(location)}`);
-//   };
-
-//   const handleKeyDown = (e) => {
-//     if (e.key === "Enter") handleSearch();
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-slate-50">
-
-//       {/* ── HERO ── */}
-//       <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-900 py-20 md:py-28 px-4 sm:px-6">
-//         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
-//         <div className="absolute bottom-0 left-0 w-72 h-72 bg-violet-500/20 rounded-full blur-3xl pointer-events-none" />
-
-//         <div className="relative max-w-4xl mx-auto text-center">
-//           {/* Badge */}
-//           <div className="inline-flex items-center gap-2 bg-indigo-500/20 border border-indigo-400/30 rounded-full px-4 py-1.5 mb-7">
-//             <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-//             <span className="text-indigo-200 text-xs font-semibold tracking-wide">50,000+ Jobs Available Right Now</span>
-//           </div>
-
-//           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight tracking-tight mb-5">
-//             Find Your Dream Job <br />
-//             <span className="bg-gradient-to-r from-indigo-300 to-violet-300 bg-clip-text text-transparent">
-//               or Hire Top Talent
-//             </span>
-//           </h1>
-
-//           <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-//             JobPortal connects ambitious professionals with world-class companies. Your next chapter starts here.
-//           </p>
-
-//           {/* Search Bar */}
-//           <div className="bg-white rounded-2xl p-2 flex flex-col sm:flex-row gap-2 shadow-2xl max-w-2xl mx-auto mb-6">
-//             <div className="flex-1 flex items-center gap-3 px-4 py-2.5 bg-slate-50 rounded-xl">
-//               <span className="text-slate-400 shrink-0"><SearchIcon /></span>
-//               <input
-//                 value={searchQuery}
-//                 onChange={(e) => setSearchQuery(e.target.value)}
-//                 onKeyDown={handleKeyDown}
-//                 placeholder="Job title, keyword, or company..."
-//                 className="flex-1 bg-transparent text-sm text-slate-800 placeholder-slate-400 outline-none"
-//               />
-//             </div>
-//             <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-xl sm:w-44">
-//               <span className="text-slate-400 shrink-0"><MapPinIcon /></span>
-//               <input
-//                 value={location}
-//                 onChange={(e) => setLocation(e.target.value)}
-//                 onKeyDown={handleKeyDown}
-//                 placeholder="City or Remote"
-//                 className="flex-1 bg-transparent text-sm text-slate-800 placeholder-slate-400 outline-none"
-//               />
-//             </div>
-//             <button
-//               onClick={handleSearch}
-//               className="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white font-bold text-sm px-7 py-3 rounded-xl shadow-lg shadow-indigo-400/30 hover:-translate-y-0.5 hover:shadow-indigo-400/50 transition-all whitespace-nowrap"
-//             >
-//               Search Jobs
-//             </button>
-//           </div>
-
-//           {/* Popular Tags */}
-//           <div className="flex flex-wrap justify-center gap-2">
-//             <span className="text-slate-500 text-xs flex items-center mr-1">Popular:</span>
-//             {["React Developer", "UI/UX Designer", "Data Analyst", "Remote", "Product Manager"].map((tag) => (
-//               <button
-//                 key={tag}
-//                 onClick={() => setSearchQuery(tag)}
-//                 className="bg-white/10 border border-white/15 text-slate-300 hover:bg-indigo-500/30 hover:text-white hover:border-indigo-400/50 rounded-full px-3 py-1 text-xs transition-all"
-//               >
-//                 {tag}
-//               </button>
-//             ))}
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* ── STATS BAR ── */}
-//       <section className="bg-white border-b border-slate-100">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-2 md:grid-cols-4 divide-x divide-slate-100">
-//           {STATS.map((s, i) => (
-//             <div key={i} className="py-6 text-center">
-//               <div className="text-2xl sm:text-3xl font-black text-indigo-600 tracking-tight">{s.value}</div>
-//               <div className="text-slate-500 text-xs sm:text-sm font-medium mt-1">{s.label}</div>
-//             </div>
-//           ))}
-//         </div>
-//       </section>
-
-//       {/* ── JOB CATEGORIES ── */}
-//       <section className="py-16 md:py-20 px-4 sm:px-6">
-//         <div className="max-w-7xl mx-auto">
-//           <div className="flex items-end justify-between mb-8 gap-4">
-//             <div>
-//               <p className="text-indigo-600 font-bold text-xs uppercase tracking-widest mb-2">Explore</p>
-//               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Browse by Industry</h2>
-//             </div>
-//             <button
-//               onClick={() => navigate("/jobs")}
-//               className="hidden sm:flex items-center gap-2 text-indigo-600 font-semibold text-sm hover:gap-3 transition-all shrink-0"
-//             >
-//               View all <ArrowRight />
-//             </button>
-//           </div>
-
-//           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-//             {CATEGORIES.map((cat, i) => (
-//               <button
-//                 key={i}
-//                 onClick={() => navigate(`/jobs?category=${cat.label.toLowerCase()}`)}
-//                 className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-indigo-400 hover:shadow-lg hover:shadow-indigo-100 hover:-translate-y-1 transition-all group text-center"
-//               >
-//                 <span className="text-3xl">{cat.emoji}</span>
-//                 <span className="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors">{cat.label}</span>
-//                 <span className="text-slate-400 text-xs">{cat.count}</span>
-//               </button>
-//             ))}
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* ── COMPANY CAROUSEL ── */}
-//       <CompanyCarousel navigate={navigate} />
-
-//       {/* ── FEATURES ── */}
-//       <section className="py-16 md:py-20 px-4 sm:px-6 bg-slate-100">
-//         <div className="max-w-7xl mx-auto">
-//           <div className="text-center mb-12">
-//             <p className="text-indigo-600 font-bold text-xs uppercase tracking-widest mb-3">Why Us</p>
-//             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-//               Everything You Need to Succeed
-//             </h2>
-//             <p className="text-slate-500 max-w-md mx-auto mt-3 text-sm leading-relaxed">
-//               Built for job seekers and recruiters alike — fast, trusted, and designed to get results.
-//             </p>
-//           </div>
-//           <div className="grid sm:grid-cols-2 gap-5">
-//             {FEATURES.map((f, i) => (
-//               <div
-//                 key={i}
-//                 className="bg-white rounded-2xl p-7 border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-200"
-//               >
-//                 <div className={`w-14 h-14 rounded-2xl ${f.bgClass} ${f.colorClass} flex items-center justify-center mb-5`}>
-//                   {f.icon}
-//                 </div>
-//                 <h3 className="font-bold text-lg text-slate-800 mb-2">{f.title}</h3>
-//                 <p className="text-slate-500 text-sm leading-relaxed">{f.desc}</p>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* ── HOW IT WORKS ── */}
-//       <section className="py-16 md:py-24 px-4 sm:px-6">
-//         <div className="max-w-7xl mx-auto">
-//           <div className="text-center mb-14">
-//             <p className="text-indigo-600 font-bold text-xs uppercase tracking-widest mb-3">Simple Process</p>
-//             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Get Hired in 3 Steps</h2>
-//           </div>
-//           <div className="grid sm:grid-cols-3 gap-10 relative">
-//             <div className="hidden sm:block absolute top-10 left-[18%] right-[18%] h-0.5 bg-gradient-to-r from-indigo-400 to-indigo-600" />
-//             {HOW_IT_WORKS.map((step, i) => (
-//               <div key={i} className="text-center relative z-10">
-//                 <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 text-white text-2xl font-black flex items-center justify-center shadow-xl shadow-indigo-200 border-4 border-white">
-//                   {step.step}
-//                 </div>
-//                 <h3 className="font-bold text-lg text-slate-800 mb-2">{step.title}</h3>
-//                 <p className="text-slate-500 text-sm leading-relaxed max-w-xs mx-auto">{step.desc}</p>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* ── CTA ── */}
-//       <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-900 py-20 px-4 sm:px-6">
-//         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
-//         <div className="relative max-w-2xl mx-auto text-center">
-//           <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
-//             Ready to Take the Next Step?
-//           </h2>
-//           <p className="text-slate-400 text-base leading-relaxed mb-10 max-w-lg mx-auto">
-//             Join over 120,000 professionals who've found their dream role through JobPortal.
-//           </p>
-//           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-//             <button
-//               onClick={() => navigate("/jobs")}
-//               className="bg-white text-indigo-700 font-bold px-8 py-3.5 rounded-xl shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all"
-//             >
-//               Browse Jobs
-//             </button>
-//             <button
-//               onClick={() => navigate("/signup")}
-//               className="bg-white/10 backdrop-blur text-white border border-white/25 font-bold px-8 py-3.5 rounded-xl hover:bg-white/20 transition-all"
-//             >
-//               Sign Up Free
-//             </button>
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* ── FOOTER ── */}
-//       <footer className="bg-slate-900 text-slate-400 pt-14 pb-8 px-4 sm:px-6">
-//         <div className="max-w-7xl mx-auto">
-//           <div className="grid grid-cols-2 md:grid-cols-4 gap-10 pb-10 border-b border-slate-800">
-//             {/* Brand */}
-//             <div className="col-span-2 md:col-span-1">
-//               <div className="flex items-center gap-2 mb-4">
-//                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center">
-//                   <svg className="w-5 h-5" fill="white" viewBox="0 0 24 24">
-//                     <rect x="2" y="7" width="20" height="14" rx="2" fill="white" />
-//                     <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" stroke="white" fill="none" strokeWidth="2" />
-//                   </svg>
-//                 </div>
-//                 <span className="font-extrabold text-lg text-white">
-//                   Job<span className="text-indigo-400">Portal</span>
-//                 </span>
-//               </div>
-//               <p className="text-sm leading-relaxed max-w-[220px]">
-//                 Connecting talent with opportunity. The smartest way to find your next job or hire your next star.
-//               </p>
-//             </div>
-
-//             {[
-//               { title: "For Job Seekers", links: ["Browse Jobs", "Career Advice", "Salary Guide", "Resume Builder"] },
-//               { title: "For Employers", links: ["Post a Job", "Search Talent", "Pricing", "Recruiter Tools"] },
-//               { title: "Company", links: ["About Us", "Blog", "Careers", "Contact"] },
-//             ].map((col, i) => (
-//               <div key={i}>
-//                 <p className="text-white font-semibold text-sm mb-4">{col.title}</p>
-//                 {col.links.map((link) => (
-//                   <button
-//                     key={link}
-//                     onClick={() => navigate(`/${link.toLowerCase().replace(/ /g, "-")}`)}
-//                     className="block text-slate-500 hover:text-slate-200 text-sm mb-2.5 transition-colors text-left"
-//                   >
-//                     {link}
-//                   </button>
-//                 ))}
-//               </div>
-//             ))}
-//           </div>
-
-//           <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs">
-//             <span>© 2025 JobPortal. All rights reserved.</span>
-//             <div className="flex flex-wrap gap-5">
-//               {["Privacy Policy", "Terms of Service", "Cookie Settings"].map((link) => (
-//                 <button
-//                   key={link}
-//                   onClick={() => navigate(`/${link.toLowerCase().replace(/ /g, "-")}`)}
-//                   className="text-slate-500 hover:text-slate-300 transition-colors"
-//                 >
-//                   {link}
-//                 </button>
-//               ))}
-//             </div>
-//           </div>
-//         </div>
-//       </footer>
-//     </div>
-//   );
-// }
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../api/apiCheck";
 
-// ─── SVG Icons ────────────────────────────────────────────────────────────────
-const SearchIcon = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-    <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
-  </svg>
-);
-const MapPinIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" />
-  </svg>
-);
-const ChevronLeft = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-    <path d="m15 18-6-6 6-6" />
-  </svg>
-);
-const ChevronRight = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-    <path d="m9 18 6-6-6-6" />
-  </svg>
-);
-const ArrowRight = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-    <path d="M5 12h14M12 5l7 7-7 7" />
-  </svg>
-);
-const BriefcaseIcon = () => (
-  <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-    <rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /><path d="M2 12h20" />
-  </svg>
-);
-const UsersIcon = () => (
-  <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
-    <path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-  </svg>
-);
-const ZapIcon = () => (
-  <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-  </svg>
-);
-const ShieldIcon = () => (
-  <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-  </svg>
-);
+/* ─── Intersection Observer Hook ─────────────────────────────────────────── */
+function useInView(threshold = 0.1) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        setInView(true);
+        obs.disconnect();
+      }
+    }, { threshold, rootMargin: "0px 0px -50px 0px" });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return [ref, inView];
+}
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
-const STATS = [
-  { value: "50K+", label: "Jobs Posted" },
-  { value: "120K+", label: "Job Seekers" },
-  { value: "8K+", label: "Companies" },
-  { value: "95%", label: "Placement Rate" },
-];
+/* ─── Animated Counter ────────────────────────────────────────────────────── */
+function Counter({ target, suffix = "" }) {
+  const [count, setCount] = useState(0);
+  const [ref, inView] = useInView(0.5);
+  useEffect(() => {
+    if (!inView) return;
+    const num = parseInt(target.replace(/\D/g, ""));
+    let start = 0;
+    const step = Math.ceil(num / 40);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= num) {
+        setCount(num);
+        clearInterval(timer);
+      } else {
+        setCount(start);
+      }
+    }, 30);
+    return () => clearInterval(timer);
+  }, [inView, target]);
+  return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
+}
 
-const TRUSTED_LOGOS = [
-  { name: "Amazon",   text: "amazon",   color: "#FF9900", weight: "900", style: "italic" },
-  { name: "NVIDIA",   text: "NVIDIA",   color: "#76B900", weight: "900", style: "normal" },
-  { name: "Google",   text: "Google",   color: "#4285F4", weight: "700", style: "normal" },
-  { name: "Coinbase", text: "coinbase", color: "#0052FF", weight: "600", style: "normal" },
-  { name: "Shopify",  text: "shopify",  color: "#5A8A3C", weight: "700", style: "normal" },
-  { name: "Meta",     text: "Meta",     color: "#0668E1", weight: "700", style: "italic" },
-  { name: "Netflix",  text: "NETFLIX",  color: "#E50914", weight: "900", style: "normal" },
-  { name: "Stripe",   text: "stripe",   color: "#6772E5", weight: "600", style: "italic" },
-  { name: "Airbnb",   text: "airbnb",   color: "#FF5A5F", weight: "700", style: "normal" },
-  { name: "Figma",    text: "figma",    color: "#F24E1E", weight: "900", style: "normal" },
-  { name: "Ford",     text: "Ford",     color: "#003399", weight: "900", style: "italic" },
-  { name: "Slack",    text: "slack",    color: "#4A154B", weight: "700", style: "normal" },
+/* ─── Fade-In Wrapper ─────────────────────────────────────────────────────── */
+function FadeIn({ children, delay = 0, className = "", direction = "up" }) {
+  const [ref, inView] = useInView();
+  const getTransform = () => {
+    if (direction === "up") return inView ? "translateY(0)" : "translateY(30px)";
+    if (direction === "down") return inView ? "translateY(0)" : "translateY(-30px)";
+    if (direction === "left") return inView ? "translateX(0)" : "translateX(30px)";
+    if (direction === "right") return inView ? "translateX(0)" : "translateX(-30px)";
+    return "none";
+  };
+
+  return (
+    <div ref={ref} className={className} style={{
+      opacity: inView ? 1 : 0,
+      transform: getTransform(),
+      transition: `opacity 1s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`
+    }}>
+      {children}
+    </div>
+  );
+}
+
+/* ─── Icons ───────────────────────────────────────────────────────────────── */
+const SearchIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>;
+const MapPinIcon = () => <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>;
+const BriefcaseIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>;
+const UserIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>;
+const CodeIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>;
+const DesignIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="4" /><line x1="21.17" y1="8" x2="12" y2="8" /><line x1="3.95" y1="6.06" x2="8.54" y2="14" /><line x1="10.88" y1="21.94" x2="15.46" y2="14" /></svg>;
+const BuildingIcon = () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" ry="2" /><path d="M9 22v-4h6v4" /><path d="M8 6h.01" /><path d="M16 6h.01" /><path d="M12 6h.01" /><path d="M12 10h.01" /><path d="M12 14h.01" /><path d="M16 10h.01" /><path d="M16 14h.01" /><path d="M8 10h.01" /><path d="M8 14h.01" /></svg>;
+const CurrencyIcon = () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>;
+const ArrowRightIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>;
+
+/* ─── Mock Data ───────────────────────────────────────────────────────── */
+const CATEGORIES = [
+  { name: "Software Engineering", count: "12k+", icon: <CodeIcon />, color: "#06B6D4", bg: "rgba(6, 182, 212, 0.1)" },
+  { name: "Product Design", count: "4k+", icon: <DesignIcon />, color: "#A855F7", bg: "rgba(168, 85, 247, 0.1)" },
+  { name: "Marketing", count: "8k+", icon: <BriefcaseIcon />, color: "#F59E0B", bg: "rgba(245, 158, 11, 0.1)" },
+  { name: "Operations", count: "6k+", icon: <UserIcon />, color: "#10B981", bg: "rgba(16, 185, 129, 0.1)" },
 ];
 
 const COMPANIES = [
-  {
-    name: "Google",
-    industry: "Technology",
-    location: "Mountain View, CA",
-    openings: 320,
-    logo: "G",
-    logoFrom: "#4285F4",
-    logoTo: "#34A853",
-    tag: "Top Employer",
-    tagClass: "bg-blue-100 text-blue-700",
-    rating: "4.8",
-    founded: "1998",
-  },
-  {
-    name: "Microsoft",
-    industry: "Software & Cloud",
-    location: "Redmond, WA",
-    openings: 215,
-    logo: "M",
-    logoFrom: "#0078D4",
-    logoTo: "#00B4D8",
-    tag: "Hiring Now",
-    tagClass: "bg-green-100 text-green-700",
-    rating: "4.7",
-    founded: "1975",
-  },
-  {
-    name: "Amazon",
-    industry: "E-Commerce & Cloud",
-    location: "Seattle, WA",
-    openings: 480,
-    logo: "A",
-    logoFrom: "#FF9900",
-    logoTo: "#FFD166",
-    tag: "Fastest Growing",
-    tagClass: "bg-orange-100 text-orange-700",
-    rating: "4.5",
-    founded: "1994",
-  },
-  {
-    name: "Meta",
-    industry: "Social Media & AI",
-    location: "Menlo Park, CA",
-    openings: 175,
-    logo: "M",
-    logoFrom: "#0668E1",
-    logoTo: "#6C63FF",
-    tag: "Top Employer",
-    tagClass: "bg-blue-100 text-blue-700",
-    rating: "4.6",
-    founded: "2004",
-  },
-  {
-    name: "Apple",
-    industry: "Consumer Tech",
-    location: "Cupertino, CA",
-    openings: 290,
-    logo: "🍎",
-    logoFrom: "#555",
-    logoTo: "#999",
-    tag: "Premium Brand",
-    tagClass: "bg-slate-100 text-slate-700",
-    rating: "4.9",
-    founded: "1976",
-  },
-  {
-    name: "Netflix",
-    industry: "Streaming & Media",
-    location: "Los Gatos, CA",
-    openings: 130,
-    logo: "N",
-    logoFrom: "#E50914",
-    logoTo: "#B20710",
-    tag: "Hiring Now",
-    tagClass: "bg-red-100 text-red-700",
-    rating: "4.6",
-    founded: "1997",
-  },
-  {
-    name: "Salesforce",
-    industry: "CRM & SaaS",
-    location: "San Francisco, CA",
-    openings: 195,
-    logo: "S",
-    logoFrom: "#00A1E0",
-    logoTo: "#0070D2",
-    tag: "Best Culture",
-    tagClass: "bg-sky-100 text-sky-700",
-    rating: "4.7",
-    founded: "1999",
-  },
+  { name: "Apple", logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" },
+  { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" },
+  { name: "Meta", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" },
+  { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" },
+  { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" },
+  { name: "Netflix", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" },
 ];
 
 const FEATURES = [
-  { icon: <BriefcaseIcon />, title: "Smart Job Matching", desc: "Our AI-powered engine matches your skills to the most relevant openings — saving you hours of searching.", colorClass: "text-indigo-600", bgClass: "bg-indigo-50" },
-  { icon: <UsersIcon />, title: "Hire Top Talent", desc: "Recruiters can post jobs and instantly surface qualified candidates from our growing talent pool.", colorClass: "text-sky-600", bgClass: "bg-sky-50" },
-  { icon: <ZapIcon />, title: "One-Click Apply", desc: "Apply to multiple jobs with your saved profile. No repetitive forms — your first impression, perfected.", colorClass: "text-amber-600", bgClass: "bg-amber-50" },
-  { icon: <ShieldIcon />, title: "Verified Employers", desc: "Every company on JobPortal is vetted. You only see real opportunities from legitimate, trusted employers.", colorClass: "text-emerald-600", bgClass: "bg-emerald-50" },
+  {
+    title: "Light Speed Applications",
+    desc: "Apply to multiple MNCs simultaneously using a unified hyper-optimized profile.",
+    icon: "⚡",
+    color: "#F59E0B",
+    bg: "rgba(245, 158, 11, 0.15)"
+  },
+  {
+    title: "Vetted Entities Only",
+    desc: "Every company is strictly vetted to ensure legitimate and high standards.",
+    icon: "🛡️",
+    color: "#3B82F6",
+    bg: "rgba(59, 130, 246, 0.15)"
+  },
+  {
+    title: "AI Skill Matching",
+    desc: "Algorithms pinpoint roles that exactly fit your specific trajectory.",
+    icon: "🤖",
+    color: "#10B981",
+    bg: "rgba(16, 185, 129, 0.15)"
+  },
+  {
+    title: "Premium Networking",
+    desc: "Connect with industry leaders and mentors directly.",
+    icon: "🤝",
+    color: "#A855F7",
+    bg: "rgba(168, 85, 247, 0.15)"
+  }
 ];
 
-const HOW_IT_WORKS = [
-  { step: "01", title: "Create Your Profile", desc: "Sign up and build a standout profile in minutes — upload your resume or fill in your details." },
-  { step: "02", title: "Browse & Apply", desc: "Explore thousands of listings filtered by role, location, salary, and more. Apply with one click." },
-  { step: "03", title: "Get Hired", desc: "Connect directly with employers, schedule interviews, and land your next role — fast." },
-];
+/* ─── Main Component ──────────────────────────────────────────────────────── */
+export default function Home() {
+  const navigate = useNavigate();
+  const [searchQ, setSearchQ] = useState("");
+  const [locQ, setLocQ] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("All");
+  const [expandedCard, setExpandedCard] = useState(0);
+  const [jobs, setJobs] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const carouselRef = useRef(null);
 
-const CATEGORIES = [
-  { label: "Engineering", count: "12,400 jobs", emoji: "⚙️" },
-  { label: "Design", count: "4,200 jobs", emoji: "🎨" },
-  { label: "Marketing", count: "6,800 jobs", emoji: "📣" },
-  { label: "Finance", count: "5,100 jobs", emoji: "📊" },
-  { label: "Healthcare", count: "9,300 jobs", emoji: "🏥" },
-  { label: "Education", count: "3,700 jobs", emoji: "📚" },
-];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get("/jobs");
+        if (res.data?.jobs) {
+          setJobs(res.data.jobs);
+          setFilteredJobs(res.data.jobs);
+          setTotalCount(res.data.totalJobs || res.data.jobs.length);
+        }
+      } catch (err) {
+        console.error("Failed to fetch jobs:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-// ─── Trusted Companies Marquee ────────────────────────────────────────────────
-function TrustedMarquee() {
-  const items = [...TRUSTED_LOGOS, ...TRUSTED_LOGOS]; // duplicate for seamless loop
+  useEffect(() => {
+    let result = jobs;
+
+    if (searchQ) {
+      const q = searchQ.toLowerCase();
+      result = result.filter(j =>
+        j.title?.toLowerCase().includes(q) ||
+        j.companyName?.toLowerCase().includes(q) ||
+        j.skillsRequired?.some(s => s.toLowerCase().includes(q))
+      );
+    }
+
+    if (locQ) {
+      const l = locQ.toLowerCase();
+      result = result.filter(j => j.location?.toLowerCase().includes(l));
+    }
+
+    if (selectedFilter !== "All") {
+      const f = selectedFilter.toLowerCase();
+      result = result.filter(j =>
+        j.jobType?.toLowerCase().includes(f) ||
+        j.workMode?.toLowerCase().includes(f)
+      );
+    }
+
+    setFilteredJobs(result);
+  }, [searchQ, locQ, selectedFilter, jobs]);
+
+  const handleSearch = () => {
+    const browseSection = document.getElementById("browse-jobs");
+    if (browseSection) {
+      browseSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const scrollCarousel = (direction) => {
+    if (carouselRef.current) {
+      const scrollAmount = direction === "left" ? -400 : 400;
+      carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
 
   return (
-    <section className="bg-white border-y border-slate-100 py-6 overflow-hidden">
+    <div className="home-page min-h-screen bg-[#F8F9FB] text-slate-800 font-inter overflow-x-hidden selection:bg-indigo-100 italic">
       <style>{`
-        @keyframes marquee {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+        .nav-glass {
+          background: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(12px);
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
-        .marquee-track {
+        .hero-title {
+          font-family: 'Outfit', sans-serif;
+          letter-spacing: -0.03em;
+          line-height: 1.1;
+        }
+        .search-card {
+          background: white;
+          border: 1px solid #e2e8f0;
+          box-shadow: 0 30px 60px -12px rgba(79, 70, 229, 0.15);
+          border-radius: 32px;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .search-card:focus-within {
+          border-color: #4f46e5;
+          box-shadow: 0 40px 80px -12px rgba(79, 70, 229, 0.2);
+        }
+        .glass-card {
+          background: white;
+          border: 1px solid rgba(0, 0, 0, 0.05);
+          transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+          height: 100%;
           display: flex;
-          width: max-content;
-          animation: marquee 30s linear infinite;
+          flex-direction: column;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
         }
-        .marquee-track:hover {
-          animation-play-state: paused;
+        .glass-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
+          border-color: #4f46e5;
         }
-        .marquee-logo {
-          opacity: 0.45;
-          transition: opacity 0.25s ease;
+        .btn-indigo {
+          background: #4f46e5;
+          color: white;
+          padding: 16px 32px;
+          border-radius: 12px;
+          font-weight: 700;
+          transition: all 0.4s;
+          box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.3);
         }
-        .marquee-logo:hover {
+        .btn-indigo:hover {
+          background: #4338ca;
+          transform: translateY(-2px);
+          box-shadow: 0 15px 25px -5px rgba(79, 70, 229, 0.4);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .expanding-card {
+          flex: 1;
+          transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+          cursor: pointer;
+          overflow: hidden;
+          border-radius: 32px;
+          position: relative;
+          min-width: 80px;
+          height: 520px;
+          background: white;
+          border: 1px solid rgba(0, 0, 0, 0.05);
+          box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.03);
+        }
+        .expanding-card.active {
+          flex: 4;
+          background: white;
+          border-color: #4f46e5;
+          box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.15);
+        }
+        .expanding-card-content {
+          padding: 48px;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          opacity: 0;
+          transition: opacity 0.5s;
+          white-space: nowrap;
+        }
+        .expanding-card.active .expanding-card-content {
           opacity: 1;
+        }
+        .vertical-label {
+          position: absolute;
+          bottom: 48px;
+          left: 50%;
+          transform: translateX(-50%) rotate(-90deg);
+          transform-origin: center;
+          font-size: 13px;
+          font-weight: 800;
+          color: #94A3B8;
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          transition: all 0.3s;
+          white-space: nowrap;
+        }
+        .expanding-card.active .vertical-label {
+          opacity: 0;
+        }
+        @keyframes slideLeft {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+        .animate-slide-left {
+          animation: slideLeft 40s linear infinite;
+        }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+          animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
       `}</style>
 
-      <p className="text-center text-xs text-slate-400 font-semibold uppercase tracking-widest mb-5">
-        Trusted by teams at world-class companies
-      </p>
+      {/* ─── PROFESSIONAL HERO SECTION ───────────────────────────────────────── */}
+      <section className="relative pt-44 pb-32 px-6 lg:px-12 overflow-hidden bg-white">
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-indigo-50/50 rounded-full blur-[150px] -z-10" />
 
-      <div className="marquee-track">
-        {items.map((logo, i) => (
-          <div
-            key={i}
-            className="marquee-logo flex items-center justify-center mx-10 shrink-0 cursor-default select-none"
-          >
-            <span
-              style={{
-                color: logo.color,
-                fontWeight: logo.weight,
-                fontStyle: logo.style,
-                fontSize: "1.35rem",
-                letterSpacing: "-0.02em",
-                fontFamily: "'Georgia', serif",
-              }}
-            >
-              {logo.text}
-            </span>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
+        <div className="max-w-6xl mx-auto text-center relative z-10">
+          <FadeIn>
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-indigo-600 shadow-xl shadow-indigo-200 text-white text-[10px] font-black uppercase tracking-[0.25em] mb-12">
+              <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+              Future-Proof Talent Network
+            </div>
+          </FadeIn>
 
-// ─── Company Carousel ─────────────────────────────────────────────────────────
-function CompanyCarousel({ navigate }) {
-  const [current, setCurrent] = useState(0);
-  const VISIBLE = 3;
-  const maxIndex = COMPANIES.length - VISIBLE;
+          <FadeIn delay={0.2}>
+            <h1 className="hero-title text-[clamp(2.2rem,6vw,2.2rem)] mb-8 font-black text-slate-900 leading-[1.05]">
+              Elevate Your <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-500">Professional Journey.</span>
+            </h1>
+          </FadeIn>
 
-  const prev = () => setCurrent((c) => Math.max(0, c - 1));
-  const next = () => setCurrent((c) => Math.min(maxIndex, c + 1));
-
-  return (
-    <section className="py-16 md:py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-10 gap-4">
-          <div>
-            <p className="text-indigo-600 font-bold text-xs uppercase tracking-widest mb-2">Top Companies</p>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Featured Employers Hiring Now
-            </h2>
-            <p className="text-slate-500 text-sm mt-2 max-w-md">
-              Explore opportunities at world-class companies actively looking for talent.
+          <FadeIn delay={0.4}>
+            <p className="text-slate-500 text-lg sm:text-xl max-w-2xl mx-auto mb-14 leading-relaxed font-medium">
+              Connect with extraordinary opportunities at the intersection of innovation and excellence. A curated portal for high-impact roles.
             </p>
-          </div>
+          </FadeIn>
 
-          {/* Arrow controls */}
-          <div className="flex items-center gap-3 shrink-0">
-            <button
-              onClick={prev}
-              disabled={current === 0}
-              className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-600 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft />
-            </button>
-            <span className="text-sm text-slate-400 font-medium tabular-nums">
-              {current + 1} / {maxIndex + 1}
-            </span>
-            <button
-              onClick={next}
-              disabled={current >= maxIndex}
-              className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-600 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <ChevronRight />
-            </button>
-          </div>
-        </div>
-
-        {/* Carousel Track */}
-        <div className="overflow-hidden">
-          <div
-            className="flex gap-5 transition-transform duration-500 ease-in-out"
-            style={{
-              transform: `translateX(calc(-${current} * (100% / ${VISIBLE} + ${20 / VISIBLE}px)))`,
-            }}
-          >
-            {COMPANIES.map((company, i) => (
-              <div
-                key={i}
-                className="flex-shrink-0 bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer group"
-                style={{ minWidth: `calc(${100 / VISIBLE}% - ${(20 * (VISIBLE - 1)) / VISIBLE}px)` }}
-                onClick={() => navigate(`/company/${company.name.toLowerCase()}`)}
-              >
-                {/* Top row */}
-                <div className="flex items-start justify-between mb-5">
-                  <div
-                    className="w-14 h-14 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md"
-                    style={{ background: `linear-gradient(135deg, ${company.logoFrom}, ${company.logoTo})` }}
-                  >
-                    {company.logo}
-                  </div>
-                  <span className={`text-xs font-semibold px-3 py-1 rounded-full ${company.tagClass}`}>
-                    {company.tag}
-                  </span>
-                </div>
-
-                {/* Name & Industry */}
-                <h3 className="text-lg font-bold text-slate-800 group-hover:text-indigo-600 transition-colors leading-tight">
-                  {company.name}
-                </h3>
-                <p className="text-sm text-slate-400 mt-0.5">{company.industry}</p>
-
-                {/* Location */}
-                <div className="flex items-center gap-1.5 text-slate-400 text-xs mt-2">
-                  <MapPinIcon />
-                  <span>{company.location}</span>
-                </div>
-
-                {/* Divider */}
-                <div className="border-t border-slate-100 my-4" />
-
-                {/* Stats */}
-                <div className="grid grid-cols-3 gap-2 text-center mb-5">
-                  <div>
-                    <p className="text-base font-extrabold text-indigo-600">{company.openings}+</p>
-                    <p className="text-xs text-slate-400 mt-0.5">Openings</p>
-                  </div>
-                  <div>
-                    <p className="text-base font-extrabold text-slate-700">{company.rating}★</p>
-                    <p className="text-xs text-slate-400 mt-0.5">Rating</p>
-                  </div>
-                  <div>
-                    <p className="text-base font-extrabold text-slate-700">{company.founded}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">Founded</p>
-                  </div>
-                </div>
-
-                {/* View Jobs Button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/jobs?company=${company.name.toLowerCase()}`);
-                  }}
-                  className="w-full py-2.5 rounded-xl border-2 border-indigo-100 text-indigo-600 font-semibold text-sm hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all duration-200"
-                >
-                  View Jobs →
-                </button>
+          <FadeIn delay={0.6}>
+            <div className="search-card max-w-4xl mx-auto p-4 flex flex-col md:flex-row gap-4 items-center">
+              <div className="flex-1 flex items-center px-8 gap-4 border-b md:border-b-0 md:border-r border-slate-100 w-full group/input">
+                <SearchIcon className="text-indigo-600 transition-transform group-hover/input:scale-110" />
+                <input
+                  value={searchQ}
+                  onChange={e => setSearchQ(e.target.value)}
+                  placeholder="Role, skill, or firm"
+                  className="w-full py-6 bg-transparent outline-none text-slate-900 font-black text-base placeholder:text-slate-300"
+                />
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Dot Indicators */}
-        <div className="flex justify-center gap-2 mt-8">
-          {Array.from({ length: maxIndex + 1 }).map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                current === i ? "w-6 bg-indigo-600" : "w-2 bg-slate-300 hover:bg-slate-400"
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* View All Link */}
-        <div className="text-center mt-8">
-          <button
-            onClick={() => navigate("/companies")}
-            className="inline-flex items-center gap-2 text-indigo-600 font-semibold text-sm hover:gap-3 transition-all"
-          >
-            View All Companies <ArrowRight />
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─── Main Home Component ──────────────────────────────────────────────────────
-export default function Home() {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [location, setLocation] = useState("");
-
-  const handleSearch = () => {
-    navigate(`/jobs?q=${encodeURIComponent(searchQuery)}&location=${encodeURIComponent(location)}`);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleSearch();
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-50">
-
-      {/* ── HERO ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-900 py-20 md:py-28 px-4 sm:px-6">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-violet-500/20 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-indigo-500/20 border border-indigo-400/30 rounded-full px-4 py-1.5 mb-7">
-            <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-            <span className="text-indigo-200 text-xs font-semibold tracking-wide">50,000+ Jobs Available Right Now</span>
-          </div>
-
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight tracking-tight mb-5">
-            Find Your Dream Job <br />
-            <span className="bg-gradient-to-r from-indigo-300 to-violet-300 bg-clip-text text-transparent">
-              or Hire Top Talent
-            </span>
-          </h1>
-
-          <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-            JobPortal connects ambitious professionals with world-class companies. Your next chapter starts here.
-          </p>
-
-          {/* Search Bar */}
-          <div className="bg-white rounded-2xl p-2 flex flex-col sm:flex-row gap-2 shadow-2xl max-w-2xl mx-auto mb-6">
-            <div className="flex-1 flex items-center gap-3 px-4 py-2.5 bg-slate-50 rounded-xl">
-              <span className="text-slate-400 shrink-0"><SearchIcon /></span>
-              <input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Job title, keyword, or company..."
-                className="flex-1 bg-transparent text-sm text-slate-800 placeholder-slate-400 outline-none"
-              />
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-xl sm:w-44">
-              <span className="text-slate-400 shrink-0"><MapPinIcon /></span>
-              <input
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="City or Remote"
-                className="flex-1 bg-transparent text-sm text-slate-800 placeholder-slate-400 outline-none"
-              />
-            </div>
-            <button
-              onClick={handleSearch}
-              className="bg-gradient-to-r from-indigo-500 to-indigo-700 text-white font-bold text-sm px-7 py-3 rounded-xl shadow-lg shadow-indigo-400/30 hover:-translate-y-0.5 hover:shadow-indigo-400/50 transition-all whitespace-nowrap"
-            >
-              Search Jobs
-            </button>
-          </div>
-
-          {/* Popular Tags */}
-          <div className="flex flex-wrap justify-center gap-2">
-            <span className="text-slate-500 text-xs flex items-center mr-1">Popular:</span>
-            {["React Developer", "UI/UX Designer", "Data Analyst", "Remote", "Product Manager"].map((tag) => (
+              <div className="flex-1 flex items-center px-8 gap-4 w-full group/input2">
+                <MapPinIcon className="text-indigo-600 transition-transform group-hover/input2:scale-110" />
+                <input
+                  value={locQ}
+                  onChange={e => setLocQ(e.target.value)}
+                  placeholder="Location or Remote"
+                  className="w-full py-6 bg-transparent outline-none text-slate-900 font-black text-base placeholder:text-slate-300"
+                />
+              </div>
               <button
-                key={tag}
-                onClick={() => setSearchQuery(tag)}
-                className="bg-white/10 border border-white/15 text-slate-300 hover:bg-indigo-500/30 hover:text-white hover:border-indigo-400/50 rounded-full px-3 py-1 text-xs transition-all"
+                onClick={handleSearch}
+                className="w-full md:w-auto px-12 py-6 bg-indigo-600 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[11px] shadow-2xl shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-1 transition-all active:scale-95 whitespace-nowrap"
               >
-                {tag}
+                Find Jobs
               </button>
-            ))}
-          </div>
+            </div>
+
+            {(searchQ || locQ) && (
+              <div className="mt-8 bg-white rounded-3xl border border-slate-200 shadow-2xl p-8 text-left animate-fade-in-up">
+                <div className="flex justify-between items-center mb-8">
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-900">Immediate Opportunities</h3>
+                    <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mt-1">{filteredJobs.length} matches found</p>
+                  </div>
+                  <button onClick={() => { setSearchQ(""); setLocQ(""); }} className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-colors">Clear</button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredJobs.length > 0 ? (
+                    filteredJobs.slice(0, 6).map((job, i) => (
+                      <div
+                        key={job._id || i}
+                        onClick={() => navigate(`/job/${job._id}`)}
+                        className="p-5 rounded-2xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all cursor-pointer group"
+                      >
+                        <div className="flex justify-between items-start mb-4">
+                          <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 bg-slate-100 rounded text-slate-600">{job.jobType}</span>
+                          <ArrowRightIcon className="text-slate-300 group-hover:text-indigo-500 transition-colors" size={14} />
+                        </div>
+                        <h4 className="font-bold text-slate-900 group-hover:text-indigo-700 truncate">{job.title}</h4>
+                        <p className="text-xs font-semibold text-slate-500 mt-1">{job.companyName}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full py-10 text-center text-slate-400 font-medium">No direct matches. Try adjusting your scope.</div>
+                  )}
+                </div>
+              </div>
+            )}
+          </FadeIn>
         </div>
       </section>
 
-      {/* ── STATS BAR ── */}
-      <section className="bg-white border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-2 md:grid-cols-4 divide-x divide-slate-100">
-          {STATS.map((s, i) => (
-            <div key={i} className="py-6 text-center">
-              <div className="text-2xl sm:text-3xl font-black text-indigo-600 tracking-tight">{s.value}</div>
-              <div className="text-slate-500 text-xs sm:text-sm font-medium mt-1">{s.label}</div>
-            </div>
+      {/* ─── TRUSTED LOGOS ───────────────────────────────────────── */}
+      <section className="py-12 bg-white border-y border-slate-100 overflow-hidden">
+        <div className="flex gap-20 items-center whitespace-nowrap animate-slide-left opacity-30">
+          {[...COMPANIES, ...COMPANIES].map((company, i) => (
+            <img key={i} src={company.logo} alt={company.name} className="h-6 grayscale" />
           ))}
         </div>
       </section>
 
-      {/* ── TRUSTED COMPANIES MARQUEE ── */}
-      <TrustedMarquee />
-
-      {/* ── JOB CATEGORIES ── */}
-      <section className="py-16 md:py-20 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-end justify-between mb-8 gap-4">
-            <div>
-              <p className="text-indigo-600 font-bold text-xs uppercase tracking-widest mb-2">Explore</p>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Browse by Industry</h2>
+      {/* ─── THE NEXAL EXPERIENCE ─────────────────────────── */}
+      <section className="py-24 px-6 lg:px-12 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <FadeIn>
+            <div className="text-center mb-16 space-y-3">
+              <h2 className="text-sm font-black text-indigo-600 uppercase tracking-[0.2em]">Operational Excellence</h2>
+              <h3 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Platform Capabilities</h3>
+              <p className="text-slate-500 font-medium max-w-xl mx-auto">Sophisticated tools designed for the modern architectural design of your career.</p>
             </div>
-            <button
-              onClick={() => navigate("/jobs")}
-              className="hidden sm:flex items-center gap-2 text-indigo-600 font-semibold text-sm hover:gap-3 transition-all shrink-0"
-            >
-              View all <ArrowRight />
-            </button>
-          </div>
+          </FadeIn>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {CATEGORIES.map((cat, i) => (
-              <button
-                key={i}
-                onClick={() => navigate(`/jobs?category=${cat.label.toLowerCase()}`)}
-                className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-indigo-400 hover:shadow-lg hover:shadow-indigo-100 hover:-translate-y-1 transition-all group text-center"
-              >
-                <span className="text-3xl">{cat.emoji}</span>
-                <span className="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors">{cat.label}</span>
-                <span className="text-slate-400 text-xs">{cat.count}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── COMPANY CAROUSEL ── */}
-      <CompanyCarousel navigate={navigate} />
-
-      {/* ── FEATURES ── */}
-      <section className="py-16 md:py-20 px-4 sm:px-6 bg-slate-100">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-indigo-600 font-bold text-xs uppercase tracking-widest mb-3">Why Us</p>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Everything You Need to Succeed
-            </h2>
-            <p className="text-slate-500 max-w-md mx-auto mt-3 text-sm leading-relaxed">
-              Built for job seekers and recruiters alike — fast, trusted, and designed to get results.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-5">
-            {FEATURES.map((f, i) => (
+          <div className="flex flex-col lg:flex-row gap-6">
+            {FEATURES.map((feature, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-7 border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-200"
+                className={`expanding-card ${expandedCard === i ? 'active' : ''}`}
+                onMouseEnter={() => setExpandedCard(i)}
+                onClick={() => setExpandedCard(i)}
               >
-                <div className={`w-14 h-14 rounded-2xl ${f.bgClass} ${f.colorClass} flex items-center justify-center mb-5`}>
-                  {f.icon}
+                <div className="vertical-label">{feature.title}</div>
+                <div className="expanding-card-content">
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mb-8 shadow-sm border border-slate-100" style={{ background: feature.bg, color: feature.color }}>
+                    {feature.icon}
+                  </div>
+                  <h4 className="text-2xl font-black text-slate-900 mb-4 whitespace-normal">{feature.title}</h4>
+                  <p className="text-slate-500 font-medium leading-relaxed whitespace-normal pr-8">
+                    {feature.desc}
+                  </p>
+                  <div className="mt-auto pt-8">
+                    <button className="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-800 transition-colors flex items-center gap-2">
+                      Learn More <ArrowRightIcon size={12} />
+                    </button>
+                  </div>
                 </div>
-                <h3 className="font-bold text-lg text-slate-800 mb-2">{f.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section className="py-16 md:py-24 px-4 sm:px-6">
+      {/* ─── DYNAMIC ELITE OPENINGS ─────────────────────────────── */}
+      <section id="browse-jobs" className="py-24 px-6 lg:px-12 bg-[#fdfdfe]">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-indigo-600 font-bold text-xs uppercase tracking-widest mb-3">Simple Process</p>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Get Hired in 3 Steps</h2>
-          </div>
-          <div className="grid sm:grid-cols-3 gap-10 relative">
-            <div className="hidden sm:block absolute top-10 left-[18%] right-[18%] h-0.5 bg-gradient-to-r from-indigo-400 to-indigo-600" />
-            {HOW_IT_WORKS.map((step, i) => (
-              <div key={i} className="text-center relative z-10">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 text-white text-2xl font-black flex items-center justify-center shadow-xl shadow-indigo-200 border-4 border-white">
-                  {step.step}
-                </div>
-                <h3 className="font-bold text-lg text-slate-800 mb-2">{step.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed max-w-xs mx-auto">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-900 py-20 px-4 sm:px-6">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight">
-            Ready to Take the Next Step?
-          </h2>
-          <p className="text-slate-400 text-base leading-relaxed mb-10 max-w-lg mx-auto">
-            Join over 120,000 professionals who've found their dream role through JobPortal.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => navigate("/jobs")}
-              className="bg-white text-indigo-700 font-bold px-8 py-3.5 rounded-xl shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all"
-            >
-              Browse Jobs
-            </button>
-            <button
-              onClick={() => navigate("/signup")}
-              className="bg-white/10 backdrop-blur text-white border border-white/25 font-bold px-8 py-3.5 rounded-xl hover:bg-white/20 transition-all"
-            >
-              Sign Up Free
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer className="bg-slate-900 text-slate-400 pt-14 pb-8 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 pb-10 border-b border-slate-800">
-            {/* Brand */}
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center">
-                  <svg className="w-5 h-5" fill="white" viewBox="0 0 24 24">
-                    <rect x="2" y="7" width="20" height="14" rx="2" fill="white" />
-                    <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" stroke="white" fill="none" strokeWidth="2" />
-                  </svg>
-                </div>
-                <span className="font-extrabold text-lg text-white">
-                  Job<span className="text-indigo-400">Portal</span>
-                </span>
-              </div>
-              <p className="text-sm leading-relaxed max-w-[220px]">
-                Connecting talent with opportunity. The smartest way to find your next job or hire your next star.
-              </p>
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div className="text-left space-y-2">
+              <h2 className="text-sm font-black text-indigo-600 uppercase tracking-widest">Global Network</h2>
+              <h3 className="text-4xl font-black text-slate-900 tracking-tight">Elite Openings</h3>
+              <p className="text-slate-500 font-medium max-w-md">Meticulously curated selection of high-visibility roles at prestigious organizations.</p>
             </div>
+            <div className="flex gap-3">
+              <button onClick={() => scrollCarousel("left")} className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center hover:border-indigo-600 transition-all">←</button>
+              <button onClick={() => scrollCarousel("right")} className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center hover:border-indigo-600 transition-all">→</button>
+            </div>
+          </div>
 
+          <div ref={carouselRef} className="flex gap-8 overflow-x-auto pb-12 hide-scrollbar snap-x">
+            {loading ? (
+              [1, 2, 3].map(i => <div key={i} className="min-w-[380px] h-[400px] bg-slate-100 rounded-3xl animate-pulse" />)
+            ) : jobs.length > 0 ? (
+              jobs.map((job, i) => (
+                <div key={job._id || i} className="min-w-[380px] snap-center">
+                  <div className="glass-card p-10 rounded-[2.5rem] bg-white group cursor-pointer" onClick={() => navigate(`/job/${job._id}`)}>
+                    <div className="flex justify-between items-start mb-10">
+                      <div className="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black"><BuildingIcon size={24} /></div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full">{job.jobType}</span>
+                    </div>
+                    <h4 className="text-2xl font-black text-slate-900 group-hover:text-indigo-700 transition-colors mb-2">{job.title}</h4>
+                    <p className="font-bold text-slate-500 mb-10">{job.companyName}</p>
+                    <div className="space-y-4 pt-10 border-t border-slate-50 mt-auto">
+                      <div className="flex items-center gap-3 text-slate-500 font-semibold text-sm">
+                        <MapPinIcon size={16} /> {job.location}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 text-slate-500 font-semibold text-sm">
+                          <CurrencyIcon size={16} /> {job.salary ? `${job.salary.min / 1000}k - ${job.salary.max / 1000}k` : "Competitive"}
+                        </div>
+                        <ArrowRightIcon size={18} className="text-slate-300 group-hover:text-indigo-600" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="w-full text-center py-20 text-slate-400 font-bold">No active mandates found. Check back soon.</div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── ABOUT SECTION ────────────────────────────────────────── */}
+      <section id="about" className="py-32 px-6 lg:px-12 bg-[#fafbfc] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-indigo-50/30 to-transparent -z-10" />
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-20">
+            <div className="lg:w-1/2 space-y-8">
+              <FadeIn direction="right">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white border border-slate-100 rounded-full shadow-sm text-[10px] font-black uppercase tracking-widest text-indigo-600 mb-4">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
+                  Our Philosophy
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter leading-[1.1]">
+                  Architecting the Next <br />
+                  <span className="text-indigo-600">Talent Revolution.</span>
+                </h2>
+                <p className="text-slate-500 text-lg font-medium leading-relaxed italic">
+                  Nexal was founded on a singular principle: professional connections should be as sophisticated as the talent they involve. We aren't just a job board; we are a curated ecosystem for elite growth.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
+                  <div className="space-y-3">
+                    <div className="text-2xl">🎯</div>
+                    <h4 className="font-black text-slate-900 text-sm uppercase tracking-widest">Our Mission</h4>
+                    <p className="text-slate-500 text-xs font-bold leading-relaxed">To bridge the gap between visionary companies and world-class talent through hyper-optimized matching and vetting.</p>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="text-2xl">💎</div>
+                    <h4 className="font-black text-slate-900 text-sm uppercase tracking-widest">Our Values</h4>
+                    <p className="text-slate-500 text-xs font-bold leading-relaxed">Precision, integrity, and architectural excellence in every professional mandate we facilitate.</p>
+                  </div>
+                </div>
+              </FadeIn>
+            </div>
+            
+            <div className="lg:w-1/2 relative">
+              <FadeIn direction="left" delay={0.3}>
+                <div className="relative z-10 bg-white rounded-[3rem] p-12 border border-slate-100 shadow-2xl shadow-indigo-100/50">
+                  <div className="space-y-10">
+                    <div className="flex items-center gap-6">
+                      <div className="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-3xl font-black">N</div>
+                      <div>
+                        <h5 className="font-black text-slate-900 uppercase tracking-widest text-xs">Since 2024</h5>
+                        <p className="text-[10px] font-bold text-slate-400 mt-1">THE ELITE STANDARD</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      <div className="pb-6 border-b border-slate-50">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Reach</span>
+                          <span className="text-xs font-black text-indigo-600">WIDE</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
+                          <div className="h-full bg-indigo-600 w-[85%] rounded-full"></div>
+                        </div>
+                      </div>
+                      <div className="pb-6 border-b border-slate-50">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Vetting Rigor</span>
+                          <span className="text-xs font-black text-indigo-600">MAX</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
+                          <div className="h-full bg-indigo-600 w-[98%] rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <p className="text-slate-500 text-sm font-medium leading-relaxed italic">
+                      "At Nexal, we believe your professional identity is your greatest legacy. We provide the infrastructure to manifest it."
+                    </p>
+                  </div>
+                </div>
+                {/* Decorative Elements */}
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-indigo-100/50 rounded-full blur-3xl -z-10" />
+                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-100/50 rounded-full blur-3xl -z-10" />
+              </FadeIn>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CTA ────────────────────────────────────────── */}
+      <section className="py-24 px-6 lg:px-12 bg-white">
+        <div className="max-w-6xl mx-auto bg-slate-900 rounded-[3.5rem] p-12 md:p-24 text-center relative overflow-hidden text-white">
+          <div className="relative z-10 space-y-8">
+            <FadeIn>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-none mb-4">Establish Your Legacy.</h2>
+              <p className="text-slate-400 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">Join a community of forward-thinkers and industry pioneers. Your next milestone awaits within the Nexal ecosystem.</p>
+            </FadeIn>
+
+            <FadeIn delay={0.2}>
+              <div className="flex gap-5 justify-center flex-wrap pt-6">
+                <button onClick={() => navigate("/signup")} className="px-12 py-5 bg-indigo-600 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-600/20 active:scale-95">Enroll Now</button>
+                <button onClick={() => navigate("/jobs")} className="px-12 py-5 bg-white/5 border border-white/10 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-white/10 transition-all active:scale-95">Browse Inventory</button>
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── STATS ────────────────────────────────────────────────────────── */}
+      <section className="py-20 px-6 lg:px-12 bg-white border-t border-slate-100 italic">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12">
+          {[
+            { l: "Roles Active", v: totalCount > 0 ? totalCount.toString() : "1.2k", s: totalCount > 0 ? "" : "+" },
+            { l: "Partner Vetting", v: "100", s: "%" },
+            { l: "Global Hubs", v: "24", s: "h" },
+            { l: "Success Rate", v: "98", s: "%" },
+          ].map((stat, i) => (
+            <div key={i} className="text-center space-y-2">
+              <div className="text-4xl font-black text-slate-800"><Counter target={stat.v} suffix={stat.s} /></div>
+              <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.l}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── FOOTER ───────────────────────────────────────────────────────── */}
+      <footer className="pt-24 pb-12 px-6 lg:px-12 bg-[#F8F9FB] border-t border-slate-200/60 font-inter">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 mb-20">
+            <div className="lg:col-span-2 space-y-8">
+              <h2 className="text-2xl font-black tracking-tighter text-slate-900">NEXAL<span className="text-indigo-600">.</span></h2>
+              <p className="text-slate-500 font-medium leading-relaxed max-w-sm italic">A sophisticated platform for the architectural design of your global career. Excellence in every connection.</p>
+              <div className="flex gap-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">
+                <a href="#" className="hover:text-indigo-600 transition-colors">LinkedIn</a>
+                <a href="#" className="hover:text-indigo-600 transition-colors">Twitter</a>
+                <a href="#" className="hover:text-indigo-600 transition-colors">Instagram</a>
+              </div>
+            </div>
             {[
-              { title: "For Job Seekers", links: ["Browse Jobs", "Career Advice", "Salary Guide", "Resume Builder"] },
-              { title: "For Employers", links: ["Post a Job", "Search Talent", "Pricing", "Recruiter Tools"] },
-              { title: "Company", links: ["About Us", "Blog", "Careers", "Contact"] },
-            ].map((col, i) => (
-              <div key={i}>
-                <p className="text-white font-semibold text-sm mb-4">{col.title}</p>
-                {col.links.map((link) => (
-                  <button
-                    key={link}
-                    onClick={() => navigate(`/${link.toLowerCase().replace(/ /g, "-")}`)}
-                    className="block text-slate-500 hover:text-slate-200 text-sm mb-2.5 transition-colors text-left"
-                  >
-                    {link}
-                  </button>
-                ))}
+              { t: "Modules", links: ["Browse", "Companies", "Categories"] },
+              { t: "Collective", links: ["About", "Careers", "Blog"] },
+              { t: "Legal", links: ["Privacy", "Terms", "Compliance"] },
+            ].map(col => (
+              <div key={col.t} className="space-y-8">
+                <h5 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.1em]">{col.t}</h5>
+                <div className="flex flex-col gap-5">
+                  {col.links.map(link => (
+                    <a key={link} href="#" className="text-xs font-semibold text-slate-500 hover:text-indigo-600 transition-all">{link}</a>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
-
-          <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs">
-            <span>© 2025 JobPortal. All rights reserved.</span>
-            <div className="flex flex-wrap gap-5">
-              {["Privacy Policy", "Terms of Service", "Cookie Settings"].map((link) => (
-                <button
-                  key={link}
-                  onClick={() => navigate(`/${link.toLowerCase().replace(/ /g, "-")}`)}
-                  className="text-slate-500 hover:text-slate-300 transition-colors"
-                >
-                  {link}
-                </button>
-              ))}
+          <div className="pt-12 border-t border-slate-200/50 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+              © 2026 Nexal Elite Ecosystem.
+            </div>
+            <div className="flex gap-10">
+              <span className="hover:text-slate-600 cursor-pointer">System Status</span>
+              <span className="hover:text-slate-600 cursor-pointer">Security Audits</span>
             </div>
           </div>
         </div>

@@ -35,7 +35,9 @@ import {
   uploadProfilePic,
   uploadResume,
   getDashboardData,
-  getPublicProfile
+  getPublicProfile,
+  toggleSaveJob,
+  getSavedJobs
 } from "../controllers/jobSeeker.controller.js";
 import multer from "multer";
 import { recruiterOnly } from "../middleware/authmiddleware.js";
@@ -62,6 +64,10 @@ router.put("/upload-profile-pic", authMiddleware, upload.single("file"), uploadP
 
 // ===== UPLOAD RESUME =====
 router.put("/upload-resume", authMiddleware, upload.single("file"), uploadResume);
+
+// ===== SAVED JOBS =====
+router.post("/saved-jobs/:jobId", authMiddleware, toggleSaveJob);
+router.get("/saved-jobs", authMiddleware, getSavedJobs);
 
 
 export default router;

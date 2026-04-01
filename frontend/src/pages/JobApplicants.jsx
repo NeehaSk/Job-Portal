@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../api/apiCheck";
-import toast from "react-hot-toast";
 import ApplicationThreadModal from "../components/ApplicationThreadModal";
+import toast from "react-hot-toast";
 
 const JobApplicants = () => {
     const { jobId } = useParams();
@@ -12,19 +12,20 @@ const JobApplicants = () => {
 
     // Modal States
     const [selectedApp, setSelectedApp] = useState(null);
-    const [isThreadOpen, setIsThreadOpen] = useState(false);
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [pendingStatus, setPendingStatus] = useState(null);
     const [pendingAppId, setPendingAppId] = useState(null);
     const [statusMessage, setStatusMessage] = useState("");
     
-    // Interview Scheduling States
     const [interviewData, setInterviewData] = useState({
         date: "",
         time: "",
         link: "",
         instructions: ""
     });
+
+    const [chatOpen, setChatOpen] = useState(false);
+    const [chatApp, setChatApp] = useState(null);
 
     useEffect(() => {
         const loadPage = async () => {
@@ -244,17 +245,9 @@ const JobApplicants = () => {
                                                 Reject
                                             </button>
                                         )}
-
-                                        <button
-                                            onClick={() => { setSelectedApp(app); setIsThreadOpen(true); }}
-                                            className="px-4 py-4 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-100 transition-all active:scale-95 flex items-center justify-center gap-2"
-                                        >
-                                            Chat
-                                        </button>
-
-                                        {app.applicant?.resume && (
+                                        {app.applicant?.profile?.resumeId && (
                                             <a
-                                                href={`http://localhost:5000/api/files/${app.applicant.resume}`}
+                                                href={`http://localhost:5000/api/files/${app.applicant.profile.resumeId}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="px-4 py-4 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-black transition-all flex items-center justify-center gap-3 shadow-xl shadow-slate-200 active:scale-95"
@@ -262,6 +255,12 @@ const JobApplicants = () => {
                                                 CV
                                             </a>
                                         )}
+                                        <button
+                                            onClick={() => { setChatApp(app); setChatOpen(true); }}
+                                            className="px-4 py-4 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-100 transition-all flex items-center justify-center gap-3 shadow-sm active:scale-95"
+                                        >
+                                            Chat
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -361,14 +360,16 @@ const JobApplicants = () => {
                 </div>
             )}
 
-            {/* MESSAGE THREAD MODAL */}
-            <ApplicationThreadModal
-                isOpen={isThreadOpen}
-                onClose={() => setIsThreadOpen(false)}
-                applicationId={selectedApp?._id}
-                application={selectedApp}
-                role="Recruiter"
-            />
+            {/* MESSAGING MODAL */}
+            {chatApp && (
+                <ApplicationThreadModal 
+                    isOpen={chatOpen} 
+                    onClose={() => setChatOpen(false)} 
+                    applicationId={chatApp._id} 
+                    application={chatApp} 
+                    role="Recruiter" 
+                />
+            )}
         </div>
     );
 };

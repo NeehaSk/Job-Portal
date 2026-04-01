@@ -50,16 +50,18 @@ const RecruiterJobs = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-24">
       {/* CORPORATE HEADER */}
-      <div className="h-64 bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 w-full relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
+      <div className="h-56 bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 w-full flex flex-col justify-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
           <svg className="absolute w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M0 100 C 20 0 50 0 100 100 Z" fill="rgba(255,255,255,0.05)"></path>
+            <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white"></path>
           </svg>
         </div>
 
-        <div className="max-w-7xl mx-auto h-full flex flex-col justify-center items-center px-4 relative z-10">
-          <h1 className="text-3xl font-black text-white tracking-widest uppercase mb-2">Hiring Dashboard</h1>
-          <p className="text-indigo-200 text-sm font-bold">Manage your listings and applications</p>
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 relative z-10 text-center">
+          <h1 className="text-white text-4xl font-black uppercase tracking-widest leading-none mb-3">
+            Hiring Dashboard
+          </h1>
+          <p className="text-indigo-200 text-sm font-bold uppercase tracking-widest">Manage your listings and applications</p>
         </div>
       </div>
 

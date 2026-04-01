@@ -33,8 +33,7 @@ import {
   updateJob,
   deleteJob,
   updateApplicationStatus,
-  getRecruiterAllApplications,
-  addApplicationMessage
+  getRecruiterAllApplications
 } from "../controllers/job.controller.js";
 
 
@@ -57,8 +56,7 @@ router.post("/:jobId/apply", authMiddleware, jobSeekerOnly, applyToJob);
 /* UPDATE APPLICATION STATUS (Recruiter only) */
 router.put("/application/:applicationId/status", authMiddleware, recruiterOnly, updateApplicationStatus);
 
-/* ADD MESSAGE TO APPLICATION (Recruiter or JobSeeker) */
-router.post("/application/:applicationId/message", authMiddleware, addApplicationMessage);
+
 
 /* ─── Read (GET – specific paths first, wildcards last) ── */
 

@@ -372,6 +372,14 @@ const jobSeekerSchema = new mongoose.Schema(
         },
       ],
     },
+    
+    // ===== SAVED JOBS =====
+    savedJobs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Job"
+      }
+    ],
 
     // ===== PROFILE COMPLETION TRACKING =====
     profileCompletion: {

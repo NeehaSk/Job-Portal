@@ -2,8 +2,10 @@
 import bcrypt from "bcrypt";
 import Recruiter from "../models/recruiter.js";
 import JobSeeker from "../models/jobSeeker.js";
+import Admin from "../models/admin.js";
 import TempRecruiter from "../models/temprecruiter.js";
 import TempJobSeeker from "../models/tempJobSeeker.js";
+import TempAdmin from "../models/tempAdmin.js";
 import mailTransporter from "../utils/mailTransporter.js";
 import jwt from "jsonwebtoken";
 
@@ -36,6 +38,7 @@ const generateTokens = (user, role) => {
    HELPER
 ===================================================== */
 const getTempModel = (role) => {
+  if (role === "admin") return TempAdmin;
   if (role === "recruiter") return TempRecruiter;
   if (role === "jobseeker") return TempJobSeeker;
   return null;
@@ -294,6 +297,49 @@ export const signupJobSeeker = async (req, res) => {
 };
 
 /* =====================================================
+   SIGNUP ADMIN
+===================================================== */
+export const signupAdmin = async (req, res) => {
+  try {
+    const { fullName, email, password, mobile } = req.body;
+
+    const temp = await TempAdmin.findOne({ email });
+    if (!temp || !temp.isVerified) {
+      return res.status(400).json({
+        message: "Email not verified",
+      });
+    }
+
+    const existingUser = await Admin.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        message: "Email already registered as Admin",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const admin = await Admin.create({
+      fullName,
+      email,
+      password: hashedPassword,
+      mobile,
+      role: "admin"
+    });
+
+    await TempAdmin.deleteOne({ email });
+
+    return res.status(201).json({
+      message: "Admin signed up successfully",
+      adminId: admin._id,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* =====================================================
    LOGIN
 ===================================================== */
 export const login = async (req, res) => {
@@ -302,7 +348,9 @@ export const login = async (req, res) => {
 
     let user;
 
-    if (role === "recruiter") {
+    if (role === "admin") {
+      user = await Admin.findOne({ email });
+    } else if (role === "recruiter") {
       user = await Recruiter.findOne({ email });
     } else {
       user = await JobSeeker.findOne({ email });
@@ -391,7 +439,11 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    let user = await Recruiter.findOne({ email });
+    let user = await Admin.findOne({ email });
+
+    if (!user) {
+      user = await Recruiter.findOne({ email });
+    }
 
     if (!user) {
       user = await JobSeeker.findOne({ email });
@@ -445,7 +497,11 @@ export const verifyForgotOtp = async (req, res) => {
       });
     }
 
-    let user = await Recruiter.findOne({ email });
+    let user = await Admin.findOne({ email });
+
+    if (!user) {
+      user = await Recruiter.findOne({ email });
+    }
 
     if (!user) {
       user = await JobSeeker.findOne({ email });
@@ -490,7 +546,11 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    let user = await Recruiter.findOne({ email });
+    let user = await Admin.findOne({ email });
+
+    if (!user) {
+      user = await Recruiter.findOne({ email });
+    }
 
     if (!user) {
       user = await JobSeeker.findOne({ email });
@@ -538,7 +598,9 @@ export const getMe = async (req, res) => {
     const { id, role } = req.user;
     let user;
 
-    if (role === "recruiter") {
+    if (role === "admin") {
+      user = await Admin.findById(id).select("-password");
+    } else if (role === "recruiter") {
       user = await Recruiter.findById(id).select("-password");
     } else {
       user = await JobSeeker.findById(id).select("-password");
@@ -555,7 +617,10 @@ export const getMe = async (req, res) => {
         fullName: user.fullName,
         email: user.email,
         role: role,
-        profilePhotoId: role === "recruiter" ? user.profilePhotoId : user.profile?.profilePhotoId
+        designation: user.designation,
+        bio: user.bio,
+        mobile: user.mobile,
+        profilePhotoId: role === "admin" ? user.profilePhotoId : (role === "recruiter" ? user.profilePhotoId : user.profile?.profilePhotoId)
       },
     });
   } catch (error) {
@@ -566,3 +631,45 @@ export const getMe = async (req, res) => {
   }
 };
 
+
+/* =====================================================
+   UPDATE ADMIN PROFILE
+===================================================== */
+export const updateAdminProfile = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const { fullName, email, mobile, designation, bio, profilePhotoId } = req.body;
+
+    const admin = await Admin.findById(id);
+    if (!admin) return res.status(404).json({ message: "Admin not found" });
+
+    if (fullName) admin.fullName = fullName;
+    if (email) admin.email = email;
+    if (mobile) admin.mobile = mobile;
+    if (designation) admin.designation = designation;
+    if (bio) admin.bio = bio;
+    if (profilePhotoId) admin.profilePhotoId = profilePhotoId;
+
+    await admin.save();
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        id: admin._id,
+        fullName: admin.fullName,
+        email: admin.email,
+        role: "admin",
+        designation: admin.designation,
+        bio: admin.bio,
+        mobile: admin.mobile,
+        profilePhotoId: admin.profilePhotoId
+      }
+    });
+  } catch (error) {
+    console.error("Update Admin Error:", error);
+    return res.status(500).json({ 
+      success: false, 
+      message: error.message || "Internal server error" 
+    });
+  }
+};

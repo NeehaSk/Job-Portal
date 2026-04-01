@@ -19,6 +19,7 @@ const JobDetails = () => {
         skills: "",
         experience: ""
     });
+    const [isSaved, setIsSaved] = useState(false);
 
     // Edit states
     const [editData, setEditData] = useState({
@@ -48,6 +49,11 @@ const JobDetails = () => {
         try {
             const res = await api.get(`/jobs/${jobId}`);
             setJob(res.data);
+            
+            if (user && user.role === "jobseeker") {
+                const savedRes = await api.get("/jobseeker/saved-jobs");
+                setIsSaved(savedRes.data.some(s => s._id === jobId));
+            }
             setEditData({
                 title: res.data.title || "",
                 description: res.data.description || "",
@@ -78,6 +84,16 @@ const JobDetails = () => {
             toast.error(error.response?.data?.message || "Failed to apply");
         } finally {
             setIsApplying(false);
+        }
+    };
+
+    const toggleSave = async () => {
+        try {
+            const res = await api.post(`/jobseeker/saved-jobs/${jobId}`);
+            setIsSaved(res.data.isSaved);
+            toast.success(res.data.message);
+        } catch (error) {
+            toast.error("Failed to save job");
         }
     };
 
@@ -126,7 +142,7 @@ const JobDetails = () => {
     if (!loading && !job) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
-                <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tight mb-4">Job Not Found</h2>
+                <h2 className="text-2xl font-semibold text-slate-800 uppercase tracking-tight mb-4">Job Not Found</h2>
                 <button 
                     onClick={() => navigate("/jobs")}
                     className="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold uppercase tracking-widest text-xs"
@@ -138,44 +154,60 @@ const JobDetails = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] pb-24">
-            {/* Header */}
-            <div className="bg-slate-900 w-full pt-36 pb-24 relative overflow-hidden">
-                {/* Subtle Grid Background */}
-                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#4f46e5 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
-
+        <div className="jobs-page min-h-screen bg-[#F8F9FB] pb-24 selection:bg-indigo-100">
+            <style>{`
+                h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+            `}</style>
+            
+            {/* PROFESSIONAL LIGHT HEADER */}
+            <div className="pt-40 pb-20 bg-white border-b border-slate-100">
                 <div className="max-w-7xl mx-auto px-6 w-full relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-10">
                     <div className="space-y-6">
                         <button
                             onClick={() => navigate(-1)}
-                            className="bg-white/5 text-indigo-300 hover:bg-white/10 hover:text-white px-4 py-2 rounded-full text-[10px] font-black transition-all uppercase tracking-[0.2em] backdrop-blur-sm border border-white/5"
+                            className="inline-flex items-center gap-2 text-slate-400 hover:text-indigo-600 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors"
                         >
-                            ← Back to search
+                            ← Return to inventory
                         </button>
                         <div>
-                            <h1 className="text-6xl font-black text-white uppercase tracking-tighter leading-none mb-3">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-semibold uppercase tracking-widest mb-4">
+                                <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse"></span>
+                                Global Opportunity
+                            </div>
+                            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight mb-2">
                                 {job?.title}
                             </h1>
-                            <div className="flex items-center gap-3">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <p className="text-2xl text-indigo-300 font-bold uppercase tracking-wide">
+                            <div className="flex items-center gap-4">
+                                <p className="text-lg text-slate-700 font-semibold">
                                     {job?.companyName}
                                 </p>
+                                <span className="w-1.5 h-1.5 bg-slate-200 rounded-full"></span>
+                                <span className="text-slate-400 font-bold text-sm">Ref: {jobId.slice(-6).toUpperCase()}</span>
                             </div>
                         </div>
                     </div>
                     {!isRecruiter && (
-                        <div className="pb-2">
+                        <div className="pb-2 flex gap-3 flex-wrap">
+                            <button
+                                onClick={toggleSave}
+                                className={`px-6 py-3 font-semibold rounded-lg transition-all text-sm border 
+                                    ${isSaved 
+                                        ? 'bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100' 
+                                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                                    }`}
+                            >
+                                {isSaved ? "Saved ♥" : "Save for later ♡"}
+                            </button>
                             <button
                                 onClick={() => setApplyModalOpen(true)}
                                 disabled={job?.hasApplied}
-                                className={`px-14 py-6 font-black rounded-[2rem] transition-all transform uppercase tracking-widest text-sm
+                                className={`px-8 py-3 font-semibold rounded-lg transition-all text-sm shadow-sm
                                     ${job?.hasApplied 
-                                        ? 'bg-emerald-500 text-white cursor-not-allowed shadow-[0_25px_50px_-12px_rgba(16,185,129,0.5)]' 
-                                        : 'bg-indigo-600 text-white shadow-[0_25px_50px_-12px_rgba(79,70,229,0.5)] hover:bg-indigo-500 active:scale-95'
+                                        ? 'bg-slate-50 text-slate-300 border border-slate-100 cursor-not-allowed' 
+                                        : 'bg-indigo-600 text-white shadow-indigo-600/20 hover:bg-indigo-700 active:scale-95'
                                     }`}
                             >
-                                {job?.hasApplied ? "Applied ✅" : "Express Interest Now"}
+                                {job?.hasApplied ? "Mandate Locked" : "Secure Opportunity"}
                             </button>
                         </div>
                     )}
@@ -189,10 +221,10 @@ const JobDetails = () => {
                         <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
                             {isEditing ? (
                                 <form onSubmit={handleUpdate} className="space-y-6">
-                                    <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight mb-6">Edit Job Listing</h2>
+                                    <h2 className="text-lg font-bold text-slate-800 tracking-tight mb-6">Edit Job Listing</h2>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-1.5">
-                                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Job Title</label>
+                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Job Title</label>
                                             <input
                                                 className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                                                 value={editData.title}
@@ -200,7 +232,7 @@ const JobDetails = () => {
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Location</label>
+                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Location</label>
                                             <input
                                                 className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                                                 value={editData.location}
@@ -208,7 +240,7 @@ const JobDetails = () => {
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Min Salary</label>
+                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Min Salary</label>
                                             <input
                                                 type="number"
                                                 className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
@@ -217,7 +249,7 @@ const JobDetails = () => {
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Max Salary</label>
+                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Max Salary</label>
                                             <input
                                                 type="number"
                                                 className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
@@ -227,7 +259,7 @@ const JobDetails = () => {
                                         </div>
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Job Description</label>
+                                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Job Description</label>
                                         <textarea
                                             rows="6"
                                             className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
@@ -236,7 +268,7 @@ const JobDetails = () => {
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Requirements (comma separated)</label>
+                                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Requirements (comma separated)</label>
                                         <textarea
                                             rows="3"
                                             className="w-full bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
@@ -247,14 +279,14 @@ const JobDetails = () => {
                                     <div className="flex gap-4 pt-4">
                                         <button
                                             type="submit"
-                                            className="flex-1 bg-indigo-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-indigo-100 uppercase tracking-widest text-xs"
+                                            className="flex-1 bg-indigo-600 text-white font-semibold py-4 rounded-2xl shadow-lg shadow-indigo-100 uppercase tracking-widest text-xs"
                                         >
                                             Save Changes
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => setIsEditing(false)}
-                                            className="flex-1 bg-slate-100 text-slate-600 font-black py-4 rounded-2xl uppercase tracking-widest text-xs"
+                                            className="flex-1 bg-slate-100 text-slate-600 font-semibold py-4 rounded-2xl uppercase tracking-widest text-xs"
                                         >
                                             Cancel
                                         </button>
@@ -263,14 +295,14 @@ const JobDetails = () => {
                             ) : (
                                 <div className="space-y-10">
                                     <section>
-                                        <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight mb-4">Job Description</h2>
+                                        <h2 className="text-lg font-bold text-slate-800 tracking-tight mb-4">Job Description</h2>
                                         <p className="text-slate-600 leading-relaxed whitespace-pre-line text-base">
                                             {job?.description}
                                         </p>
                                     </section>
 
                                     <section>
-                                        <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight mb-4">Requirements</h2>
+                                        <h2 className="text-lg font-bold text-slate-800 tracking-tight mb-4">Requirements</h2>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             {job?.requirements && job.requirements.length > 0 ? (
                                                 job.requirements.map((req, i) => (
@@ -280,7 +312,7 @@ const JobDetails = () => {
                                                     </div>
                                                 ))
                                             ) : (
-                                                <div className="col-span-1 md:col-span-2 text-slate-500 italic">No specific requirements listed.</div>
+                                                <div className="col-span-1 md:col-span-2 text-slate-500">No specific requirements listed.</div>
                                             )}
                                         </div>
                                     </section>
@@ -292,7 +324,7 @@ const JobDetails = () => {
                     {/* Right Column: Key Stats & Actions */}
                     <div className="space-y-8">
                         <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
-                            <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">Key Insights</h3>
+                            <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Key Insights</h3>
 
                             <div className="space-y-6">
                                 <Insight icon="📍" label="Location" value={job?.location} />
@@ -306,19 +338,19 @@ const JobDetails = () => {
                                 <div className="pt-6 border-t border-slate-50 space-y-4">
                                     <button
                                         onClick={() => setIsEditing(true)}
-                                        className="w-full py-4 bg-indigo-50 text-indigo-700 font-black rounded-2xl flex items-center justify-center gap-2 transition hover:bg-indigo-100 uppercase tracking-widest text-xs"
+                                        className="w-full py-4 bg-indigo-50 text-indigo-700 font-semibold rounded-2xl flex items-center justify-center gap-2 transition hover:bg-indigo-100 uppercase tracking-widest text-xs"
                                     >
                                         Edit Posting
                                     </button>
                                     <button
                                         onClick={() => navigate(`/recruiter/job/${jobId}/applicants`)}
-                                        className="w-full py-4 bg-slate-800 text-white font-black rounded-2xl flex items-center justify-center gap-2 transition hover:bg-slate-900 uppercase tracking-widest text-xs shadow-lg shadow-slate-200"
+                                        className="w-full py-4 bg-slate-800 text-white font-semibold rounded-2xl flex items-center justify-center gap-2 transition hover:bg-slate-900 uppercase tracking-widest text-xs shadow-lg shadow-slate-200"
                                     >
                                         View Applicants ({job?.applicantsCount || 0})
                                     </button>
                                     <button
                                         onClick={handleDelete}
-                                        className="w-full py-4 border-2 border-red-50 text-red-500 font-black rounded-2xl flex items-center justify-center gap-2 transition hover:bg-red-50 uppercase tracking-widest text-xs"
+                                        className="w-full py-4 border-2 border-red-50 text-red-500 font-semibold rounded-2xl flex items-center justify-center gap-2 transition hover:bg-red-50 uppercase tracking-widest text-xs"
                                     >
                                         Delete Position
                                     </button>
@@ -336,14 +368,14 @@ const JobDetails = () => {
                     <div className="bg-white rounded-[2.5rem] w-full max-w-xl relative shrink-0 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border border-slate-100 overflow-hidden animate-in zoom-in-95 duration-300">
                         <div className="bg-indigo-600 p-8 text-white relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
-                            <h2 className="text-3xl font-black uppercase tracking-tighter leading-none mb-2">Apply for this Role</h2>
+                            <h2 className="text-3xl font-semibold uppercase tracking-tighter leading-none mb-2">Apply for this Role</h2>
                             <p className="text-indigo-100 text-[11px] font-bold uppercase tracking-widest">Confirm your professional details</p>
                         </div>
 
                         <form onSubmit={handleApply} className="p-8 space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Full Name</label>
+                                    <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Full Name</label>
                                     <input
                                         required
                                         className="w-full bg-slate-50 border border-slate-100 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 transition-all font-bold text-slate-700"
@@ -352,7 +384,7 @@ const JobDetails = () => {
                                     />
                                 </div>
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Official Email</label>
+                                    <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Official Email</label>
                                     <input
                                         required
                                         type="email"
@@ -364,7 +396,7 @@ const JobDetails = () => {
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Expertise & Skills (Comma separated)</label>
+                                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Expertise & Skills (Comma separated)</label>
                                 <input
                                     required
                                     placeholder="e.g. React, Node.js, TypeScript"
@@ -375,7 +407,7 @@ const JobDetails = () => {
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Years of Experience</label>
+                                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Years of Experience</label>
                                 <input
                                     required
                                     type="text"
@@ -390,14 +422,14 @@ const JobDetails = () => {
                                 <button
                                     type="button"
                                     onClick={() => setApplyModalOpen(false)}
-                                    className="flex-1 py-4 bg-slate-100 text-slate-600 font-black rounded-2xl hover:bg-slate-200 transition-all uppercase tracking-widest text-[10px]"
+                                    className="flex-1 py-4 bg-slate-100 text-slate-600 font-semibold rounded-2xl hover:bg-slate-200 transition-all uppercase tracking-widest text-[10px]"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={isApplying}
-                                    className="flex-[2] py-4 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-100 disabled:opacity-50"
+                                    className="flex-[2] py-4 bg-indigo-600 text-white font-semibold rounded-2xl hover:bg-indigo-700 transition-all uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-100 disabled:opacity-50"
                                 >
                                     {isApplying ? "Submitting..." : "Submit Application"}
                                 </button>
@@ -416,8 +448,8 @@ const Insight = ({ icon, label, value }) => (
             {icon}
         </div>
         <div>
-            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">{label}</div>
-            <div className="text-sm font-black text-slate-700 truncate max-w-[150px]">{value}</div>
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">{label}</div>
+            <div className="text-sm font-semibold text-slate-700 truncate max-w-[150px]">{value}</div>
         </div>
     </div>
 );

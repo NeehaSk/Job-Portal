@@ -306,10 +306,10 @@ const JobSeekerProfile = () => {
     { id: "personal-details", label: "Personal details", secondaryAction: "Add" },
   ];
 
-  if (loading) return <div className="h-screen flex items-center justify-center font-black text-blue-600 animate-pulse uppercase tracking-[0.3em]">Syncing Profile...</div>;
+  if (loading) return <div className="h-screen flex items-center justify-center font-bold text-blue-600 animate-pulse text-lg tracking-tight">Syncing Profile...</div>;
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] pb-24 font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="profile-page min-h-screen bg-[#fafbfc] pb-24 font-sans selection:bg-blue-100 selection:text-blue-900">
 
       {showCropModal && (
         <ImageCropModal
@@ -320,13 +320,13 @@ const JobSeekerProfile = () => {
       )}
 
       {/* CLEAN PROFESSIONAL HEADER */}
-      <div className="bg-white border-b border-slate-100 pt-16 pb-20 mt-1">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center gap-12">
+      <div className="bg-white border-b border-slate-100 pt-20 pb-16 md:pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
 
             {/* Circular Profile Pic Design */}
             <div className="relative group">
-              <div className="w-40 h-40 bg-white rounded-full p-1.5 shadow-xl border border-slate-100">
+              <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 bg-white rounded-full p-1.5 shadow-xl border border-slate-100">
                 <div
                   onClick={() => fileInputRef.current.click()}
                   className="w-full h-full rounded-full overflow-hidden bg-slate-50 cursor-pointer relative group/img"
@@ -339,7 +339,7 @@ const JobSeekerProfile = () => {
                       onError={() => setImgError(true)}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-6xl opacity-10">👤</div>
+                    <div className="w-full h-full flex items-center justify-center text-4xl sm:text-6xl text-slate-300">👤</div>
                   )}
 
                   <div className="absolute inset-0 bg-blue-600/60 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-all duration-300 backdrop-blur-sm">
@@ -348,7 +348,7 @@ const JobSeekerProfile = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
-                      <span className="text-white text-[9px] font-black uppercase tracking-[0.2em]">Update Photo</span>
+                      <span className="text-white text-[10px] font-bold tracking-wider">Update Photo</span>
                     </div>
                   </div>
 
@@ -360,35 +360,35 @@ const JobSeekerProfile = () => {
                 </div>
               </div>
 
-              <div className="absolute -bottom-1 -right-1 bg-orange-400 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-lg ring-4 ring-white">
+              <div className="absolute -bottom-1 -right-1 bg-orange-400 text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg ring-4 ring-white">
                 60%
               </div>
             </div>
 
-            <div className="flex-1 text-center md:text-left space-y-4">
+            <div className="flex-1 text-center md:text-left space-y-3 md:space-y-4">
               <div className="space-y-1">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-full text-[11px] font-bold tracking-wider mb-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
                   Open to Work
                 </div>
-                <h1 className="text-4xl font-black text-slate-800 tracking-tight leading-none">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-800 tracking-tight leading-none">
                   {profile.fullName}
                 </h1>
-                <p className="text-lg font-bold text-slate-400 max-w-2xl leading-relaxed">
+                <p className="text-sm sm:text-base md:text-lg font-bold text-slate-400 max-w-2xl leading-relaxed">
                   Looking for opportunities in <span className="text-blue-600">{profile.location || "High-growth tech"}</span>
                 </p>
               </div>
 
-              <div className="flex flex-wrap justify-center md:justify-start gap-8 pt-2">
+              <div className="flex flex-wrap justify-center md:justify-start gap-6 sm:gap-8 pt-2">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-slate-200 uppercase tracking-widest mb-1">Email</span>
-                  <span className="text-sm font-bold text-slate-600 flex items-center gap-1.5 text-blue-600 underline decoration-blue-100 underline-offset-4">
+                  <span className="text-[10px] font-bold text-slate-400 tracking-wider mb-1">Email</span>
+                  <span className="text-xs sm:text-sm font-bold text-blue-600 underline decoration-blue-100 underline-offset-4">
                     {profile.email}
                   </span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-slate-200 uppercase tracking-widest mb-1">Contact</span>
-                  <span className="text-sm font-bold text-slate-600 flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-slate-400 tracking-wider mb-1">Contact</span>
+                  <span className="text-xs sm:text-sm font-bold text-slate-600">
                     {profile.mobile || "Add mobile"}
                   </span>
                 </div>
@@ -397,6 +397,7 @@ const JobSeekerProfile = () => {
           </div>
         </div>
       </div>
+
 
       <div className="max-w-7xl mx-auto px-6 mt-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -417,6 +418,7 @@ const JobSeekerProfile = () => {
               id="resume-headline"
               title="Resume & Headline"
               onEdit={() => setIsEditing("resume-headline")}
+              isEditing={isEditing === "resume-headline"}
             >
               <div className="mb-6 pb-6 border-b border-slate-100 flex items-center justify-between">
                 <div>
@@ -443,7 +445,7 @@ const JobSeekerProfile = () => {
                    <input type="file" id="resumeUpload" className="hidden" accept=".pdf" onChange={handleResumeUpload} />
                    <label 
                       htmlFor="resumeUpload" 
-                      className={`cursor-pointer px-4 py-2 border-2 border-dashed border-blue-200 rounded-xl text-xs font-black uppercase tracking-widest text-blue-600 hover:bg-blue-50 transition-colors ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      className={`cursor-pointer px-4 py-2 border-2 border-dashed border-blue-200 rounded-xl text-xs font-bold text-blue-600 hover:bg-blue-50 transition-colors ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
                     >
                       {uploading ? 'Uploading...' : 'Upload PDF'}
                    </label>
@@ -479,6 +481,7 @@ const JobSeekerProfile = () => {
               id="key-skills"
               title="Key skills"
               onEdit={() => setIsEditing("key-skills")}
+              isEditing={isEditing === "key-skills"}
             >
               {isEditing === "key-skills" ? (
                 <form onSubmit={handleUpdate} className="animate-fadeIn">
@@ -506,11 +509,12 @@ const JobSeekerProfile = () => {
               id="employment"
               title="Employment"
               onAdd={() => setIsEditing("employment")}
+              isEditing={isEditing === "employment"}
             >
               {isEditing === "employment" ? (
                 <form onSubmit={handleUpdate} className="grid md:grid-cols-2 gap-5 animate-fadeIn">
                   <div className="md:col-span-2 space-y-3">
-                    <label className="text-xs font-bold text-slate-400">Employment Status</label>
+                    <label className="text-xs font-medium text-slate-500">Employment Status</label>
                     <div className="flex flex-wrap gap-6">
                       {["Student", "Fresher", "Experienced"].map((status) => (
                         <label key={status} className="flex items-center gap-2 cursor-pointer group">
@@ -531,15 +535,15 @@ const JobSeekerProfile = () => {
                   {profile.employmentStatus === "Experienced" && (
                     <>
                       <div className="space-y-4 md:col-span-2 mt-2">
-                        <label className="text-xs font-bold text-slate-400">Total Experience (Years)</label>
+                        <label className="text-xs font-medium text-slate-500">Total Experience (Years)</label>
                         <input type="number" step="0.1" className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.experience} onChange={(e) => setProfile({ ...profile, experience: e.target.value })} />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-slate-400">Current Designation</label>
+                        <label className="text-xs font-medium text-slate-500">Current Designation</label>
                         <input className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.designation} onChange={(e) => setProfile({ ...profile, designation: e.target.value })} />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-slate-400">Current Company</label>
+                        <label className="text-xs font-medium text-slate-500">Current Company</label>
                         <input className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.currentCompany} onChange={(e) => setProfile({ ...profile, currentCompany: e.target.value })} />
                       </div>
                     </>
@@ -579,13 +583,14 @@ const JobSeekerProfile = () => {
               id="education"
               title="Education"
               onAdd={() => setIsEditing("education")}
+              isEditing={isEditing === "education"}
             >
               {isEditing === "education" ? (
                 <form onSubmit={handleUpdate} className="grid md:grid-cols-2 gap-5 animate-fadeIn">
                   
                   {/* Highest Qualification */}
                   <div className="md:col-span-2 space-y-2">
-                    <label className="text-xs font-bold text-slate-400">Highest Qualification</label>
+                    <label className="text-xs font-medium text-slate-500">Highest Qualification</label>
                     <select 
                       className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
                         value={profile.highestQualification}
@@ -602,7 +607,7 @@ const JobSeekerProfile = () => {
 
                   {/* University & College */}
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-400">University / Board</label>
+                    <label className="text-xs font-medium text-slate-500">University / Board</label>
                     <input 
                       placeholder="e.g. Delhi University / CBSE"
                       className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" 
@@ -611,7 +616,7 @@ const JobSeekerProfile = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-400">College / School Name</label>
+                    <label className="text-xs font-medium text-slate-500">College / School Name</label>
                     <input 
                       placeholder="e.g. IIT Delhi / Delhi Public School"
                       className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" 
@@ -624,7 +629,7 @@ const JobSeekerProfile = () => {
                   {profile.highestQualification !== "10th" && (
                     <>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-400">Course / Degree</label>
+                        <label className="text-xs font-medium text-slate-500">Course / Degree</label>
                         <SearchableSelect 
                           options={availableDegrees}
                           value={profile.course}
@@ -633,7 +638,7 @@ const JobSeekerProfile = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-400">Specialization / Stream</label>
+                        <label className="text-xs font-medium text-slate-500">Specialization / Stream</label>
                         <SearchableSelect 
                           options={availableStreams.length > 0 ? [...availableStreams, "Other"] : []}
                           value={profile.stream}
@@ -644,7 +649,7 @@ const JobSeekerProfile = () => {
 
                       {/* Course Type */}
                       <div className="md:col-span-2 space-y-3">
-                        <label className="text-xs font-bold text-slate-400">Course type</label>
+                        <label className="text-xs font-medium text-slate-500">Course type</label>
                         <div className="flex flex-wrap gap-6">
                           {["Full time", "Part time", "Correspondence/Distance learning"].map((type) => (
                             <label key={type} className="flex items-center gap-2 cursor-pointer group">
@@ -666,7 +671,7 @@ const JobSeekerProfile = () => {
 
                   {/* Year Range */}
                   <div className="md:col-span-2 space-y-2">
-                    <label className="text-xs font-bold text-slate-400">Course duration</label>
+                    <label className="text-xs font-medium text-slate-500">Course duration</label>
                     <div className="flex items-center gap-4">
                       <div className="flex-1">
                         <SearchableSelect 
@@ -690,7 +695,7 @@ const JobSeekerProfile = () => {
 
                   {/* Grading */}
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-400">Grading System</label>
+                    <label className="text-xs font-medium text-slate-500">Grading System</label>
                     <select 
                       className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
                       value={profile.gradingSystem} 
@@ -702,7 +707,7 @@ const JobSeekerProfile = () => {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-400">Grade / Score</label>
+                    <label className="text-xs font-medium text-slate-500">Grade / Score</label>
                     <input 
                       type="number"
                       step={profile.gradingSystem === "CGPA" ? "0.01" : "1"}
@@ -728,7 +733,7 @@ const JobSeekerProfile = () => {
                       
                       <div className="flex flex-wrap items-center gap-4 mt-3">
                          {profile.courseType && (
-                           <span className="text-slate-500 text-[10px] font-black uppercase tracking-wider bg-slate-100/50 border border-slate-100 px-2 py-1 rounded-md">
+                           <span className="text-slate-500 text-[10px] font-bold bg-slate-100/50 border border-slate-100 px-2 py-1 rounded-md">
                              {profile.courseType}
                            </span>
                          )}
@@ -752,23 +757,24 @@ const JobSeekerProfile = () => {
               id="personal-details"
               title="Personal details"
               onEdit={() => setIsEditing("personal-details")}
+              isEditing={isEditing === "personal-details"}
             >
               {isEditing === "personal-details" ? (
                 <form onSubmit={handleUpdate} className="grid md:grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4 animate-fadeIn">
                   
                   {/* Read-only primary details */}
                   <div className="space-y-4">
-                    <label className="text-xs font-bold text-slate-400">Primary Mobile</label>
+                    <label className="text-xs font-medium text-slate-500">Primary Mobile</label>
                     <input className="w-full bg-slate-100 border border-slate-200 rounded-lg p-3 text-sm text-slate-500 cursor-not-allowed" disabled value={profile.mobile} />
                   </div>
                   <div className="space-y-4">
-                    <label className="text-xs font-bold text-slate-400">Email Address</label>
+                    <label className="text-xs font-medium text-slate-500">Email Address</label>
                     <input className="w-full bg-slate-100 border border-slate-200 rounded-lg p-3 text-sm text-slate-500 cursor-not-allowed" disabled value={profile.email} />
                   </div>
                   
                   {/* Editable contact */}
                   <div className="space-y-4">
-                    <label className="text-xs font-bold text-slate-400 flex items-center gap-1">Alternate Mobile <span className="text-rose-500">*</span></label>
+                    <label className="text-xs font-medium text-slate-500 flex items-center gap-1">Alternate Mobile <span className="text-rose-500">*</span></label>
                     <input 
                       required
                       className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500" 
@@ -780,7 +786,7 @@ const JobSeekerProfile = () => {
 
                   {/* Basic Demographics */}
                   <div className="space-y-4">
-                    <label className="text-xs font-bold text-slate-400">Gender</label>
+                    <label className="text-xs font-medium text-slate-500">Gender</label>
                     <select 
                       className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" 
                       value={profile.gender} 
@@ -794,7 +800,7 @@ const JobSeekerProfile = () => {
                     </select>
                   </div>
                   <div className="space-y-4">
-                    <label className="text-xs font-bold text-slate-400 flex items-center gap-1">Date of Birth</label>
+                    <label className="text-xs font-medium text-slate-500 flex items-center gap-1">Date of Birth</label>
                     <input 
                       type="date"
                       className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" 
@@ -805,29 +811,29 @@ const JobSeekerProfile = () => {
 
                   {/* Location Info */}
                   <div className="space-y-4">
-                    <label className="text-xs font-bold text-slate-400">Current Location / City</label>
+                    <label className="text-xs font-medium text-slate-500">Current Location / City</label>
                     <input placeholder="e.g. Bangalore" className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.location} onChange={(e) => setProfile({ ...profile, location: e.target.value })} />
                   </div>
                   <div className="space-y-4">
-                    <label className="text-xs font-bold text-slate-400">Hometown</label>
+                    <label className="text-xs font-medium text-slate-500">Hometown</label>
                     <input placeholder="e.g. Pune" className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.hometown} onChange={(e) => setProfile({ ...profile, hometown: e.target.value })} />
                   </div>
                   <div className="md:col-span-1 lg:col-span-2 space-y-4">
-                    <label className="text-xs font-bold text-slate-400">Permanent Address</label>
+                    <label className="text-xs font-medium text-slate-500">Permanent Address</label>
                     <textarea placeholder="Enter your full address" className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.address} onChange={(e) => setProfile({ ...profile, address: e.target.value })} />
                   </div>
                   <div className="space-y-4">
-                    <label className="text-xs font-bold text-slate-400">State</label>
+                    <label className="text-xs font-medium text-slate-500">State</label>
                     <input placeholder="e.g. Karnataka" className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.state} onChange={(e) => setProfile({ ...profile, state: e.target.value })} />
                   </div>
                   <div className="space-y-4">
-                    <label className="text-xs font-bold text-slate-400">Pincode</label>
+                    <label className="text-xs font-medium text-slate-500">Pincode</label>
                     <input placeholder="e.g. 560001" className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.pincode} onChange={(e) => setProfile({ ...profile, pincode: e.target.value })} />
                   </div>
 
                   {/* Extras */}
                   <div className="space-y-4">
-                    <label className="text-xs font-bold text-slate-400">Languages Known</label>
+                    <label className="text-xs font-medium text-slate-500">Languages Known</label>
                     <input 
                       className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" 
                       placeholder="e.g. English, Hindi"
@@ -836,7 +842,7 @@ const JobSeekerProfile = () => {
                     />
                   </div>
                   <div className="space-y-4">
-                    <label className="text-xs font-bold text-slate-400">Industry</label>
+                    <label className="text-xs font-medium text-slate-500">Industry</label>
                     <input className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm" value={profile.industry} onChange={(e) => setProfile({ ...profile, industry: e.target.value })} />
                   </div>
 

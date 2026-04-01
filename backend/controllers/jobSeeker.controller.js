@@ -340,9 +340,9 @@ export const updateProfile = async (req, res) => {
     // Normalize Skills
     if (skills !== undefined) {
       if (Array.isArray(skills)) {
-        user.profile.skills = skills;
+        user.profile.skills = skills.map(s => s.trim().toLowerCase()).filter(Boolean);
       } else if (typeof skills === "string") {
-        user.profile.skills = skills.split(",").map(s => s.trim()).filter(Boolean);
+        user.profile.skills = skills.split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
       }
     }
 
@@ -473,53 +473,50 @@ export const updateProfile = async (req, res) => {
 
 
 /* =========================================
+   GRIDFS UPLOAD HELPER
+========================================= */
+const uploadToGridFS = (bucket, file) => {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null);
+    const uploadStream = bucket.openUploadStream(file.originalname, {
+      contentType: file.mimetype,
+    });
+    uploadStream.end(file.buffer);
+    uploadStream.on("finish", () => resolve(uploadStream.id));
+    uploadStream.on("error", reject);
+  });
+};
+
+/* =========================================
    UPLOAD PROFILE PHOTO (GridFS)
 ========================================= */
 export const uploadProfilePic = async (req, res) => {
   try {
     const bucket = req.app.locals.bucket;
-
     if (!req.file) {
-      return res.status(400).json({
-        message: "No file uploaded",
-      });
+      return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const uploadStream = bucket.openUploadStream(req.file.originalname, {
-      contentType: req.file.mimetype,
-    });
+    const fileId = await uploadToGridFS(bucket, req.file);
+    const user = await JobSeeker.findById(req.user.id);
 
-    uploadStream.end(req.file.buffer);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    uploadStream.on("finish", async () => {
-      const user = await JobSeeker.findById(req.user.id);
+    if (!user.profile) user.profile = {};
+    user.profile.profilePhotoId = fileId;
+    
+    await user.save();
 
-      if (!user) {
-        return res.status(404).json({
-          message: "User not found",
-        });
-      }
-
-      user.profile.profilePhotoId = uploadStream.id;
-      await user.save();
-
-      return res.status(200).json({
-        message: "Profile picture uploaded successfully",
-      });
-    });
-
-    uploadStream.on("error", (err) => {
-      console.error(err);
-      return res.status(500).json({
-        message: "File upload failed",
-      });
+    return res.status(200).json({
+      message: "Profile picture uploaded successfully",
+      fileId
     });
 
   } catch (error) {
     console.error("Upload Profile Pic Error:", error);
-    return res.status(500).json({
-      message: "Server error",
-    });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -530,48 +527,30 @@ export const uploadProfilePic = async (req, res) => {
 export const uploadResume = async (req, res) => {
   try {
     const bucket = req.app.locals.bucket;
-
     if (!req.file) {
-      return res.status(400).json({
-        message: "No file uploaded",
-      });
+      return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const uploadStream = bucket.openUploadStream(req.file.originalname, {
-      contentType: req.file.mimetype,
-    });
+    const fileId = await uploadToGridFS(bucket, req.file);
+    const user = await JobSeeker.findById(req.user.id);
 
-    uploadStream.end(req.file.buffer);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    uploadStream.on("finish", async () => {
-      const user = await JobSeeker.findById(req.user.id);
+    if (!user.profile) user.profile = {};
+    user.profile.resumeId = fileId;
+    
+    await user.save();
 
-      if (!user) {
-        return res.status(404).json({
-          message: "User not found",
-        });
-      }
-
-      user.profile.resumeId = uploadStream.id;
-      await user.save();
-
-      return res.status(200).json({
-        message: "Resume uploaded successfully",
-      });
-    });
-
-    uploadStream.on("error", (err) => {
-      console.error(err);
-      return res.status(500).json({
-        message: "File upload failed",
-      });
+    return res.status(200).json({
+      message: "Resume uploaded successfully",
+      fileId
     });
 
   } catch (error) {
     console.error("Upload Resume Error:", error);
-    return res.status(500).json({
-      message: "Server error",
-    });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -672,6 +651,71 @@ export const getPublicProfile = async (req, res) => {
 
   } catch (error) {
     console.error("Get Public Profile Error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* =========================================
+   TOGGLE SAVE JOB
+========================================= */
+export const toggleSaveJob = async (req, res) => {
+  try {
+    const { jobId } = req.params;
+    const user = await JobSeeker.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const jobIndex = user.savedJobs.indexOf(jobId);
+    let isSaved = false;
+
+    if (jobIndex === -1) {
+      // Job not saved, add it
+      user.savedJobs.push(jobId);
+      isSaved = true;
+    } else {
+      // Job already saved, remove it
+      user.savedJobs.splice(jobIndex, 1);
+      isSaved = false;
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+      message: isSaved ? "Job saved successfully" : "Job removed from saved list",
+      isSaved,
+      savedJobs: user.savedJobs
+    });
+
+  } catch (error) {
+    console.error("Toggle Save Job Error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* =========================================
+   GET SAVED JOBS
+========================================= */
+export const getSavedJobs = async (req, res) => {
+  try {
+    const user = await JobSeeker.findById(req.user.id).populate({
+      path: "savedJobs",
+      match: { status: "Open" }, // Only return open jobs
+      select: "title companyName location jobType salary category skillsRequired createdAt"
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Filter out any nulls in case a job was deleted
+    const validSavedJobs = user.savedJobs.filter(job => job != null);
+
+    return res.status(200).json(validSavedJobs);
+
+  } catch (error) {
+    console.error("Get Saved Jobs Error:", error);
     return res.status(500).json({ message: "Server error" });
   }
 };

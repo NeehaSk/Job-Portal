@@ -140,9 +140,10 @@ const NotificationDrawer = ({ isOpen, onClose, setUnreadCount }) => {
                     <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-lg flex-shrink-0 transition-transform group-hover:scale-110 ${
                       n.type === 'NewJob' ? 'bg-emerald-50 text-emerald-600' :
                       n.type === 'ApplicationStatus' ? 'bg-indigo-50 text-indigo-600' :
+                      n.type === 'NewApplication' ? 'bg-blue-50 text-blue-600' :
                       'bg-amber-50 text-amber-600'
                     }`}>
-                      {n.type === 'NewJob' ? '💼' : n.type === 'ApplicationStatus' ? '🚀' : '✨'}
+                      {n.type === 'NewJob' ? '💼' : n.type === 'ApplicationStatus' ? '🚀' : n.type === 'NewApplication' ? '👥' : '✨'}
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-start mb-1">
@@ -162,13 +163,7 @@ const NotificationDrawer = ({ isOpen, onClose, setUnreadCount }) => {
 
           {/* FOOTER */}
           <div className="p-6 border-t border-slate-50">
-            <Link 
-              to="/notifications" 
-              onClick={onClose}
-              className="w-full flex items-center justify-center h-14 bg-slate-900 text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-black transition-all shadow-xl shadow-slate-200"
-            >
-              See All Activity
-            </Link>
+            <p className="text-[9px] font-bold text-slate-400 text-center uppercase tracking-widest">End of alerts</p>
           </div>
         </div>
       </div>

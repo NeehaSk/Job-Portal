@@ -11,6 +11,7 @@ import recruiterRoutes from "./routes/recruiter.routes.js";
 import jobRoutes from "./routes/job.routes.js";
 import fileRoutes from "./routes/file.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 const app = express();
 
 
@@ -34,7 +35,7 @@ app.use(cookieParser());
 /* ==============================
    Database Connection
 ============================== */
-connectDB(app);
+await connectDB(app);
 
 /* ==============================
    Test Route
@@ -52,8 +53,16 @@ app.use("/api/recruiter", recruiterRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/admin", adminRoutes);
 /* ==============================
+   Global Error Handler
+============================== */
+app.use((err, req, res, next) => {
+   console.error("GLOBAL ERROR:", err.stack);
+   res.status(500).json({ message: "Internal Server Error", error: err.message });
+});
 
+/* ==============================
    Start Server
 ============================== */
 const PORT = process.env.PORT || 5000;

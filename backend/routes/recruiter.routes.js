@@ -3,7 +3,8 @@ import authMiddleware from "../middleware/authmiddleware.js";
 import {
     getMyProfile,
     updateProfile,
-    uploadProfilePic
+    uploadProfilePic,
+    getDashboardData
 } from "../controllers/recruiter.controller.js";
 import multer from "multer";
 
@@ -22,5 +23,8 @@ router.put("/update-profile", updateProfile);
 
 // ===== UPLOAD PROFILE PHOTO =====
 router.put("/upload-profile-pic", upload.single("file"), uploadProfilePic);
+
+// ===== GET DASHBOARD DATA =====
+router.get("/dashboard", getDashboardData);
 
 export default router;

@@ -166,10 +166,10 @@ const recruiterSchema = new mongoose.Schema(
     // },
 
     // admin approval
-    // isApproved: {
-    //   type: Boolean,
-    //   default: false,
-    // },
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

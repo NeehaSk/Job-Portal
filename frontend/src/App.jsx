@@ -19,11 +19,14 @@ import Notifications from "./pages/Notifications";
 
 import RecruiterJobs from "./pages/RecruiterJobs";
 import RecruiterApplicants from "./pages/RecruiterApplicants";
+import RecruiterDashboard from "./pages/RecruiterDashboard";
 import JobApplicants from "./pages/JobApplicants";
 import CreateJob from "./pages/CreateJob";
 import JobDetails from "./pages/JobDetails";
 import PublicSeekerProfile from "./pages/PublicSeekerProfile";
 import SeekerATSView from "./pages/SeekerATSView";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminProfile from "./pages/AdminProfile";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -89,6 +92,15 @@ function App() {
 
         {/* Recruiter Routes */}
         <Route
+          path="/recruiter/dashboard"
+          element={
+            <ProtectedRoute allowedRole="recruiter">
+              <RecruiterDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/recruiter/profile"
           element={
             <ProtectedRoute allowedRole="recruiter">
@@ -125,15 +137,6 @@ function App() {
         />
 
         <Route
-          path="/notifications"
-          element={
-            <ProtectedRoute allowedRole="any">
-              <Notifications />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
           path="/recruiter/job/:jobId/applicants"
           element={
             <ProtectedRoute allowedRole="recruiter">
@@ -156,6 +159,24 @@ function App() {
           element={
             <ProtectedRoute allowedRole="any">
               <JobDetails />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/profile"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminProfile />
             </ProtectedRoute>
           }
         />

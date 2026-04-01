@@ -1,309 +1,3 @@
-// // import { useContext } from "react";
-// // import { useNavigate, useLocation } from "react-router-dom";
-// // import { AuthContext } from "../context/AuthContext";
-
-// // function Navbar() {
-// //   const navigate = useNavigate();
-// //   const location = useLocation();
-
-// //   const { user, logoutUser } = useContext(AuthContext);
-
-// //   const handleLogout = () => {
-// //     logoutUser();
-// //   };
-
-// //   return (
-// //     <div className="w-full bg-white shadow-sm border-b">
-
-// //       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-
-// //         {/* LEFT SIDE LOGO */}
-// //         <div
-// //           onClick={() => navigate("/")}
-// //           className="flex items-center gap-2 cursor-pointer"
-// //         >
-// //           <div className="w-9 h-9 bg-indigo-600 text-white rounded-lg flex items-center justify-center font-bold">
-// //             J
-// //           </div>
-
-// //           <span className="text-xl font-bold text-slate-800">
-// //             JobPortal
-// //           </span>
-// //         </div>
-
-// //         {/* RIGHT SIDE LINKS */}
-// //         <div className="flex items-center gap-6 text-sm font-semibold text-slate-600">
-
-// //           {/* PUBLIC NAVBAR */}
-// //           {!user && (
-// //             <>
-// //               <button
-// //                 onClick={() => navigate("/jobs")}
-// //                 className="hover:text-indigo-600"
-// //               >
-// //                 Jobs
-// //               </button>
-
-// //               <button
-// //                 onClick={() => navigate("/login")}
-// //                 className="hover:text-indigo-600"
-// //               >
-// //                 Login
-// //               </button>
-
-// //               <button
-// //                 onClick={() => navigate("/signup")}
-// //                 className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
-// //               >
-// //                 Signup
-// //               </button>
-// //             </>
-// //           )}
-
-// //           {/* JOB SEEKER NAVBAR */}
-// //           {user?.role === "jobseeker" && (
-// //             <>
-// //               <button
-// //                 onClick={() => navigate("/jobs")}
-// //                 className={`hover:text-indigo-600 ${
-// //                   location.pathname === "/jobs" && "text-indigo-600"
-// //                 }`}
-// //               >
-// //                 Browse Jobs
-// //               </button>
-
-// //               <button
-// //                 onClick={() => navigate("/my-applications")}
-// //                 className={`hover:text-indigo-600 ${
-// //                   location.pathname === "/my-applications" && "text-indigo-600"
-// //                 }`}
-// //               >
-// //                 My Applications
-// //               </button>
-
-// //               <button
-// //                 onClick={() => navigate("/jobseeker/profile")}
-// //                 className={`hover:text-indigo-600 ${
-// //                   location.pathname === "/jobseeker/profile" && "text-indigo-600"
-// //                 }`}
-// //               >
-// //                 Profile
-// //               </button>
-
-// //               <button
-// //                 onClick={handleLogout}
-// //                 className="text-red-500 hover:text-red-600"
-// //               >
-// //                 Logout
-// //               </button>
-// //             </>
-// //           )}
-
-// //           {/* RECRUITER NAVBAR */}
-// //           {user?.role === "recruiter" && (
-// //             <>
-// //               <button
-// //                 onClick={() => navigate("/recruiter/profile")}
-// //                 className={`hover:text-indigo-600 ${
-// //                   location.pathname === "/recruiter/profile" && "text-indigo-600"
-// //                 }`}
-// //               >
-// //                 Dashboard
-// //               </button>
-
-// //               <button
-// //                 onClick={() => navigate("/recruiter/jobs")}
-// //                 className={`hover:text-indigo-600 ${
-// //                   location.pathname === "/recruiter/jobs" && "text-indigo-600"
-// //                 }`}
-// //               >
-// //                 My Jobs
-// //               </button>
-
-// //               <button
-// //                 onClick={() => navigate("/recruiter/create-job")}
-// //                 className={`hover:text-indigo-600 ${
-// //                   location.pathname === "/recruiter/create-job" && "text-indigo-600"
-// //                 }`}
-// //               >
-// //                 Create Job
-// //               </button>
-
-// //               <button
-// //                 onClick={handleLogout}
-// //                 className="text-red-500 hover:text-red-600"
-// //               >
-// //                 Logout
-// //               </button>
-// //             </>
-// //           )}
-
-// //         </div>
-
-// //       </div>
-
-// //     </div>
-// //   );
-// // }
-
-// // export default Navbar;
-// import { useContext, useState } from "react";
-// import { Link, useLocation } from "react-router-dom";
-// import { AuthContext } from "../context/AuthContext";
-
-// export default function Navbar() {
-
-//   const { user, logoutUser } = useContext(AuthContext);
-//   const role = user?.role;
-
-//   const [menuOpen, setMenuOpen] = useState(false);
-//   const location = useLocation();
-
-//   const active = (path) =>
-//     location.pathname === path
-//       ? "text-indigo-600"
-//       : "text-slate-600 hover:text-indigo-600";
-
-//   const navLinks =
-//     role === "jobseeker"
-//       ? [
-//           { to: "/jobs", label: "Browse Jobs" },
-//           { to: "/my-applications", label: "Applications" },
-//         ]
-//       : role === "recruiter"
-//       ? [
-//           { to: "/recruiter/jobs", label: "My Jobs" },
-//           { to: "/recruiter/create-job", label: "Post Job" },
-//         ]
-//       : [];
-
-//   return (
-//     <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
-
-//       <div className="max-w-7xl mx-auto px-6">
-
-//         <div className="flex items-center justify-between h-16">
-
-//           {/* LOGO */}
-//           <Link to="/" className="flex items-center gap-2 font-bold text-lg">
-//             <div className="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center">
-//               J
-//             </div>
-//             <span className="text-slate-800">JobPortal</span>
-//           </Link>
-
-//           {/* DESKTOP NAV */}
-//           <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-
-//             {!user && (
-//               <Link to="/jobs" className={active("/jobs")}>
-//                 Browse Jobs
-//               </Link>
-//             )}
-
-//             {navLinks.map((link) => (
-//               <Link key={link.to} to={link.to} className={active(link.to)}>
-//                 {link.label}
-//               </Link>
-//             ))}
-
-//           </div>
-
-//           {/* RIGHT SIDE */}
-//           <div className="hidden md:flex items-center gap-4">
-
-//             {!user ? (
-//               <>
-//                 <Link
-//                   to="/login"
-//                   className="text-sm text-slate-600 hover:text-indigo-600"
-//                 >
-//                   Login
-//                 </Link>
-
-//                 <Link
-//                   to="/signup"
-//                   className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
-//                 >
-//                   Sign up
-//                 </Link>
-//               </>
-//             ) : (
-//               <div className="flex items-center gap-4">
-
-//                 <Link
-//                   to={role === "recruiter" ? "/recruiter/profile" : "/jobseeker/profile"}
-//                   className="text-sm text-slate-600 hover:text-indigo-600"
-//                 >
-//                   Profile
-//                 </Link>
-
-//                 <button
-//                   onClick={logoutUser}
-//                   className="text-sm text-red-500 hover:text-red-600"
-//                 >
-//                   Logout
-//                 </button>
-
-//               </div>
-//             )}
-
-//           </div>
-
-//           {/* MOBILE BUTTON */}
-//           <button
-//             onClick={() => setMenuOpen(!menuOpen)}
-//             className="md:hidden text-slate-600"
-//           >
-//             ☰
-//           </button>
-
-//         </div>
-//       </div>
-
-//       {/* MOBILE MENU */}
-//       {menuOpen && (
-//         <div className="md:hidden border-t px-6 py-4 space-y-3 text-sm">
-
-//           {!user && (
-//             <Link to="/jobs" className="block">
-//               Browse Jobs
-//             </Link>
-//           )}
-
-//           {navLinks.map((link) => (
-//             <Link key={link.to} to={link.to} className="block">
-//               {link.label}
-//             </Link>
-//           ))}
-
-//           {!user ? (
-//             <>
-//               <Link to="/login" className="block">
-//                 Login
-//               </Link>
-//               <Link to="/signup" className="block">
-//                 Sign up
-//               </Link>
-//             </>
-//           ) : (
-//             <>
-//               <Link
-//                 to={role === "recruiter" ? "/recruiter/profile" : "/jobseeker/profile"}
-//                 className="block"
-//               >
-//                 Profile
-//               </Link>
-
-//               <button
-//                 onClick={logoutUser}
-//                 className="text-red-500"
-//               >
-//                 Logout
-//               </button>
-//             </>
-//           )}
-//         </div>
 import { useContext, useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -324,10 +18,7 @@ export default function Navbar() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const active = (path) =>
-    location.pathname === path
-      ? "text-indigo-600 border-b-2 border-indigo-600"
-      : "text-slate-500 hover:text-indigo-600 border-b-2 border-transparent";
+  const isHomePage = location.pathname === "/";
 
   const navLinks =
     role === "jobseeker"
@@ -338,13 +29,24 @@ export default function Navbar() {
       ]
       : role === "recruiter"
         ? [
+          { to: "/recruiter/dashboard", label: "Dashboard" },
           { to: "/recruiter/jobs", label: "My Jobs" },
           { to: "/recruiter/applicants", label: "Applicants" },
           { to: "/recruiter/create-job", label: "Post Job" },
         ]
-        : [
-          { to: "/jobs", label: "Find Jobs" },
-        ];
+        : role === "admin"
+          ? [
+            { to: "/admin/dashboard", label: "Admin Console" },
+          ]
+          : [
+            { to: "/jobs", label: "Find Jobs" },
+          ];
+
+  const active = (path) =>
+
+    location.pathname === path
+      ? "text-indigo-600 border-b-2 border-indigo-600"
+      : "text-slate-800 hover:text-indigo-600 border-b-2 border-transparent";
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -391,20 +93,24 @@ export default function Navbar() {
   }, [user?._id, photoId]);
 
   return (
-    <nav className="bg-white border-b border-slate-100 sticky top-0 z-50 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
+    <>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm`}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-16">
 
           {/* LOGO & NAVIGATION */}
           <div className="flex items-center gap-12">
-            <Link to={user ? (role === "recruiter" ? "/recruiter/profile" : "/dashboard") : "/"} className="flex items-center gap-2 group">
+            <Link to="/" className="flex items-center gap-2 group">
               <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-indigo-100 group-hover:rotate-6 transition-transform">
-                <img src={nexusLogo} className="w-full h-full object-cover" alt="NEXUS" />
+                <img src={nexusLogo} className="w-full h-full object-cover" alt="NEXAL" />
               </div>
-              <span className="text-xl font-extrabold text-slate-800 tracking-tight">NEXUS</span>
+              <div className="flex flex-col leading-none">
+                <span className="text-xl font-black tracking-tighter text-slate-800">NEXAL</span>
+                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400">Job Portal</span>
+              </div>
             </Link>
 
-            <div className="hidden lg:flex items-center gap-8 h-20">
+            <div className="hidden lg:flex items-center gap-8 h-16">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
@@ -426,11 +132,16 @@ export default function Navbar() {
                   placeholder="Search jobs, skills..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-100 text-slate-700 text-sm px-10 py-2.5 rounded-full focus:outline-none focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500/20 transition-all placeholder:text-slate-300 font-semibold"
+                  className={`w-full ${isHomePage ? 'bg-white text-slate-900 placeholder:text-slate-300 border-slate-200' : 'bg-slate-50 text-slate-700 border-slate-100 placeholder:text-slate-300'} border text-sm px-10 py-2.5 rounded-full focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-medium`}
                 />
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <button
+                  type="submit"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
               </form>
             </div>
           )}
@@ -440,7 +151,7 @@ export default function Navbar() {
             {user && (
               <button
                 onClick={() => setIsDrawerOpen(true)}
-                className="relative text-slate-400 hover:text-indigo-600 transition-colors"
+                className={`relative ${isHomePage ? 'text-white/70 hover:text-white' : 'text-slate-400 hover:text-indigo-600'} transition-colors`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -455,7 +166,7 @@ export default function Navbar() {
 
             {!user ? (
               <div className="flex items-center gap-4">
-                <Link to="/login" className="text-sm font-bold text-slate-400 hover:text-slate-800 transition-all">Login</Link>
+                <Link to="/login" className="text-sm font-black text-slate-800 hover:text-indigo-600 transition-all">Login</Link>
                 <Link to="/signup" className="px-6 py-3 bg-slate-900 text-white text-[10px] font-bold rounded-full uppercase tracking-widest hover:bg-black transition-all shadow-lg shadow-slate-200">Get Started</Link>
               </div>
             ) : (
@@ -478,7 +189,7 @@ export default function Navbar() {
                       </div>
                     )}
                   </div>
-                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 text-slate-300 transition-transform duration-300 ${profileOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 ${isHomePage ? 'text-slate-400' : 'text-slate-300'} transition-transform duration-300 ${profileOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
@@ -494,7 +205,7 @@ export default function Navbar() {
 
                     <div className="px-2">
                       <Link
-                        to={role === "recruiter" ? "/recruiter/profile" : "/jobseeker/profile"}
+                        to={role === "admin" ? "/admin/profile" : (role === "recruiter" ? "/recruiter/profile" : "/jobseeker/profile")}
                         onClick={() => setProfileOpen(false)}
                         className="flex items-center gap-3 px-6 py-3 text-sm font-semibold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50/50 rounded-2xl transition-all"
                       >
@@ -504,9 +215,9 @@ export default function Navbar() {
                         My Profile
                       </Link>
 
-                      {role === "jobseeker" && (
+                      {(role === "jobseeker" || role === "recruiter") && (
                         <Link
-                          to="/dashboard"
+                          to={role === "recruiter" ? "/recruiter/dashboard" : "/dashboard"}
                           onClick={() => setProfileOpen(false)}
                           className="flex items-center gap-3 px-6 py-3 text-sm font-semibold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50/50 rounded-2xl transition-all"
                         >
@@ -514,6 +225,19 @@ export default function Navbar() {
                             📊
                           </div>
                           Dashboard
+                        </Link>
+                      )}
+
+                      {role === "admin" && (
+                        <Link
+                          to="/admin/dashboard"
+                          onClick={() => setProfileOpen(false)}
+                          className="flex items-center gap-3 px-6 py-3 text-sm font-semibold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50/50 rounded-2xl transition-all"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-indigo-600">
+                            🛡️
+                          </div>
+                          Admin Console
                         </Link>
                       )}
 
@@ -540,7 +264,7 @@ export default function Navbar() {
             {/* MOBILE TOGGLE */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden text-slate-500"
+              className={`lg:hidden ${isHomePage ? 'text-white' : 'text-slate-500'}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"} />
@@ -578,13 +302,14 @@ export default function Navbar() {
           )}
         </div>
       )}
-
-      {/* NOTIFICATION DRAWER */}
-      <NotificationDrawer 
-        isOpen={isDrawerOpen} 
-        onClose={() => setIsDrawerOpen(false)} 
-        setUnreadCount={setUnreadCount}
-      />
     </nav>
+
+    {/* NOTIFICATION DRAWER OUTSIDE NAV */}
+    <NotificationDrawer 
+      isOpen={isDrawerOpen} 
+      onClose={() => setIsDrawerOpen(false)} 
+      setUnreadCount={setUnreadCount}
+    />
+    </>
   );
 }

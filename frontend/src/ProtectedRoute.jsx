@@ -18,6 +18,10 @@ const ProtectedRoute = ({ children, allowedRole }) => {
   // role mismatch
   if (allowedRole && allowedRole !== "any" && user.role !== allowedRole) {
 
+    if (user.role === "admin") {
+      return <Navigate to="/admin/dashboard" />;
+    }
+
     if (user.role === "recruiter") {
       return <Navigate to="/recruiter/profile" />;
     }

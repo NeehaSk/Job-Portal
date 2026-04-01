@@ -413,6 +413,7 @@
 import Job from "../models/job.model.js";
 import Application from "../models/application.model.js";
 import JobSeeker from "../models/jobSeeker.js";
+import Recruiter from "../models/recruiter.js";
 import Notification from "../models/notification.js";
 import mailTransporter from "../utils/mailTransporter.js";
 import mongoose from "mongoose";
@@ -577,7 +578,9 @@ export const createJob = async (req, res) => {
 
     const normalizedSkills = Array.isArray(skillsRequired)
       ? skillsRequired.map((s) => s.trim().toLowerCase())
-      : [];
+      : (typeof skillsRequired === "string" 
+          ? skillsRequired.split(",").map(s => s.trim().toLowerCase()).filter(Boolean)
+          : []);
 
     /* ================= CREATE JOB ================= */
 
@@ -601,43 +604,55 @@ export const createJob = async (req, res) => {
     /* ================= SKILL MATCHING ================= */
 
     if (normalizedSkills.length > 0) {
+      console.log(`[Job Alert] New job "${title}" posted. Matching skills: ${normalizedSkills.join(", ")}`);
 
       const matchedSeekers = await JobSeeker.find({
         isActive: true,
-        isProfileComplete: true,
-        "profile.skills": { $in: normalizedSkills }
+        "profile.skills": { 
+          $in: normalizedSkills.map(skill => new RegExp(`^${skill}$`, "i")) 
+        }
       });
+
+      console.log(`[Job Alert] Found ${matchedSeekers.length} matching seekers for "${title}".`);
 
       for (const seeker of matchedSeekers) {
         try {
-
           await mailTransporter.sendMail({
-            from: process.env.EMAIL_USER,
+            from: `"JobPortal Notifications" <${process.env.EMAIL_USER}>`,
             to: seeker.email,
-            subject: `New Job Matching Your Skills - ${title}`,
+            subject: `Skills Match Found: ${title} at ${companyName}`,
             html: `
-              <div style="font-family: Arial; padding: 20px;">
-                <h2 style="color: #4f46e5;">New Job Alert 🔔</h2>
-                <p>Hi ${seeker.fullName},</p>
-                <p>A new job matching your skills has been posted.</p>
-
-                <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
-                  <h3>${title}</h3>
-                  <p><strong>Company:</strong> ${companyName}</p>
-                  <p><strong>Location:</strong> ${location}</p>
-                  <p><strong>Experience:</strong> ${experienceLevel}</p>
+              <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; color: #1e293b;">
+                <div style="background-color: #4f46e5; padding: 30px; text-align: center;">
+                  <h1 style="color: white; margin: 0; font-size: 24px;">New Skill Match Alert! 🎯</h1>
                 </div>
+                <div style="padding: 30px; line-height: 1.6;">
+                  <p style="font-size: 16px;">Hi <strong>${seeker.fullName}</strong>,</p>
+                  <p style="font-size: 16px;">We found a new job posting that perfectly matches your skills and profile settings. Don't miss out on this opportunity!</p>
+                  
+                  <div style="background-color: #f8fafc; border-radius: 8px; padding: 20px; margin: 25px 0; border-left: 4px solid #4f46e5;">
+                    <h3 style="margin-top: 0; color: #0f172a; font-size: 18px;">${title}</h3>
+                    <p style="margin: 5px 0;"><strong>Company:</strong> ${companyName}</p>
+                    <p style="margin: 5px 0;"><strong>Location:</strong> ${location}</p>
+                    <p style="margin: 5px 0;"><strong>Experience:</strong> ${experienceLevel}</p>
+                  </div>
 
-                <a href="http://localhost:5173/jobs/${job._id}"
-                   style="display: inline-block; padding: 10px 20px; background-color: #4f46e5; color: white; text-decoration: none; border-radius: 6px;">
-                   Apply Now
-                </a>
+                  <p style="text-align: center; margin-top: 30px;">
+                    <a href="http://localhost:5173/job/${job._id}" 
+                       style="background-color: #4f46e5; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
+                       View Details & Apply
+                    </a>
+                  </p>
+                </div>
+                <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 12px; color: #64748b;">
+                  <p>© 2026 JobPortal Inc. All rights reserved.</p>
+                  <p>You received this because your skills match this new job posting.</p>
+                </div>
               </div>
             `,
           });
-
         } catch (err) {
-          console.error("Mail error:", err.message);
+          console.error("Mail error for seeker:", seeker.email, err.message);
         }
       } // End for loop
 
@@ -694,7 +709,7 @@ export const getAllJobs = async (req, res) => {
       maxSalary,
       sort = "latest",
       page = 1,
-      limit = 6,
+      limit = 50,
     } = req.query;
 
     let filter = { status: "Open" };
@@ -872,6 +887,63 @@ export const applyToJob = async (req, res) => {
     job.applicantsCount += 1;
     await job.save();
 
+    /* ================= NOTIFY RECRUITER ================= */
+
+    try {
+      const recruiter = await Recruiter.findById(job.recruiter);
+      if (recruiter) {
+        // 1. In-app notification
+        await Notification.create({
+          recipient: recruiter._id,
+          recipientModel: "Recruiter",
+          title: "New Application Received!",
+          message: `${fullName} has applied for your job posting: "${job.title}".`,
+          type: "NewApplication",
+          link: `/recruiter/job/${jobId}/applicants`
+        });
+
+        // 2. Email notification
+        const emailHtml = `
+          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; color: #1e293b;">
+            <div style="background-color: #4f46e5; padding: 30px; text-align: center;">
+              <h1 style="color: white; margin: 0; font-size: 24px;">New Job Application! 📬</h1>
+            </div>
+            <div style="padding: 30px; line-height: 1.6;">
+              <p style="font-size: 16px;">Hi <strong>${recruiter.fullName}</strong>,</p>
+              <p style="font-size: 16px;">You have received a new application for the position of <strong>${job.title}</strong>.</p>
+              
+              <div style="background-color: #f8fafc; border-radius: 8px; padding: 20px; margin: 25px 0; border-left: 4px solid #4f46e5;">
+                <p style="margin: 0; font-size: 16px;"><strong>Applicant:</strong> ${fullName}</p>
+                <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
+                <p style="margin: 5px 0;"><strong>Experience:</strong> ${experience || "Not provided"}</p>
+              </div>
+
+              <p style="text-align: center; margin-top: 30px;">
+                <a href="http://localhost:5173/recruiter/job/${jobId}/applicants" 
+                   style="background-color: #4f46e5; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
+                   Review Candidate
+                </a>
+              </p>
+            </div>
+            <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 12px; color: #64748b;">
+              <p>© 2026 JobPortal Inc. All rights reserved.</p>
+            </div>
+          </div>
+        `;
+
+        await mailTransporter.sendMail({
+          from: `"JobPortal Notifications" <${process.env.EMAIL_USER}>`,
+          to: recruiter.email,
+          subject: `New Applicant for ${job.title}: ${fullName}`,
+          html: emailHtml,
+        });
+
+        console.log(`[Notification] Recruiter \${recruiter.email} notified about application from \${email}`);
+      }
+    } catch (notifyErr) {
+      console.error("Failed to notify recruiter:", notifyErr.message);
+    }
+
     res.status(201).json({
       message: "Applied successfully",
       application,
@@ -955,12 +1027,13 @@ export const getJobApplicants = async (req, res) => {
     }
 
     const applications = await Application.find({ job: jobId })
-      .populate("applicant", "fullName email profile.skills profile.experience")
+      .populate("applicant", "fullName email mobile profile.skills profile.experience profile.designation profile.profilePhotoId profile.resumeId profile.education profile.industry profile.socialLinks")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
       totalApplicants: applications.length,
       applicants: applications,
+      job
     });
 
   } catch (error) {
@@ -1074,7 +1147,9 @@ export const updateApplicationStatus = async (req, res) => {
       return res.status(400).json({ message: "Invalid status" });
     }
 
-    const application = await Application.findById(applicationId).populate('job');
+    const application = await Application.findById(applicationId)
+      .populate('job')
+      .populate('applicant', 'fullName email');
 
     if (!application) {
       return res.status(404).json({ message: "Application not found" });
@@ -1118,10 +1193,70 @@ export const updateApplicationStatus = async (req, res) => {
 
     await application.save();
 
-    // --- TRIGGER NOTIFICATION FOR APPLICANT ---
+    // --- TRIGGER EMAIL NOTIFICATION ---
+    try {
+      let statusColor = "#4f46e5";
+      if (status === "Selected") statusColor = "#10b981";
+      if (status === "Rejected") statusColor = "#ef4444";
+      if (status === "Interview") statusColor = "#f59e0b";
+
+      const emailHtml = `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; color: #1e293b;">
+          <div style="background-color: ${statusColor}; padding: 30px; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">Application Update: ${status}</h1>
+          </div>
+          <div style="padding: 30px; line-height: 1.6;">
+            <p style="font-size: 16px;">Hi <strong>${application.applicant.fullName}</strong>,</p>
+            <p style="font-size: 16px;">We have an update regarding your application for the <strong>${application.job.title}</strong> role at <strong>${application.job.companyName}</strong>.</p>
+            
+            <div style="background-color: #f8fafc; border-radius: 8px; padding: 20px; margin: 25px 0; border-left: 4px solid ${statusColor};">
+              <p style="margin: 0; font-size: 16px;"><strong>Status:</strong> ${status}</p>
+              <p style="margin: 10px 0 0 0; font-size: 14px; color: #64748b;">${nextStep}</p>
+            </div>
+
+            ${status === "Interview" && application.interviewDetails?.date ? `
+              <div style="margin-top: 25px; border-top: 1px solid #e2e8f0; pt: 20px;">
+                <h3 style="color: #0f172a;">Interview Details</h3>
+                <p><strong>Date:</strong> ${new Date(application.interviewDetails.date).toLocaleDateString()}</p>
+                <p><strong>Time:</strong> ${application.interviewDetails.time}</p>
+                <p><strong>Link:</strong> <a href="${application.interviewDetails.link}">${application.interviewDetails.link}</a></p>
+                ${application.interviewDetails.instructions ? `<p><strong>Instructions:</strong> ${application.interviewDetails.instructions}</p>` : ""}
+              </div>
+            ` : ""}
+
+            ${customMessage ? `
+              <div style="margin-top: 25px; padding: 15px; background-color: #f1f5f9; border-radius: 8px; font-style: italic;">
+                " ${customMessage} "
+              </div>
+            ` : ""}
+
+            <p style="text-align: center; margin-top: 30px;">
+              <a href="http://localhost:5173/my-applications" 
+                 style="background-color: #4f46e5; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
+                 Track Application
+              </a>
+            </p>
+          </div>
+          <div style="background-color: #f1f5f9; padding: 20px; text-align: center; font-size: 12px; color: #64748b;">
+            <p>© 2026 JobPortal Inc. All rights reserved.</p>
+          </div>
+        </div>
+      `;
+
+      await mailTransporter.sendMail({
+        from: `"JobPortal Notifications" <${process.env.EMAIL_USER}>`,
+        to: application.applicant.email,
+        subject: `Update on your application for ${application.job.title}`,
+        html: emailHtml,
+      });
+    } catch (emailErr) {
+      console.error("Failed to send status update email:", emailErr.message);
+    }
+
+    // --- TRIGGER IN-APP NOTIFICATION ---
     try {
       await Notification.create({
-        recipient: application.applicant,
+        recipient: application.applicant._id,
         recipientModel: "JobSeeker",
         title: `Application Update: ${status}`,
         message: customMessage || `Your application for ${application.job.title} at ${application.job.companyName} has been updated to ${status}.`,
@@ -1154,7 +1289,7 @@ export const getRecruiterAllApplications = async (req, res) => {
 
     // 2. Find all applications for these jobs
     const applications = await Application.find({ job: { $in: jobIds } })
-      .populate("applicant", "fullName email profile.skills profile.experience profile.designation profile.profilePhotoId resume")
+      .populate("applicant", "fullName email mobile profile")
       .populate("job", "title companyName location")
       .sort({ createdAt: -1 });
 

@@ -67,6 +67,7 @@ import {
 
   signupRecruiter,
   signupJobSeeker,
+  signupAdmin,
 
   login,
   refreshToken,
@@ -95,6 +96,7 @@ router.post("/reset-password", resetPassword);
 /* ===== SIGNUP ROUTES ===== */
 router.post("/signup-recruiter", signupRecruiter);
 router.post("/signup-jobseeker", signupJobSeeker);
+router.post("/signup-admin", signupAdmin);
 
 /* ===== LOGIN ROUTE ===== */
 router.post("/login", login);
