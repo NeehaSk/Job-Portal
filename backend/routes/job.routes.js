@@ -1,22 +1,3 @@
-
-// import express from "express";
-// import authMiddleware from "../middleware/authmiddleware.js";
-// import { getRecruiterJobs } from "../controllers/job.controller.js";
-// import {
-//   getMyProfile,
-//   updateProfile,
-//   uploadProfilePic,
-//   uploadResume
-// } from "../controllers/jobSeeker.controller.js";
-
-// const router = express.Router();
-// router.get("/my-jobs", authMiddleware, recruiterOnly, getRecruiterJobs);
-// router.get("/profile", authMiddleware, getMyProfile);
-// router.put("/update-profile", authMiddleware, updateProfile);
-// router.put("/upload-profile-pic", authMiddleware, uploadProfilePic);
-// router.put("/upload-resume", authMiddleware, uploadResume);
-
-// export default router;
 import express from "express";
 
 import authMiddleware, { recruiterOnly, jobSeekerOnly }
