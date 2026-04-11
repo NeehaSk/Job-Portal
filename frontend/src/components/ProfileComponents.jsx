@@ -212,7 +212,7 @@ export const JobCard = ({ job, isApplied, onApply, onManage, onDelete, isRecruit
  * Filter Sidebar for Job Listings
  */
 export const FilterSidebar = ({ categories, selectedCategory, onSelect }) => (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm sticky top-20">
+    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
         <div className="p-5 border-b border-slate-50">
             <h4 className="text-xs font-bold text-slate-900 uppercase tracking-widest">Filter By</h4>
         </div>

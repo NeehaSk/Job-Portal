@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/apiCheck";
 import { AuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
-import { Heart, MapPin, Clock, Building2, DollarSign, GraduationCap } from "lucide-react";
+import { Heart, MapPin, Clock, Building2, IndianRupee, GraduationCap } from "lucide-react";
 
 const JobDetails = () => {
     const { jobId } = useParams();
@@ -335,7 +335,7 @@ const JobDetails = () => {
                                 <Insight icon={<MapPin size={18} />} label="Location" value={job?.location} />
                                 <Insight icon={<Clock size={18} />} label="Job Type" value={job?.jobType} />
                                 <Insight icon={<Building2 size={18} />} label="Work Mode" value={job?.workMode} />
-                                <Insight icon={<DollarSign size={18} />} label="Salary Range" value={`${job?.salary?.min?.toLocaleString()} - ${job?.salary?.max?.toLocaleString()} ${job?.salary?.currency}`} />
+                                <Insight icon={<IndianRupee size={18} />} label="Salary Range" value={`${job?.salary?.min?.toLocaleString()} - ${job?.salary?.max?.toLocaleString()} ${job?.salary?.currency}`} />
                                 <Insight icon={<GraduationCap size={18} />} label="Experience" value={job?.experienceLevel} />
                             </div>
 

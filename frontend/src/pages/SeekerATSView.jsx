@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Building2, Briefcase, MapPin, DollarSign } from "lucide-react";
+import { Building2, Briefcase, MapPin, IndianRupee } from "lucide-react";
 import api from "../api/apiCheck";
 import toast from "react-hot-toast";
 
@@ -195,7 +195,7 @@ const SeekerATSView = () => {
 
                                 <div className="flex gap-4">
                                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm text-lg text-indigo-600">
-                                        <DollarSign size={20} />
+                                        <IndianRupee size={20} />
                                     </div>
                                     <div>
                                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-tight block">Comp. Structure</label>

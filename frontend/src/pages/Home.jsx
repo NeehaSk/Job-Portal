@@ -72,7 +72,7 @@ const UserIcon = () => <svg width="24" height="24" fill="none" stroke="currentCo
 const CodeIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>;
 const DesignIcon = () => <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="4" /><line x1="21.17" y1="8" x2="12" y2="8" /><line x1="3.95" y1="6.06" x2="8.54" y2="14" /><line x1="10.88" y1="21.94" x2="15.46" y2="14" /></svg>;
 const BuildingIcon = () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" ry="2" /><path d="M9 22v-4h6v4" /><path d="M8 6h.01" /><path d="M16 6h.01" /><path d="M12 6h.01" /><path d="M12 10h.01" /><path d="M12 14h.01" /><path d="M16 10h.01" /><path d="M16 14h.01" /><path d="M8 10h.01" /><path d="M8 14h.01" /></svg>;
-const CurrencyIcon = () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>;
+const CurrencyIcon = () => <span style={{ fontSize: "14px", fontWeight: 700, color: "currentColor" }}>₹</span>;
 const ArrowRightIcon = () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>;
 
 /* ─── Mock Data ───────────────────────────────────────────────────────── */
@@ -259,14 +259,14 @@ export default function Home() {
           overflow: hidden;
           border-radius: 32px;
           position: relative;
-          min-width: 80px;
+          min-width: 64px;
           height: 520px;
           background: white;
           border: 1px solid rgba(0, 0, 0, 0.05);
           box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.03);
         }
         .expanding-card.active {
-          flex: 4;
+          flex: 5;
           background: white;
           border-color: #4f46e5;
           box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.15);
@@ -277,25 +277,27 @@ export default function Home() {
           display: flex;
           flex-direction: column;
           opacity: 0;
-          transition: opacity 0.5s;
-          white-space: nowrap;
+          transition: opacity 0.4s 0.2s;
+          white-space: normal;
+          min-width: 280px;
         }
         .expanding-card.active .expanding-card-content {
           opacity: 1;
         }
         .vertical-label {
           position: absolute;
-          bottom: 48px;
+          top: 50%;
           left: 50%;
-          transform: translateX(-50%) rotate(-90deg);
+          transform: translate(-50%, -50%) rotate(-90deg);
           transform-origin: center;
-          font-size: 13px;
+          font-size: 11px;
           font-weight: 800;
           color: #94A3B8;
           text-transform: uppercase;
-          letter-spacing: 0.15em;
-          transition: all 0.3s;
+          letter-spacing: 0.18em;
+          transition: opacity 0.3s;
           white-space: nowrap;
+          pointer-events: none;
         }
         .expanding-card.active .vertical-label {
           opacity: 0;
@@ -537,49 +539,7 @@ export default function Home() {
               </FadeIn>
             </div>
             
-            <div className="lg:w-1/2 relative">
-              <FadeIn direction="left" delay={0.3}>
-                <div className="relative z-10 bg-white rounded-[3rem] p-12 border border-slate-100 shadow-2xl shadow-indigo-100/50">
-                  <div className="space-y-10">
-                    <div className="flex items-center gap-6">
-                      <div className="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-3xl font-black">N</div>
-                      <div>
-                        <h5 className="font-black text-slate-900 uppercase tracking-widest text-xs">Since 2024</h5>
-                        <p className="text-[10px] font-bold text-slate-400 mt-1">THE ELITE STANDARD</p>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-6">
-                      <div className="pb-6 border-b border-slate-50">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Reach</span>
-                          <span className="text-xs font-black text-indigo-600">WIDE</span>
-                        </div>
-                        <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
-                          <div className="h-full bg-indigo-600 w-[85%] rounded-full"></div>
-                        </div>
-                      </div>
-                      <div className="pb-6 border-b border-slate-50">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Vetting Rigor</span>
-                          <span className="text-xs font-black text-indigo-600">MAX</span>
-                        </div>
-                        <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
-                          <div className="h-full bg-indigo-600 w-[98%] rounded-full"></div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <p className="text-slate-500 text-sm font-medium leading-relaxed italic">
-                      "At Nexal, we believe your professional identity is your greatest legacy. We provide the infrastructure to manifest it."
-                    </p>
-                  </div>
-                </div>
-                {/* Decorative Elements */}
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-indigo-100/50 rounded-full blur-3xl -z-10" />
-                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-100/50 rounded-full blur-3xl -z-10" />
-              </FadeIn>
-            </div>
+
           </div>
         </div>
       </section>

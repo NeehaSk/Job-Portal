@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import api from "../api/apiCheck";
 import { AuthContext } from "../context/AuthContext";
 import { StatCard } from "../components/ProfileComponents";
-import { Briefcase, CheckCircle, Bell, Bookmark, Eye, Lightbulb } from "lucide-react";
+import { Briefcase, CheckCircle, Bell, Bookmark, Eye, Lightbulb, Search } from "lucide-react";
 
 
 const Dashboard = () => {
@@ -137,13 +137,13 @@ const Dashboard = () => {
                         {/* Recent Profile Activity */}
                         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                             <div className="px-6 py-5 border-b border-slate-200 bg-slate-50 text-slate-900 font-bold flex items-center gap-2">
-                                <EyeIcon /> Recent Profile Activity
+                                <Eye size={18} /> Recent Profile Activity
                             </div>
                             <div className="p-6">
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="border border-slate-200 rounded-lg p-5">
                                         <div className="flex justify-between items-center mb-2">
-                                            <div className="bg-blue-50 text-blue-600 p-2 rounded-lg"><SearchIcon /></div>
+                                            <div className="bg-blue-50 text-blue-600 p-2 rounded-lg"><Search size={18} /></div>
                                             <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">+12%</span>
                                         </div>
                                         <h4 className="text-2xl font-black text-slate-900">42</h4>
@@ -151,7 +151,7 @@ const Dashboard = () => {
                                     </div>
                                     <div className="border border-slate-200 rounded-lg p-5">
                                         <div className="flex justify-between items-center mb-2">
-                                            <div className="bg-purple-50 text-purple-600 p-2 rounded-lg"><EyeIcon /></div>
+                                            <div className="bg-purple-50 text-purple-600 p-2 rounded-lg"><Eye size={18} /></div>
                                             <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">+5%</span>
                                         </div>
                                         <h4 className="text-2xl font-black text-slate-900">18</h4>
@@ -171,7 +171,7 @@ const Dashboard = () => {
                         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                             <div className="px-6 py-5 border-b border-slate-200 bg-white flex items-center justify-between">
                                 <div className="flex items-center gap-2 font-bold text-slate-900">
-                                    <BookmarkIcon /> Bookmarked Opportunities
+                                    <Bookmark size={18} /> Bookmarked Opportunities
                                 </div>
                                 <Link to="/jobs" className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
                                     Browse More
@@ -216,7 +216,7 @@ const Dashboard = () => {
                          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden relative">
                             <div className="absolute top-0 left-0 w-2 h-full bg-amber-400"></div>
                             <div className="px-6 py-5 border-b border-slate-100 bg-slate-50 flex items-center gap-2">
-                                <LightbulbIcon /> <span className="font-bold text-slate-900">Career Suggestion Tip</span>
+                                <Lightbulb size={18} /> <span className="font-bold text-slate-900">Career Suggestion Tip</span>
                             </div>
                             <div className="p-6">
                                 <h3 className="text-lg font-bold text-slate-900 mb-3">Optimize your summary for search</h3>
